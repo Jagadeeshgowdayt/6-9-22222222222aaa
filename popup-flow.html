@@ -44,11 +44,11 @@
             --border-radius-lg: 28px;
             --border-radius-xl: 32px;
             
-            /* Ultra-smooth iPhone Transitions */
-            --transition-ultra: all 1.2s cubic-bezier(0.23, 1, 0.32, 1);
-            --transition-smooth: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            --transition-fast: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-instant: all 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Ultra-smooth iPhone Transitions - Optimized */
+            --transition-ultra: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            --transition-smooth: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --transition-fast: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-instant: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
             --transition-spring: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             --transition-bounce: all 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             --transition-elastic: all 0.9s cubic-bezier(0.68, -0.6, 0.32, 1.6);
@@ -178,30 +178,18 @@
 
         @keyframes liquidMotion {
             0%, 100% { 
-                transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+                transform: translate3d(0, 0, 0) scale(1);
                 opacity: 1;
-                filter: blur(0.5px) hue-rotate(0deg);
-            }
-            25% { 
-                transform: translate3d(20px, -30px, 0) rotate(2deg) scale(1.05);
-                opacity: 0.9;
-                filter: blur(1px) hue-rotate(90deg);
             }
             50% { 
-                transform: translate3d(-15px, 25px, 0) rotate(-1deg) scale(0.95);
-                opacity: 0.95;
-                filter: blur(0.8px) hue-rotate(180deg);
-            }
-            75% { 
-                transform: translate3d(25px, -15px, 0) rotate(1.5deg) scale(1.02);
-                opacity: 0.85;
-                filter: blur(1.2px) hue-rotate(270deg);
+                transform: translate3d(10px, -10px, 0) scale(1.02);
+                opacity: 0.9;
             }
         }
 
         @keyframes patternFlow {
-            0% { transform: translate3d(0, 0, 0) rotate(0deg); }
-            100% { transform: translate3d(100px, 100px, 0) rotate(360deg); }
+            0% { transform: translateX(0); }
+            100% { transform: translateX(50px); }
         }
 
         /* TesTPaY Brand Enhancement */
@@ -367,20 +355,13 @@
         }
 
         @keyframes logoFloat {
-            0%, 100% { 
-                transform: translateY(0px) scale(1);
-                box-shadow: var(--shadow-2xl);
-            }
-            50% { 
-                transform: translateY(-8px) scale(1.02);
-                box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.35);
-            }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
         }
 
         @keyframes logoShine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-            100% { transform: translateX(200%) translateY(200%) rotate(45deg); }
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(200%) rotate(45deg); }
         }
 
         .logo i {
@@ -2745,7 +2726,7 @@
             font-weight: 600;
             z-index: 10001;
             opacity: 0;
-            transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             box-shadow: 
                 0 20px 60px rgba(26, 32, 44, 0.4),
                 0 10px 30px rgba(45, 55, 72, 0.3),
@@ -2817,7 +2798,7 @@
             opacity: 1;
             transform: translate(-50%, -50%) scale(1);
             filter: brightness(1.01) contrast(1.02) saturate(1.05);
-            animation: toastSlowPulse 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: toastSlowPulse 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         @keyframes toastSlowPulse {
@@ -4174,21 +4155,21 @@
             requestAnimationFrame(() => {
                 backdrop.classList.add('show');
                 
-                // Delay toast appearance for smoother sequencing
+                // Faster toast appearance for better responsiveness
                 setTimeout(() => {
                     // Force reflow to ensure animation works
                     toast.offsetHeight;
                     
                     toast.classList.add('show');
                     console.log(`Toast shown: ${message} (type: ${type})`);
-                }, 150);
+                }, 100);
             });
             
-            // Auto-hide after 4.5 seconds with ultra-smooth exit
+            // Auto-hide after 3.5 seconds with optimized exit
             window.toastTimeout = setTimeout(() => {
                 toast.classList.remove('show');
                 
-                // Delay backdrop removal for smoother exit
+                // Faster backdrop removal for smoother exit
                 setTimeout(() => {
                     backdrop.classList.remove('show');
                     console.log('Toast hidden');
@@ -4198,9 +4179,9 @@
                         if (backdrop && backdrop.parentNode) {
                             backdrop.remove();
                         }
-                    }, 800);
-                }, 300);
-            }, 4500);
+                    }, 500);
+                }, 200);
+            }, 3500);
         }
 
         function createConfetti() {
