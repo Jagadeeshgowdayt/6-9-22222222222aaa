@@ -1963,7 +1963,7 @@
 
                     <!-- UPI Apps Section -->
                     <div class="upi-apps" id="upiApps" style="display: block;">
-                        <a href="upi://pay?pa=india@ibl&pn=TestPaY&am=1&cu=INR&tn=%234486474537453" class="upi-app selected" data-app="gpay" onclick="selectUPIApp('gpay', event)">
+                        <a href="#" class="upi-app selected" data-app="gpay" onclick="selectUPIApp('gpay', event)" id="gpayLink">
                             <div class="upi-app-icon gpay">
                                 <i class="fab fa-google-pay"></i>
                             </div>
@@ -1971,7 +1971,7 @@
                             <div class="shine-circle"></div>
                         </a>
 
-                        <a href="phonepe://pay?pa=india@ibl&pn=TestPaY&am=1&cu=INR&tn=%234486474537453" class="upi-app" data-app="phonepe" onclick="selectUPIApp('phonepe', event)">
+                        <a href="#" class="upi-app" data-app="phonepe" onclick="selectUPIApp('phonepe', event)" id="phonepeLink">
                             <div class="upi-app-icon phonepe">
                                 <i class="fas fa-mobile-alt"></i>
                             </div>
@@ -1979,7 +1979,7 @@
                             <div class="shine-circle"></div>
                         </a>
 
-                        <a href="paytmmp://pay?pa=india@ibl&pn=TestPaY&am=1&cu=INR&tn=%234486474537453" class="upi-app" data-app="paytm" onclick="selectUPIApp('paytm', event)">
+                        <a href="#" class="upi-app" data-app="paytm" onclick="selectUPIApp('paytm', event)" id="paytmLink">
                             <div class="upi-app-icon paytm">
                                 <i class="fas fa-wallet"></i>
                             </div>
@@ -1990,7 +1990,7 @@
 
                     <!-- Additional UPI Payment Button -->
                     <div class="upi-payment-section">
-                        <a href="upi://pay?pa=india@ibl&pn=TestPaY&am=1&cu=INR&tn=%234486474537453" class="upi-pay-button" onclick="openUPIApp()">
+                        <a href="#" class="upi-pay-button" onclick="openUPIApp(event)" id="generalUPIButton">
                             <div class="upi-button-icon">
                                 <i class="fas fa-mobile-alt"></i>
                             </div>
@@ -2108,9 +2108,13 @@
             // Initialize popup features
             startQRTimer();
             
+            // Update UPI links with current config
+            updateUPILinks();
+            updateQRCode();
+            
             // Reset to page 1
             goToPopupPage(1);
-            showToast('Welcome to Charity Jet!', 'success');
+            showToast('Welcome to TestPaY!', 'success');
         }
 
         function closePaymentPopup() {
@@ -2252,17 +2256,28 @@
 
         // Update UPI Links
         function updateUPILinks() {
-            const upiUrl = `upi://pay?pa=${CONFIG.upiId}&pn=${encodeURIComponent(CONFIG.merchantName)}&am=${CONFIG.amount}&cu=INR&tn=${encodeURIComponent(CONFIG.customMessage)}`;
+            const baseUPIUrl = `upi://pay?pa=${CONFIG.upiId}&pn=${encodeURIComponent(CONFIG.merchantName)}&am=${CONFIG.amount}&cu=INR&tn=${encodeURIComponent(CONFIG.customMessage)}`;
             
-            // Update all UPI app links
-            document.querySelectorAll('.upi-app').forEach(app => {
-                app.href = upiUrl;
-            });
-
-            // Update general UPI button
-            const upiPayButton = document.querySelector('.upi-pay-button');
-            if (upiPayButton) {
-                upiPayButton.href = upiUrl;
+            // Update specific UPI app links with correct schemes
+            const gpayLink = document.getElementById('gpayLink');
+            const phonepeLink = document.getElementById('phonepeLink');
+            const paytmLink = document.getElementById('paytmLink');
+            const generalUPIButton = document.getElementById('generalUPIButton');
+            
+            if (gpayLink) {
+                gpayLink.href = `gpay://upi/pay?pa=${CONFIG.upiId}&pn=${encodeURIComponent(CONFIG.merchantName)}&am=${CONFIG.amount}&cu=INR&tn=${encodeURIComponent(CONFIG.customMessage)}`;
+            }
+            
+            if (phonepeLink) {
+                phonepeLink.href = `phonepe://pay?pa=${CONFIG.upiId}&pn=${encodeURIComponent(CONFIG.merchantName)}&am=${CONFIG.amount}&cu=INR&tn=${encodeURIComponent(CONFIG.customMessage)}`;
+            }
+            
+            if (paytmLink) {
+                paytmLink.href = `paytmmp://pay?pa=${CONFIG.upiId}&pn=${encodeURIComponent(CONFIG.merchantName)}&am=${CONFIG.amount}&cu=INR&tn=${encodeURIComponent(CONFIG.customMessage)}`;
+            }
+            
+            if (generalUPIButton) {
+                generalUPIButton.href = baseUPIUrl;
             }
         }
 
@@ -2393,19 +2408,30 @@
             // Start payment timer display
             updatePaymentStatusDisplay();
             
-            showToast(`${app.toUpperCase()} selected - Redirecting...`, 'success');
+            showToast(`${app.toUpperCase()} selected - Opening app...`, 'success');
             
-            // Redirect after a short delay for user feedback
-            setTimeout(() => {
-                const link = document.querySelector(`[data-app="${app}"]`);
-                if (link.href) {
-                    window.location.href = link.href;
-                }
-            }, 1500);
+            // Get the correct UPI link and redirect
+            const selectedAppElement = document.querySelector(`[data-app="${app}"]`);
+            if (selectedAppElement && selectedAppElement.href && selectedAppElement.href !== '#') {
+                setTimeout(() => {
+                    window.location.href = selectedAppElement.href;
+                }, 1000);
+            } else {
+                // Fallback to general UPI scheme
+                setTimeout(() => {
+                    const fallbackLink = `upi://pay?pa=${CONFIG.upiId}&pn=${encodeURIComponent(CONFIG.merchantName)}&am=${CONFIG.amount}&cu=INR&tn=${encodeURIComponent(CONFIG.customMessage)}`;
+                    window.location.href = fallbackLink;
+                }, 1000);
+            }
         }
 
         // Open UPI App Function for new button
-        function openUPIApp() {
+        function openUPIApp(event) {
+            // Prevent default link behavior
+            if (event) {
+                event.preventDefault();
+            }
+            
             // Track that general UPI button was used and payment start time
             selectedUPIApp = 'UPI';
             paymentStartTime = Date.now();
@@ -2421,12 +2447,10 @@
             // Use dynamic UPI link from config
             const upiLink = `upi://pay?pa=${CONFIG.upiId}&pn=${encodeURIComponent(CONFIG.merchantName)}&am=${CONFIG.amount}&cu=INR&tn=${encodeURIComponent(CONFIG.customMessage)}`;
             
-            // Create a temporary link and click it
-            const tempLink = document.createElement('a');
-            tempLink.href = upiLink;
-            document.body.appendChild(tempLink);
-            tempLink.click();
-            document.body.removeChild(tempLink);
+            // Try to redirect to UPI app
+            setTimeout(() => {
+                window.location.href = upiLink;
+            }, 1000);
         }
 
         // Toggle QR Code Display
