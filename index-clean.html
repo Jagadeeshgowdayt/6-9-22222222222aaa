@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charity Jet - Payment Gateway</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --vh: 1vh;
+            --primary-color: #00C851;
+            --primary-dark: #00A043;
+            --secondary-color: #2563eb;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --bg-light: #f8fafc;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 25px rgba(0,0,0,0.15);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            height: 100vh;
+            height: calc(var(--vh, 1vh) * 100);
+            overflow-x: hidden;
+        }
+
+        /* Multi-page Navigation */
+        .page {
+            display: none;
+            min-height: 100vh;
+            min-height: calc(var(--vh, 1vh) * 100);
+        }
+
+        .page.active {
+            display: flex;
+            animation: pageSlideIn 0.4s ease-out;
+        }
+
+        @keyframes pageSlideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Mobile-First Responsive Layout */
+        .page-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            min-height: calc(var(--vh, 1vh) * 100);
+        }
+
+        /* Header */
+        .page-header {
+            background: white;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            background: var(--bg-light);
+            color: var(--text-primary);
+        }
+
+        .page-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--primary-color);
+            background: rgba(0, 200, 81, 0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        /* Content Area */
+        .page-content {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        /* Payment Summary Card */
+        .payment-summary {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .merchant-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .merchant-logo {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-color);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .merchant-details h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .merchant-details p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .amount-display {
+            text-align: center;
+            padding: 16px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .amount-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .amount-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Payment Methods Grid */
+        .payment-methods {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .payment-method {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-method:hover {
+            border-color: var(--secondary-color);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .payment-method.recommended::before {
+            content: 'Recommended';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--primary-color);
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .method-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
+        .method-info {
+            flex: 1;
+        }
+
+        .method-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .method-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .method-arrow {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* UPI Method Colors */
+        .upi-method .method-icon {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+        }
+
+        .card-method .method-icon {
+            background: linear-gradient(135deg, #1a1f71, #eb001b);
+            color: white;
+        }
+
+        .netbanking-method .method-icon {
+            background: linear-gradient(135deg, #004c8f, #1f4e79);
+            color: white;
+        }
+
+        .wallet-method .method-icon {
+            background: linear-gradient(135deg, #00baf2, #d32f2f);
+            color: white;
+        }
+
+        /* UPI Page Specific Styles */
+        .qr-section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .timer-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .timer-display i {
+            color: #ef4444;
+        }
+
+        .qr-code {
+            width: 180px;
+            height: 180px;
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .qr-pulse {
+            position: absolute;
+            inset: 0;
+            border: 2px solid rgba(0, 200, 81, 0.4);
+            border-radius: 10px;
+            animation: qrPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes qrPulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.05); opacity: 0; }
+        }
+
+        .scan-instruction {
+            font-size: 15px;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        /* App Pay Buttons */
+        .app-pay-section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .cta-button {
+            width: 100%;
+            background: linear-gradient(135deg, #facc15, #f59e0b);
+            color: var(--text-primary);
+            border: none;
+            padding: 14px 20px;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+            animation: ctaBounce 0.6s ease;
+            transition: var(--transition);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shine 2s ease infinite;
+        }
+
+        @keyframes ctaBounce {
+            0% { transform: scale(0.9); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .app-buttons {
+            display: grid;
+            gap: 10px;
+        }
+
+        .app-button {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-button:hover {
+            border-color: var(--secondary-color);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .app-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .app-button.gpay .app-icon {
+            background: linear-gradient(135deg, #4285f4, #1a73e8);
+        }
+
+        .app-button.phonepe .app-icon {
+            background: linear-gradient(135deg, #5f259f, #3b1f5c);
+        }
+
+        .app-button.paytm .app-icon {
+            background: linear-gradient(135deg, #00baf2, #0084b4);
+        }
+
+        .app-name {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .app-badge {
+            background: rgba(0, 200, 81, 0.1);
+            color: var(--primary-color);
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        /* Footer Actions */
+        .page-footer {
+            padding: 16px;
+            background: white;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .primary-button {
+            width: 100%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: var(--border-radius);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .primary-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .secondary-button {
+            width: 100%;
+            background: transparent;
+            color: var(--secondary-color);
+            border: 2px solid var(--secondary-color);
+            padding: 14px;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+
+        .secondary-button:hover {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (min-width: 768px) {
+            .page-container {
+                flex-direction: row;
+                max-width: 1200px;
+            }
+
+            .page-content {
+                flex: 1;
+                padding: 24px;
+            }
+
+            .payment-methods {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .app-buttons {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .qr-code {
+                width: 220px;
+                height: 220px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .page-container {
+                flex-direction: row;
+            }
+
+            .sidebar {
+                width: 400px;
+                background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+                display: flex;
+                flex-direction: column;
+                padding: 32px;
+                color: white;
+            }
+
+            .page-content {
+                flex: 1;
+                padding: 32px;
+                background: white;
+            }
+
+            .charity-branding {
+                margin-bottom: 32px;
+            }
+
+            .charity-logo {
+                width: 60px;
+                height: 60px;
+                background: white;
+                border-radius: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 16px;
+                box-shadow: var(--shadow-lg);
+            }
+
+            .charity-name {
+                font-size: 28px;
+                font-weight: 700;
+                margin-bottom: 8px;
+            }
+
+            .charity-tagline {
+                font-size: 16px;
+                opacity: 0.9;
+            }
+
+            .sidebar-illustration {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+            }
+
+            .floating-elements {
+                position: relative;
+                width: 200px;
+                height: 200px;
+            }
+
+            .float-item {
+                position: absolute;
+                width: 40px;
+                height: 40px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 50%;
+                animation: float 3s ease-in-out infinite;
+            }
+
+            .float-item:nth-child(1) { top: 20px; left: 30px; animation-delay: 0s; }
+            .float-item:nth-child(2) { top: 60px; right: 20px; animation-delay: 1s; }
+            .float-item:nth-child(3) { bottom: 40px; left: 50px; animation-delay: 2s; }
+
+            @keyframes float {
+                0%, 100% { transform: translateY(0px); }
+                50% { transform: translateY(-10px); }
+            }
+
+            .sidebar-footer {
+                margin-top: auto;
+                padding-top: 24px;
+                border-top: 1px solid rgba(255, 255, 255, 0.2);
+                font-size: 14px;
+                opacity: 0.8;
+            }
+        }
+
+        /* Loading and Success States */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .overlay.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .loading-content, .success-content {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            text-align: center;
+            max-width: 320px;
+            width: 90%;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Accessibility & Touch Improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .payment-method,
+            .app-button,
+            .primary-button,
+            .secondary-button {
+                min-height: 48px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-primary);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* Custom scrollbar for webkit browsers */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-light);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Payment Methods Page -->
+    <div class="page active" id="payment-methods-page">
+        <div class="page-container">
+            <!-- Desktop Sidebar -->
+            <div class="sidebar" style="display: none;">
+                <div class="charity-branding">
+                    <div class="charity-logo">
+                        <i class="fas fa-heart" style="color: #00C851; font-size: 24px;"></i>
+                    </div>
+                    <h1 class="charity-name">Charity Jet</h1>
+                    <p class="charity-tagline">Making donations simple and secure</p>
+                </div>
+
+                <div class="sidebar-illustration">
+                    <div class="floating-elements">
+                        <div class="float-item"></div>
+                        <div class="float-item"></div>
+                        <div class="float-item"></div>
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 48px; opacity: 0.3;">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-footer">
+                    <i class="fas fa-shield-alt"></i> Secured by Razorpay
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div style="flex: 1; display: flex; flex-direction: column;">
+                <!-- Header -->
+                <div class="page-header">
+                    <button class="back-btn" onclick="window.history.back()">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h1 class="page-title">Payment Methods</h1>
+                    <div class="secure-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Secure</span>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="page-content">
+                    <!-- Payment Summary -->
+                    <div class="payment-summary">
+                        <div class="merchant-info">
+                            <div class="merchant-logo">CJ</div>
+                            <div class="merchant-details">
+                                <h3>Charity Jet</h3>
+                                <p>Making a difference together</p>
+                            </div>
+                        </div>
+                        <div class="amount-display">
+                            <div class="amount-label">Amount to Pay</div>
+                            <div class="amount-value">₹13</div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Methods -->
+                    <div class="payment-methods">
+                        <div class="payment-method recommended upi-method" onclick="navigateToPage('upi-page')">
+                            <div class="method-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="method-info">
+                                <div class="method-name">UPI</div>
+                                <div class="method-desc">Pay instantly via UPI</div>
+                            </div>
+                            <div class="method-arrow">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </div>
+
+                        <div class="payment-method card-method" onclick="navigateToPage('card-page')">
+                            <div class="method-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="method-info">
+                                <div class="method-name">Cards</div>
+                                <div class="method-desc">Credit, Debit & EMI</div>
+                            </div>
+                            <div class="method-arrow">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </div>
+
+                        <div class="payment-method netbanking-method" onclick="navigateToPage('netbanking-page')">
+                            <div class="method-icon">
+                                <i class="fas fa-university"></i>
+                            </div>
+                            <div class="method-info">
+                                <div class="method-name">Net Banking</div>
+                                <div class="method-desc">All major banks</div>
+                            </div>
+                            <div class="method-arrow">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </div>
+
+                        <div class="payment-method wallet-method" onclick="navigateToPage('wallet-page')">
+                            <div class="method-icon">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <div class="method-info">
+                                <div class="method-name">Wallets</div>
+                                <div class="method-desc">Paytm, Amazon Pay & more</div>
+                            </div>
+                            <div class="method-arrow">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- UPI Payment Page -->
+    <div class="page" id="upi-page">
+        <div class="page-container">
+            <!-- Header -->
+            <div class="page-header">
+                <button class="back-btn" onclick="navigateToPage('payment-methods-page')">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1 class="page-title">UPI Payment</h1>
+                <div class="secure-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Secure</span>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="page-content">
+                <!-- Payment Summary -->
+                <div class="payment-summary">
+                    <div class="merchant-info">
+                        <div class="merchant-logo">CJ</div>
+                        <div class="merchant-details">
+                            <h3>Charity Jet</h3>
+                            <p>Donation Payment</p>
+                        </div>
+                    </div>
+                    <div class="amount-display">
+                        <div class="amount-label">Amount to Pay</div>
+                        <div class="amount-value">₹13</div>
+                    </div>
+                </div>
+
+                <!-- QR Code Section -->
+                <div class="qr-section">
+                    <div class="timer-display">
+                        <i class="fas fa-clock"></i>
+                        <span id="timer">11:39</span>
+                    </div>
+
+                    <div class="qr-code" id="qrCode">
+                        <div class="qr-pulse"></div>
+                        <!-- QR will be generated here -->
+                    </div>
+
+                    <div class="scan-instruction">
+                        Scan the QR using any UPI app
+                    </div>
+                </div>
+
+                <!-- CTA Button -->
+                <div class="app-pay-section">
+                    <button class="cta-button" onclick="showToast('Opening UPI apps...')">
+                        <i class="fas fa-star" style="margin-right: 8px;"></i>
+                        Click Here to Pay Instantly
+                    </button>
+
+                    <div class="section-title">Or pay instantly in your app</div>
+                    <div class="app-buttons">
+                        <div class="app-button gpay" onclick="openUPIApp('gpay')">
+                            <div class="app-icon">G</div>
+                            <div class="app-name">Google Pay</div>
+                            <div class="app-badge">Fast</div>
+                        </div>
+
+                        <div class="app-button phonepe" onclick="openUPIApp('phonepe')">
+                            <div class="app-icon">पे</div>
+                            <div class="app-name">PhonePe</div>
+                            <div class="app-badge">Fast</div>
+                        </div>
+
+                        <div class="app-button paytm" onclick="openUPIApp('paytm')">
+                            <div class="app-icon">PTM</div>
+                            <div class="app-name">Paytm</div>
+                            <div class="app-badge">Fast</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="page-footer">
+                <button class="secondary-button" onclick="navigateToPage('upi-manual-page')">
+                    Enter UPI ID Manually
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Payment Page -->
+    <div class="page" id="card-page">
+        <div class="page-container">
+            <div class="page-header">
+                <button class="back-btn" onclick="navigateToPage('payment-methods-page')">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1 class="page-title">Card Payment</h1>
+                <div class="secure-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Secure</span>
+                </div>
+            </div>
+
+            <div class="page-content">
+                <div class="payment-summary">
+                    <div class="merchant-info">
+                        <div class="merchant-logo">CJ</div>
+                        <div class="merchant-details">
+                            <h3>Charity Jet</h3>
+                            <p>Card Payment</p>
+                        </div>
+                    </div>
+                    <div class="amount-display">
+                        <div class="amount-label">Amount to Pay</div>
+                        <div class="amount-value">₹13</div>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; margin-top: 40px;">
+                    <i class="fas fa-credit-card" style="font-size: 48px; color: #6b7280; margin-bottom: 16px;"></i>
+                    <h3 style="margin-bottom: 8px; color: #111827;">Card Payment</h3>
+                    <p style="color: #6b7280; margin-bottom: 24px;">Enter your card details to proceed</p>
+                    <button class="primary-button" onclick="showLoading()">Continue with Cards</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <h3 style="margin-bottom: 8px;">Processing Payment</h3>
+            <p style="color: #6b7280;">Please wait while we process your transaction</p>
+        </div>
+    </div>
+
+    <!-- Success Overlay -->
+    <div class="overlay" id="successOverlay">
+        <div class="success-content">
+            <div style="width: 64px; height: 64px; background: #00C851; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: white; font-size: 24px;">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3 style="margin-bottom: 8px; color: #111827;">Payment Successful!</h3>
+            <p style="color: #6b7280;">Your donation of ₹13 has been processed successfully</p>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            amount: 13,
+            baseVPA: 'charityjet@oksbi',
+            customVPA: 'demo@ibl',
+            payeeName: 'Charity Jet',
+            messageRef: '#747848487373738'
+        };
+
+        let currentVPA = CONFIG.baseVPA;
+        let generatedUPILink = '';
+        let timerInterval;
+        let timeLeft = 11 * 60 + 39; // 11:39 in seconds
+
+        // Page Navigation
+        function navigateToPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // Show target page
+            document.getElementById(pageId).classList.add('active');
+
+            // Page-specific initialization
+            if (pageId === 'upi-page') {
+                initializeUPIPage();
+            }
+        }
+
+        // UPI Page Initialization
+        function initializeUPIPage() {
+            generateUPILink();
+            renderQRCode();
+            startTimer();
+        }
+
+        // UPI Link Generation
+        function generateUPILink() {
+            const txnRef = 'CJ' + Date.now();
+            const note = `Donation ${CONFIG.amount} ${CONFIG.messageRef}`;
+            const link = `upi://pay?pa=${encodeURIComponent(currentVPA)}&pn=${encodeURIComponent(CONFIG.payeeName)}&am=${CONFIG.amount}&cu=INR&tn=${encodeURIComponent(note)}&tr=${txnRef}`;
+            generatedUPILink = link;
+        }
+
+        // QR Code Rendering
+        function renderQRCode() {
+            const qrContainer = document.getElementById('qrCode');
+            if (!qrContainer) return;
+
+            // Clear existing content except pulse
+            const pulse = qrContainer.querySelector('.qr-pulse');
+            qrContainer.innerHTML = '';
+            if (pulse) qrContainer.appendChild(pulse);
+
+            // Generate pseudo QR code
+            const canvas = document.createElement('canvas');
+            const size = 41; // matrix size
+            const cellSize = 4; // pixels per cell
+            canvas.width = canvas.height = size * cellSize;
+
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Simple hash-based pattern
+            let hash = 0;
+            for (let i = 0; i < generatedUPILink.length; i++) {
+                hash = (hash * 31 + generatedUPILink.charCodeAt(i)) >>> 0;
+            }
+
+            // Generate pattern
+            for (let y = 0; y < size; y++) {
+                for (let x = 0; x < size; x++) {
+                    const value = (Math.imul((x + 1) * (y + 3), hash) ^ (hash >>> (x % 13))) & 7;
+                    if (value === 0 || value === 3) {
+                        ctx.fillStyle = '#000';
+                        ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                    }
+                }
+            }
+
+            // Add finder patterns
+            ctx.fillStyle = '#000';
+            function drawFinder(px, py) {
+                ctx.fillRect(px, py, 7 * cellSize, 7 * cellSize);
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(px + cellSize, py + cellSize, 5 * cellSize, 5 * cellSize);
+                ctx.fillStyle = '#000';
+                ctx.fillRect(px + 2 * cellSize, py + 2 * cellSize, 3 * cellSize, 3 * cellSize);
+            }
+
+            drawFinder(0, 0);
+            drawFinder((size - 7) * cellSize, 0);
+            drawFinder(0, (size - 7) * cellSize);
+
+            // Style and append
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
+            canvas.style.imageRendering = 'pixelated';
+            qrContainer.appendChild(canvas);
+        }
+
+        // Timer
+        function startTimer() {
+            const timerElement = document.getElementById('timer');
+            if (!timerElement) return;
+
+            timerInterval = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    showToast('Session expired. Please refresh and try again.');
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        // UPI App Integration
+        function openUPIApp(app) {
+            if (!generatedUPILink) generateUPILink();
+            
+            showToast(`Opening ${app}...`);
+            
+            // Try to open the UPI link
+            setTimeout(() => {
+                window.location.href = generatedUPILink;
+                
+                // Show loading after attempting to open app
+                setTimeout(() => {
+                    showLoading();
+                    
+                    // Simulate payment processing
+                    setTimeout(() => {
+                        hideLoading();
+                        showSuccess();
+                    }, 3000);
+                }, 1000);
+            }, 500);
+        }
+
+        // UI Utilities
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.add('show');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('show');
+        }
+
+        function showSuccess() {
+            document.getElementById('successOverlay').classList.add('show');
+            
+            setTimeout(() => {
+                document.getElementById('successOverlay').classList.remove('show');
+            }, 4000);
+        }
+
+        // Responsive Utilities
+        function handleResponsive() {
+            // Set viewport height
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+
+            // Show/hide sidebar based on screen size
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) {
+                sidebar.style.display = window.innerWidth >= 1024 ? 'flex' : 'none';
+            }
+
+            // Touch device optimizations
+            if ('ontouchstart' in window) {
+                document.body.classList.add('touch-device');
+            }
+        }
+
+        // Event Listeners
+        window.addEventListener('resize', handleResponsive);
+        window.addEventListener('orientationchange', () => {
+            setTimeout(handleResponsive, 100);
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            handleResponsive();
+            
+            // Close overlays when clicking outside
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('overlay')) {
+                    e.target.classList.remove('show');
+                }
+            });
+        });
+
+        // Cleanup intervals when page changes
+        window.addEventListener('beforeunload', () => {
+            if (timerInterval) clearInterval(timerInterval);
+        });
+    </script>
+</body>
+</html>
