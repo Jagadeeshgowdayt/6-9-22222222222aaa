@@ -40,6 +40,22 @@
             --bg-secondary: #f8fafc;
             --bg-light: #f1f5f9;
             
+            /* Dynamic Viewport Heights for All Devices */
+            --vh-small: 1vh;
+            --vh-100: 100vh;
+            --vh-90: 90vh;
+            --vh-80: 80vh;
+            --vh-70: 70vh;
+            --vh-60: 60vh;
+            --vh-50: 50vh;
+            
+            /* Device-Specific Height Variables */
+            --container-height: 94vh;
+            --button-height: 52px;
+            --input-height: 48px;
+            --icon-size: 40px;
+            --spacing-unit: 16px;
+            
             /* iPhone-like Shadows & Effects */
             --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
@@ -110,11 +126,13 @@
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(145deg, #1e293b 0%, #334155 25%, #475569 50%, #64748b 75%, #94a3b8 100%);
-            min-height: 100vh;
+            min-height: var(--vh-100);
+            height: var(--vh-100);
+            max-height: var(--vh-100);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: var(--spacing-unit);
             position: relative;
             overflow: hidden;
             font-feature-settings: 'cv11', 'ss01';
@@ -630,8 +648,11 @@
             border-radius: var(--border-radius-xl);
             width: 100%;
             max-width: 430px;
-            max-height: 94vh;
-            overflow: hidden;
+            height: auto;
+            min-height: var(--vh-60);
+            max-height: var(--container-height);
+            overflow-y: auto;
+            overflow-x: hidden;
             box-shadow: 
                 0 60px 180px rgba(0, 0, 0, 0.12),
                 0 30px 80px rgba(0, 0, 0, 0.08),
@@ -3052,41 +3073,44 @@
                 transform: translateY(100vh) rotate(720deg);
             }
         }
-        /* Enhanced Mobile-First Responsive Design */
+        /* Enhanced Mobile-First Responsive Design with Dynamic Heights */
         @media (max-width: 768px) {
             /* Main container optimizations */
             .popup-container {
                 max-width: 95vw !important;
-                max-height: 92vh !important;
-                margin: 15px !important;
+                max-height: var(--vh-90) !important;
+                min-height: var(--vh-70) !important;
+                margin: var(--spacing-unit) !important;
                 border-radius: 16px !important;
                 transform: scale(0.98) translateY(10px) !important;
+                overflow-y: auto !important;
+                overflow-x: hidden !important;
             }
             
             /* Button optimizations */
             .upi-pay-button, .trigger-button {
-                padding: 16px 20px !important;
+                padding: calc(var(--spacing-unit) * 0.8) var(--spacing-unit) !important;
                 font-size: 16px !important;
-                min-height: 48px !important;
+                min-height: var(--button-height) !important;
                 width: 100% !important;
                 border-radius: 12px !important;
-                margin: 8px 0 !important;
+                margin: calc(var(--spacing-unit) * 0.5) 0 !important;
                 box-sizing: border-box !important;
             }
             
             /* Form optimizations */
             .merchant-form {
-                padding: 16px !important;
-                margin: 12px 0 !important;
+                padding: var(--spacing-unit) !important;
+                margin: calc(var(--spacing-unit) * 0.75) 0 !important;
                 border-radius: 12px !important;
             }
             
             .form-group input {
-                padding: 14px 16px !important;
+                padding: calc(var(--spacing-unit) * 0.75) var(--spacing-unit) !important;
                 font-size: 16px !important;
                 width: 100% !important;
                 box-sizing: border-box !important;
-                min-height: 48px !important;
+                min-height: var(--input-height) !important;
                 border-radius: 8px !important;
             }
             
@@ -3094,60 +3118,69 @@
             .upi-apps-container {
                 display: grid !important;
                 grid-template-columns: repeat(3, 1fr) !important;
-                gap: 12px !important;
-                padding: 0 12px !important;
-                margin: 12px 0 !important;
+                gap: calc(var(--spacing-unit) * 0.75) !important;
+                padding: 0 calc(var(--spacing-unit) * 0.75) !important;
+                margin: calc(var(--spacing-unit) * 0.75) 0 !important;
             }
             
             .upi-app {
                 display: flex !important;
                 flex-direction: column !important;
                 align-items: center !important;
-                padding: 12px 8px !important;
+                padding: calc(var(--spacing-unit) * 0.75) calc(var(--spacing-unit) * 0.5) !important;
                 background: rgba(255, 255, 255, 0.9) !important;
                 border-radius: 10px !important;
                 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-                min-height: 75px !important;
+                min-height: calc(var(--icon-size) + var(--spacing-unit) * 2) !important;
                 text-align: center !important;
                 transition: all 0.3s ease !important;
+            }
+            
+            .upi-app-icon {
+                width: var(--icon-size) !important;
+                height: var(--icon-size) !important;
             }
         }
         
         @media (max-width: 480px) {
-            /* Full mobile optimization */
+            /* Full mobile optimization with dynamic heights */
             .popup-container {
                 max-width: 100vw !important;
-                max-height: 100vh !important;
+                max-height: var(--vh-100) !important;
+                min-height: var(--vh-90) !important;
+                height: auto !important;
                 margin: 0 !important;
                 border-radius: 0 !important;
                 transform: none !important;
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch !important;
             }
             
             /* Large touch-friendly buttons */
             .upi-pay-button, .trigger-button {
-                padding: 18px 20px !important;
+                padding: calc(var(--spacing-unit) * 1.1) var(--spacing-unit) !important;
                 font-size: 17px !important;
-                min-height: 52px !important;
+                min-height: var(--button-height) !important;
                 font-weight: 600 !important;
                 border-radius: 12px !important;
             }
             
             /* Mobile form styling */
             .merchant-form {
-                padding: 20px 16px !important;
-                margin: 16px 0 !important;
+                padding: calc(var(--spacing-unit) * 1.25) var(--spacing-unit) !important;
+                margin: var(--spacing-unit) 0 !important;
                 background: rgba(255, 255, 255, 0.98) !important;
                 border: 1px solid rgba(0, 0, 0, 0.08) !important;
             }
             
             .form-group {
-                margin-bottom: 16px !important;
+                margin-bottom: var(--spacing-unit) !important;
             }
             
             .form-group input {
-                padding: 16px !important;
+                padding: var(--spacing-unit) !important;
                 font-size: 17px !important;
-                min-height: 52px !important;
+                min-height: var(--button-height) !important;
                 border: 2px solid #e2e8f0 !important;
                 border-radius: 10px !important;
                 transition: all 0.3s ease !important;
@@ -3162,22 +3195,22 @@
             .form-group label {
                 font-size: 15px !important;
                 font-weight: 600 !important;
-                margin-bottom: 8px !important;
+                margin-bottom: calc(var(--spacing-unit) * 0.5) !important;
                 display: block !important;
             }
             
             /* 2-column UPI apps for mobile */
             .upi-apps-container {
                 grid-template-columns: repeat(2, 1fr) !important;
-                gap: 16px !important;
-                padding: 0 16px !important;
-                margin: 20px 0 !important;
+                gap: var(--spacing-unit) !important;
+                padding: 0 var(--spacing-unit) !important;
+                margin: calc(var(--spacing-unit) * 1.25) 0 !important;
             }
             
             .upi-app {
-                padding: 16px 12px !important;
+                padding: var(--spacing-unit) calc(var(--spacing-unit) * 0.75) !important;
                 border-radius: 12px !important;
-                min-height: 90px !important;
+                min-height: calc(var(--icon-size) + var(--spacing-unit) * 3) !important;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
             }
             
@@ -3187,11 +3220,11 @@
             }
             
             .upi-app-icon {
-                width: 36px !important;
-                height: 36px !important;
-                margin: 0 auto 8px !important;
+                width: var(--icon-size) !important;
+                height: var(--icon-size) !important;
+                margin: 0 auto calc(var(--spacing-unit) * 0.5) !important;
                 border-radius: 8px !important;
-                font-size: 16px !important;
+                font-size: calc(var(--icon-size) * 0.4) !important;
             }
             
             .upi-app-name {
@@ -3202,21 +3235,21 @@
             
             /* Mobile payment actions */
             .payment-actions {
-                padding: 16px !important;
+                padding: var(--spacing-unit) !important;
                 background: rgba(255, 255, 255, 0.98) !important;
                 border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
                 display: flex !important;
                 flex-direction: column !important;
-                gap: 12px !important;
+                gap: calc(var(--spacing-unit) * 0.75) !important;
             }
             
             .payment-actions button {
                 width: 100% !important;
-                padding: 18px !important;
+                padding: calc(var(--spacing-unit) * 1.1) !important;
                 font-size: 17px !important;
                 font-weight: 600 !important;
                 border-radius: 12px !important;
-                min-height: 52px !important;
+                min-height: var(--button-height) !important;
                 border: none !important;
                 cursor: pointer !important;
                 transition: all 0.3s ease !important;
@@ -3228,35 +3261,71 @@
             
             /* Mobile toast optimization */
             .toast {
-                padding: 16px 24px !important;
+                padding: var(--spacing-unit) calc(var(--spacing-unit) * 1.5) !important;
                 min-width: 280px !important;
-                max-width: calc(100vw - 40px) !important;
+                max-width: calc(100vw - var(--spacing-unit) * 2.5) !important;
                 font-size: 15px !important;
                 border-radius: 12px !important;
-                margin: 0 20px !important;
+                margin: 0 calc(var(--spacing-unit) * 1.25) !important;
+            }
+        }
+        
+        @media (max-height: 600px) {
+            /* Extra optimization for short devices */
+            :root {
+                --container-height: var(--vh-98) !important;
+                --button-height: 44px !important;
+                --input-height: 40px !important;
+                --icon-size: 32px !important;
+                --spacing-unit: 12px !important;
+            }
+            
+            .popup-container {
+                max-height: var(--vh-98) !important;
+                min-height: var(--vh-90) !important;
+            }
+            
+            .upi-app {
+                padding: calc(var(--spacing-unit) * 0.75) calc(var(--spacing-unit) * 0.5) !important;
+                min-height: calc(var(--icon-size) + var(--spacing-unit) * 2) !important;
             }
         }
         
         @media (max-width: 320px) {
             /* Extra small devices */
+            :root {
+                --button-height: 48px !important;
+                --input-height: 44px !important;
+                --icon-size: 28px !important;
+                --spacing-unit: 10px !important;
+            }
+            
             .upi-apps-container {
                 grid-template-columns: 1fr 1fr !important;
-                gap: 12px !important;
+                gap: calc(var(--spacing-unit) * 1.2) !important;
             }
             
             .upi-app {
-                padding: 12px 8px !important;
-                min-height: 80px !important;
-            }
-            
-            .upi-app-icon {
-                width: 32px !important;
-                height: 32px !important;
-                font-size: 14px !important;
+                padding: var(--spacing-unit) calc(var(--spacing-unit) * 0.5) !important;
+                min-height: calc(var(--icon-size) + var(--spacing-unit) * 2.5) !important;
             }
             
             .upi-app-name {
                 font-size: 11px !important;
+            }
+        }
+
+        /* Landscape orientation optimizations */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .popup-container {
+                max-height: var(--vh-95) !important;
+                transform: scale(0.9) !important;
+            }
+            
+            :root {
+                --spacing-unit: 8px !important;
+                --button-height: 40px !important;
+                --input-height: 36px !important;
             }
         }
 
@@ -3534,6 +3603,78 @@
     <div class="toast" id="toast"></div>
 
     <script>
+        // Dynamic Viewport Height Calculation for All Devices
+        function setDynamicViewportHeights() {
+            const vh = window.innerHeight * 0.01;
+            const vw = window.innerWidth * 0.01;
+            
+            // Set CSS custom properties for dynamic viewport
+            document.documentElement.style.setProperty('--vh-small', `${vh}px`);
+            document.documentElement.style.setProperty('--vh-100', `${vh * 100}px`);
+            document.documentElement.style.setProperty('--vh-90', `${vh * 90}px`);
+            document.documentElement.style.setProperty('--vh-80', `${vh * 80}px`);
+            document.documentElement.style.setProperty('--vh-70', `${vh * 70}px`);
+            document.documentElement.style.setProperty('--vh-60', `${vh * 60}px`);
+            document.documentElement.style.setProperty('--vh-50', `${vh * 50}px`);
+            
+            // Device-specific adjustments
+            const isMobile = window.innerWidth <= 480;
+            const isTablet = window.innerWidth > 480 && window.innerWidth <= 768;
+            const isSmallHeight = window.innerHeight <= 600;
+            const isMediumHeight = window.innerHeight > 600 && window.innerHeight <= 800;
+            
+            // Adjust container height based on device
+            let containerHeight;
+            if (isMobile && isSmallHeight) {
+                containerHeight = `${vh * 98}px`; // Almost full height on small mobile
+                document.documentElement.style.setProperty('--button-height', '48px');
+                document.documentElement.style.setProperty('--input-height', '44px');
+                document.documentElement.style.setProperty('--icon-size', '32px');
+                document.documentElement.style.setProperty('--spacing-unit', '12px');
+            } else if (isMobile) {
+                containerHeight = `${vh * 95}px`; // Full height on mobile
+                document.documentElement.style.setProperty('--button-height', '52px');
+                document.documentElement.style.setProperty('--input-height', '48px');
+                document.documentElement.style.setProperty('--icon-size', '36px');
+                document.documentElement.style.setProperty('--spacing-unit', '16px');
+            } else if (isTablet) {
+                containerHeight = `${vh * 90}px`; // Tablet height
+                document.documentElement.style.setProperty('--button-height', '48px');
+                document.documentElement.style.setProperty('--input-height', '44px');
+                document.documentElement.style.setProperty('--icon-size', '40px');
+                document.documentElement.style.setProperty('--spacing-unit', '16px');
+            } else {
+                containerHeight = `${vh * 85}px`; // Desktop height
+                document.documentElement.style.setProperty('--button-height', '52px');
+                document.documentElement.style.setProperty('--input-height', '48px');
+                document.documentElement.style.setProperty('--icon-size', '40px');
+                document.documentElement.style.setProperty('--spacing-unit', '20px');
+            }
+            
+            document.documentElement.style.setProperty('--container-height', containerHeight);
+            
+            // Log device info for debugging
+            console.log(`📱 Device: ${isMobile ? 'Mobile' : isTablet ? 'Tablet' : 'Desktop'}`);
+            console.log(`📏 Screen: ${window.innerWidth}x${window.innerHeight}`);
+            console.log(`📦 Container Height: ${containerHeight}`);
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', setDynamicViewportHeights);
+        
+        // Update on resize and orientation change
+        window.addEventListener('resize', setDynamicViewportHeights);
+        window.addEventListener('orientationchange', () => {
+            setTimeout(setDynamicViewportHeights, 100);
+        });
+
+        // iOS Safari specific fix for viewport height
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        if (isIOS) {
+            window.addEventListener('resize', () => {
+                setTimeout(setDynamicViewportHeights, 500);
+            });
+        }
         // Global State
         let currentPopupPage = 1;
         let selectedPaymentMethod = 'upi';
