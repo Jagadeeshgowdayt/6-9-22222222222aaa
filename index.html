@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1e293b">
+    <title>TesTPaY - Fast UPI Payment Gateway</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* Performance-optimized CSS Variables */
+        :root {
+            --primary: #1e293b;
+            --primary-light: #334155;
+            --secondary: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --white: #ffffff;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            
+            --radius: 12px;
+            --radius-lg: 16px;
+            --spacing: 16px;
+            --font-size-sm: 14px;
+            --font-size-base: 16px;
+            --font-size-lg: 18px;
+            --font-size-xl: 20px;
+            --font-size-2xl: 24px;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            height: 100%;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing);
+            color: var(--gray-900);
+            font-size: var(--font-size-base);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        /* Main container */
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            position: relative;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: var(--primary);
+            color: var(--white);
+            padding: 24px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: var(--white);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            transform: translateZ(0);
+        }
+
+        .title {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: var(--font-size-sm);
+            opacity: 0.9;
+        }
+
+        /* Content area */
+        .content {
+            padding: 24px 20px;
+        }
+
+        /* Payment summary */
+        .payment-summary {
+            background: var(--gray-50);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .merchant-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .merchant-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--secondary);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 20px;
+        }
+
+        .merchant-details h3 {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .amount {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        /* UPI Apps Grid */
+        .upi-apps {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-align: center;
+            color: var(--gray-700);
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .app-button {
+            background: var(--white);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            padding: 16px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            color: inherit;
+            transform: translateZ(0);
+            will-change: transform, box-shadow;
+        }
+
+        .app-button:hover {
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .app-button:active {
+            transform: translateY(0);
+            transition: var(--transition-fast);
+        }
+
+        .app-icon {
+            font-size: 32px;
+            margin-bottom: 4px;
+        }
+
+        .app-name {
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* QR Code section */
+        .qr-section {
+            background: var(--gray-50);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 24px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .qr-toggle {
+            background: none;
+            border: none;
+            color: var(--secondary);
+            font-size: var(--font-size-base);
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 16px;
+            transition: var(--transition);
+        }
+
+        .qr-toggle:hover {
+            text-decoration: underline;
+        }
+
+        .qr-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .qr-content.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .qr-code img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upi-id {
+            font-family: monospace;
+            font-size: var(--font-size-sm);
+            color: var(--gray-600);
+            background: var(--white);
+            padding: 8px 12px;
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-200);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .upi-id:hover {
+            background: var(--gray-100);
+        }
+
+        /* Status modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: var(--spacing);
+        }
+
+        .modal.show {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 32px 24px;
+            text-align: center;
+            max-width: 320px;
+            width: 100%;
+            transform: scale(0.9);
+            animation: modalSlideIn 0.3s ease forwards;
+        }
+
+        .status-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 28px;
+        }
+
+        .status-icon.success {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .status-icon.pending {
+            background: var(--warning);
+            color: var(--white);
+        }
+
+        .status-icon.error {
+            background: var(--error);
+            color: var(--white);
+        }
+
+        .status-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .status-message {
+            color: var(--gray-600);
+            margin-bottom: 16px;
+        }
+
+        .transaction-id {
+            font-family: monospace;
+            font-size: var(--font-size-sm);
+            background: var(--gray-100);
+            padding: 8px 12px;
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+        }
+
+        /* Buttons */
+        .btn {
+            background: var(--secondary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius);
+            padding: 12px 24px;
+            font-size: var(--font-size-base);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transform: translateZ(0);
+        }
+
+        .btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            transition: var(--transition-fast);
+        }
+
+        .btn-secondary {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-300);
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gray-900);
+            color: var(--white);
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            font-size: var(--font-size-sm);
+            z-index: 1100;
+            opacity: 0;
+            transform: translateX(-50%) translateY(-20px);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: scale(0.9) translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+            
+            .container {
+                max-width: none;
+            }
+            
+            .content {
+                padding: 20px 16px;
+            }
+            
+            .apps-grid {
+                gap: 8px;
+            }
+            
+            .app-button {
+                padding: 12px 8px;
+            }
+            
+            .app-icon {
+                font-size: 28px;
+            }
+            
+            .app-name {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .header {
+                padding: 20px 16px;
+            }
+            
+            .logo {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .title {
+                font-size: var(--font-size-xl);
+            }
+        }
+
+        /* Reduce motion for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            .container {
+                background: var(--gray-800);
+                color: var(--gray-100);
+            }
+            
+            .payment-summary {
+                background: var(--gray-700);
+                border-color: var(--gray-600);
+            }
+            
+            .app-button {
+                background: var(--gray-700);
+                border-color: var(--gray-600);
+                color: var(--gray-100);
+            }
+            
+            .qr-section {
+                background: var(--gray-700);
+                border-color: var(--gray-600);
+            }
+        }
+
+        /* Performance optimizations */
+        .container,
+        .app-button,
+        .btn {
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
+
+        /* Loading state */
+        .loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .loading .app-button {
+            cursor: not-allowed;
+        }
+
+        /* Success confetti */
+        .confetti {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            pointer-events: none;
+            z-index: 1200;
+            border-radius: 50%;
+            animation: confettiFall 3s linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="app">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">TP</div>
+            <h1 class="title">TesTPaY</h1>
+            <p class="subtitle">Secure & Fast UPI Payments</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Payment Summary -->
+            <div class="payment-summary">
+                <div class="merchant-info">
+                    <div class="merchant-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <div class="merchant-details">
+                        <h3 id="merchantName">TesTPaY test</h3>
+                        <div class="amount" id="paymentAmount">₹1</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UPI Apps -->
+            <div class="upi-apps">
+                <h2 class="section-title">Choose your UPI app</h2>
+                <div class="apps-grid">
+                    <button class="app-button" onclick="openUPIApp('gpay')" data-app="gpay">
+                        <div class="app-icon">🎯</div>
+                        <div class="app-name">Google Pay</div>
+                    </button>
+                    <button class="app-button" onclick="openUPIApp('phonepe')" data-app="phonepe">
+                        <div class="app-icon">💜</div>
+                        <div class="app-name">PhonePe</div>
+                    </button>
+                    <button class="app-button" onclick="openUPIApp('paytm')" data-app="paytm">
+                        <div class="app-icon">💙</div>
+                        <div class="app-name">Paytm</div>
+                    </button>
+                    <button class="app-button" onclick="openUPIApp('bhim')" data-app="bhim">
+                        <div class="app-icon">🇮🇳</div>
+                        <div class="app-name">BHIM</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- QR Code Section -->
+            <div class="qr-section">
+                <button class="qr-toggle" onclick="toggleQR()">
+                    <i class="fas fa-qrcode"></i> Show QR Code
+                </button>
+                <div class="qr-content" id="qrContent">
+                    <div class="qr-code">
+                        <img id="qrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=7795211589@ibl%26pn=TesTPaY%20test%26am=1%26cu=INR%26tn=%23ABCD001" alt="UPI QR Code">
+                    </div>
+                    <div class="upi-id" onclick="copyUPIId()" id="upiId">7795211589@ibl</div>
+                    <p style="font-size: 14px; color: var(--gray-600);">Tap UPI ID to copy</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Modal -->
+    <div class="modal" id="statusModal">
+        <div class="modal-content">
+            <div class="status-icon" id="statusIcon">
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
+            <h3 class="status-title" id="statusTitle">Processing Payment</h3>
+            <p class="status-message" id="statusMessage">Please complete the payment in your UPI app</p>
+            <div class="transaction-id" id="transactionId" style="display: none;"></div>
+            <button class="btn" onclick="closeModal()" id="modalButton" style="display: none;">Done</button>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            merchantName: 'TesTPaY test',
+            upiId: '7795211589@ibl',
+            amount: 1,
+            currency: 'INR',
+            note: '#ABCD001',
+            transactionPrefix: 'TTP'
+        };
+
+        // UPI App configurations
+        const UPI_APPS = {
+            gpay: {
+                name: 'Google Pay',
+                scheme: 'tez://upi/pay',
+                fallback: 'https://pay.google.com'
+            },
+            phonepe: {
+                name: 'PhonePe',
+                scheme: 'phonepe://pay',
+                fallback: 'https://phonepe.com'
+            },
+            paytm: {
+                name: 'Paytm',
+                scheme: 'paytmmp://pay',
+                fallback: 'https://paytm.com'
+            },
+            bhim: {
+                name: 'BHIM',
+                scheme: 'bhim://pay',
+                fallback: 'https://www.npci.org.in/what-we-do/bhim-app'
+            }
+        };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPaymentStatus();
+            updatePaymentDetails();
+        });
+
+        // Update payment details in UI
+        function updatePaymentDetails() {
+            document.getElementById('merchantName').textContent = CONFIG.merchantName;
+            document.getElementById('paymentAmount').textContent = `₹${CONFIG.amount}`;
+            
+            // Update QR code
+            const qrData = generateUPIURL();
+            const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}`;
+            document.getElementById('qrImage').src = qrImageUrl;
+            document.getElementById('upiId').textContent = CONFIG.upiId;
+        }
+
+        // Generate UPI URL
+        function generateUPIURL(app = null) {
+            const params = new URLSearchParams({
+                pa: CONFIG.upiId,
+                pn: CONFIG.merchantName,
+                am: CONFIG.amount,
+                cu: CONFIG.currency,
+                tn: CONFIG.note
+            });
+
+            if (app) {
+                const txnId = generateTransactionId();
+                params.append('tr', txnId);
+                params.append('url', `${window.location.origin}${window.location.pathname}?status=success&txnId=${txnId}&app=${app}`);
+                storeTransaction(txnId, app);
+            }
+
+            return `upi://pay?${params.toString()}`;
+        }
+
+        // Generate unique transaction ID
+        function generateTransactionId() {
+            return `${CONFIG.transactionPrefix}${Date.now()}${Math.floor(Math.random() * 1000)}`;
+        }
+
+        // Store transaction for tracking
+        function storeTransaction(txnId, app) {
+            const transaction = {
+                id: txnId,
+                app: app,
+                timestamp: Date.now(),
+                status: 'pending'
+            };
+            localStorage.setItem('currentTransaction', JSON.stringify(transaction));
+        }
+
+        // Open UPI app
+        function openUPIApp(appKey) {
+            const app = UPI_APPS[appKey];
+            if (!app) return;
+
+            showLoading();
+            showToast(`Opening ${app.name}...`);
+
+            // Generate UPI URL with transaction tracking
+            const upiUrl = generateUPIURL(appKey);
+            const deepLink = app.scheme + '?' + upiUrl.split('?')[1];
+
+            // Show status modal
+            showStatusModal('pending', 'Opening UPI App', `Please complete the payment in ${app.name}`);
+
+            // Attempt to open the app
+            setTimeout(() => {
+                try {
+                    window.location.href = deepLink;
+                    
+                    // Check if app opened successfully
+                    setTimeout(() => {
+                        if (!document.hidden) {
+                            // App didn't open, show fallback
+                            showToast(`${app.name} not found. Redirecting to web version...`);
+                            window.open(app.fallback, '_blank');
+                        }
+                    }, 2000);
+                } catch (error) {
+                    console.error('Error opening UPI app:', error);
+                    showToast('Error opening UPI app. Please try again.');
+                    hideStatusModal();
+                }
+                hideLoading();
+            }, 500);
+        }
+
+        // Toggle QR code visibility
+        function toggleQR() {
+            const qrContent = document.getElementById('qrContent');
+            const button = document.querySelector('.qr-toggle');
+            
+            if (qrContent.classList.contains('show')) {
+                qrContent.classList.remove('show');
+                button.innerHTML = '<i class="fas fa-qrcode"></i> Show QR Code';
+            } else {
+                qrContent.classList.add('show');
+                button.innerHTML = '<i class="fas fa-qrcode"></i> Hide QR Code';
+            }
+        }
+
+        // Copy UPI ID to clipboard
+        async function copyUPIId() {
+            try {
+                await navigator.clipboard.writeText(CONFIG.upiId);
+                showToast('UPI ID copied to clipboard!');
+            } catch (error) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = CONFIG.upiId;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast('UPI ID copied to clipboard!');
+            }
+        }
+
+        // Show status modal
+        function showStatusModal(type, title, message, txnId = null) {
+            const modal = document.getElementById('statusModal');
+            const icon = document.getElementById('statusIcon');
+            const titleEl = document.getElementById('statusTitle');
+            const messageEl = document.getElementById('statusMessage');
+            const txnIdEl = document.getElementById('transactionId');
+            const button = document.getElementById('modalButton');
+
+            // Update content based on type
+            if (type === 'success') {
+                icon.className = 'status-icon success';
+                icon.innerHTML = '<i class="fas fa-check"></i>';
+                button.style.display = 'block';
+                if (txnId) {
+                    txnIdEl.style.display = 'block';
+                    txnIdEl.textContent = `Transaction ID: ${txnId}`;
+                }
+                triggerConfetti();
+            } else if (type === 'pending') {
+                icon.className = 'status-icon pending';
+                icon.innerHTML = '<i class="fas fa-clock"></i>';
+                button.style.display = 'none';
+                txnIdEl.style.display = 'none';
+            } else if (type === 'error') {
+                icon.className = 'status-icon error';
+                icon.innerHTML = '<i class="fas fa-times"></i>';
+                button.style.display = 'block';
+                txnIdEl.style.display = 'none';
+            }
+
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+            modal.classList.add('show');
+        }
+
+        // Hide status modal
+        function hideStatusModal() {
+            document.getElementById('statusModal').classList.remove('show');
+        }
+
+        // Close modal
+        function closeModal() {
+            hideStatusModal();
+        }
+
+        // Show loading state
+        function showLoading() {
+            document.getElementById('app').classList.add('loading');
+        }
+
+        // Hide loading state
+        function hideLoading() {
+            document.getElementById('app').classList.remove('loading');
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Check payment status from URL
+        function checkPaymentStatus() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            const txnId = urlParams.get('txnId');
+            const app = urlParams.get('app');
+
+            if (status === 'success' && txnId) {
+                // Clear URL parameters
+                const newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+                window.history.replaceState({}, document.title, newUrl);
+                
+                // Show success modal
+                setTimeout(() => {
+                    const appName = app ? UPI_APPS[app]?.name || app : 'UPI App';
+                    showStatusModal('success', 'Payment Successful!', `Your payment has been completed successfully via ${appName}.`, txnId);
+                }, 1000);
+                
+                // Clear stored transaction
+                localStorage.removeItem('currentTransaction');
+            }
+        }
+
+        // Trigger confetti animation
+        function triggerConfetti() {
+            const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 3 + 's';
+                    
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        if (confetti.parentNode) {
+                            confetti.parentNode.removeChild(confetti);
+                        }
+                    }, 3000);
+                }, i * 100);
+            }
+        }
+
+        // Handle page visibility changes
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                // Page became visible again - check if payment was completed
+                setTimeout(checkPaymentStatus, 1000);
+            }
+        });
+
+        // Optimize for mobile touch events
+        if ('ontouchstart' in window) {
+            document.addEventListener('touchstart', function() {}, { passive: true });
+        }
+
+        // Preload critical resources
+        window.addEventListener('load', function() {
+            // Preload app icons and other resources
+            const preloadLinks = [
+                'https://fonts.gstatic.com',
+                'https://api.qrserver.com'
+            ];
+            
+            preloadLinks.forEach(url => {
+                const link = document.createElement('link');
+                link.rel = 'dns-prefetch';
+                link.href = url;
+                document.head.appendChild(link);
+            });
+        });
+    </script>
+</body>
+</html>
