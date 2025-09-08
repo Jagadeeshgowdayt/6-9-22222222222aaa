@@ -3388,12 +3388,12 @@
                     <div class="merchant-form">
                         <div class="form-group">
                             <label for="merchantName">Business/Merchant Name</label>
-                            <input type="text" id="merchantName" class="form-input" placeholder="Your business name" value="TesTPaY Demo">
+                            <input type="text" id="merchantName" class="form-input" placeholder="Your business name" value="TesTPaY test">
                         </div>
 
                         <div class="form-group">
                             <label for="upiId">UPI ID</label>
-                            <input type="text" id="upiId" class="form-input" placeholder="business@upi" value="india@ibl">
+                            <input type="text" id="upiId" class="form-input" placeholder="business@upi" value="7795211589@ibl">
                         </div>
 
                         <div class="form-group">
@@ -3403,7 +3403,7 @@
 
                         <div class="form-group">
                             <label for="customMessage">Transaction Reference</label>
-                            <input type="text" id="customMessage" class="form-input" placeholder="Payment reference ID" value="#TesTPaY_Demo_001">
+                            <input type="text" id="customMessage" class="form-input" placeholder="Payment reference ID" value="#ABCD001">
                         </div>
                     </div>
 
@@ -3475,7 +3475,7 @@
                             
                             <!-- QR Code Image -->
                             <div class="qr-code-labnol">
-                                <img id="qrCodeImage" src="https://api.qrserver.com/v1/create-qr-code/?size=225x225&data=upi://pay?pa=india@ibl%26pn=TestPaY%26am=1%26cu=INR%26tn=%234486474537453" 
+                                <img id="qrCodeImage" src="https://api.qrserver.com/v1/create-qr-code/?size=225x225&data=upi://pay?pa=7795211589@ibl%26pn=TesTPaY%20test%26am=1%26cu=INR%26tn=%23ABCD001" 
                                      alt="UPI QR Code" class="qr-image-labnol">
                                 <div class="qr-center-logo">
                                     <div class="upi-center-text">UPI</div>
@@ -3699,9 +3699,9 @@
         // TesTPaY Professional Configuration with Enhanced Deep Linking
         const CONFIG = {
             amount: 1,
-            merchantName: 'TesTPaY Demo',
-            upiId: 'india@ibl',
-            customMessage: '#TesTPaY_Demo_001',
+            merchantName: 'TesTPaY test',
+            upiId: '7795211589@ibl',
+            customMessage: '#ABCD001',
             transactionPrefix: 'TTP',
             // Add redirect URL for payment status (change this to your actual domain)
             redirectUrl: `${window.location.origin}${window.location.pathname}?status=`,
@@ -3820,7 +3820,7 @@
             
             // Reset form to default values
             document.getElementById('merchantName').value = 'TestPaY';
-            document.getElementById('upiId').value = 'india@ibl';
+            document.getElementById('upiId').value = '7795211589@ibl';
             document.getElementById('paymentAmount').value = '1';
             document.getElementById('customMessage').value = '#4486474537453';
             
