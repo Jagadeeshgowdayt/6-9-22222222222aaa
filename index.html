@@ -3523,6 +3523,19 @@
                                         <span class="qr-app-text">CRED</span>
                                     </div>
                                 </div>
+                                
+                                <!-- Debug Section for Testing -->
+                                <div style="margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                    <div style="font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 8px;">
+                                        🔗 Deep Link Testing
+                                    </div>
+                                    <div style="font-size: 10px; color: #6b7280; margin-bottom: 8px;">
+                                        Click any UPI app above to see generated deep link
+                                    </div>
+                                    <div id="deepLinkDebug" style="font-family: monospace; font-size: 9px; color: #9ca3af; word-break: break-all; min-height: 40px; background: white; padding: 8px; border-radius: 4px; border: 1px solid #e5e7eb;">
+                                        Ready to generate deep links...
+                                    </div>
+                                </div>
                             </div>
                             
 
@@ -3683,15 +3696,63 @@
         let verificationTimer = null;
         let verificationTime = 15;
 
-        // TesTPaY Professional Configuration
+        // TesTPaY Professional Configuration with Enhanced Deep Linking
         const CONFIG = {
             amount: 1,
             merchantName: 'TesTPaY Demo',
             upiId: 'india@ibl',
             customMessage: '#TesTPaY_Demo_001',
             transactionPrefix: 'TTP',
+            // Add redirect URL for payment status (change this to your actual domain)
+            redirectUrl: `${window.location.origin}${window.location.pathname}?status=`,
             paymentMethods: {
                 upi: 'UPI Payment Gateway'
+            },
+            // Enhanced UPI App Configurations with Deep Links
+            upiApps: {
+                phonepe: {
+                    name: 'PhonePe',
+                    scheme: 'phonepe://pay',
+                    packageName: 'com.phonepe.app',
+                    downloadUrl: 'https://play.google.com/store/apps/details?id=com.phonepe.app',
+                    fallbackUrl: 'https://phonepe.com/app-download/'
+                },
+                gpay: {
+                    name: 'Google Pay',
+                    scheme: 'tez://upi/pay',
+                    fallbackScheme: 'gpay://upi/pay',
+                    packageName: 'com.google.android.apps.nbu.paisa.user',
+                    downloadUrl: 'https://play.google.com/store/apps/details?id=com.google.android.apps.nbu.paisa.user',
+                    fallbackUrl: 'https://pay.google.com/about/learn-more/'
+                },
+                paytm: {
+                    name: 'Paytm',
+                    scheme: 'paytmmp://pay',
+                    packageName: 'net.one97.paytm',
+                    downloadUrl: 'https://play.google.com/store/apps/details?id=net.one97.paytm',
+                    fallbackUrl: 'https://paytm.com/mobile-app'
+                },
+                amazonpay: {
+                    name: 'Amazon Pay',
+                    scheme: 'amazonpay://pay',
+                    packageName: 'in.amazon.mShop.android.shopping',
+                    downloadUrl: 'https://play.google.com/store/apps/details?id=in.amazon.mShop.android.shopping',
+                    fallbackUrl: 'https://www.amazon.in/gp/mas/get-appstore/android'
+                },
+                bhim: {
+                    name: 'BHIM UPI',
+                    scheme: 'bhim://pay',
+                    packageName: 'in.org.npci.upiapp',
+                    downloadUrl: 'https://play.google.com/store/apps/details?id=in.org.npci.upiapp',
+                    fallbackUrl: 'https://www.npci.org.in/what-we-do/bhim-app'
+                },
+                cred: {
+                    name: 'CRED',
+                    scheme: 'cred://pay',
+                    packageName: 'com.dreamplug.androidapp',
+                    downloadUrl: 'https://play.google.com/store/apps/details?id=com.dreamplug.androidapp',
+                    fallbackUrl: 'https://cred.club/app'
+                }
             },
             pageConfig: {
                 1: {
@@ -4063,7 +4124,266 @@
             showToast(`${CONFIG.paymentMethods[method]} selected`, 'success');
         }
 
-        // Open UPI App Function for new button
+        // Enhanced Payment Status Handling with URL Parameters
+        function checkPaymentStatusFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            const txnId = urlParams.get('txnId');
+            const app = urlParams.get('app');
+            
+            if (status && txnId) {
+                console.log(`Payment callback received: Status=${status}, TxnId=${txnId}, App=${app}`);
+                
+                // Clear URL parameters for security
+                const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.replaceState({}, document.title, newUrl);
+                
+                // Get stored transaction
+                const storedTransaction = localStorage.getItem('currentTransaction');
+                let transaction = null;
+                
+                if (storedTransaction) {
+                    try {
+                        transaction = JSON.parse(storedTransaction);
+                    } catch (e) {
+                        console.error('Error parsing stored transaction:', e);
+                    }
+                }
+                
+                // Auto-open popup and show payment status
+                setTimeout(() => {
+                    openPaymentPopup();
+                    
+                    setTimeout(() => {
+                        handlePaymentCallback(status, txnId, app, transaction);
+                    }, 500);
+                }, 1000);
+                
+                return true;
+            }
+            
+            return false;
+        }
+        
+        // Handle Payment Callback from UPI Apps
+        function handlePaymentCallback(status, txnId, app, transaction) {
+            console.log('Processing payment callback:', { status, txnId, app, transaction });
+            
+            // Update transaction status
+            if (transaction) {
+                transaction.status = status;
+                transaction.completedAt = Date.now();
+                transaction.callbackApp = app;
+                localStorage.setItem('currentTransaction', JSON.stringify(transaction));
+            }
+            
+            // Navigate to verification page
+            goToPopupPage(3);
+            
+            if (status === 'success') {
+                // Payment successful
+                setTimeout(() => {
+                    showSuccess();
+                    showToast(`Payment successful via ${app ? app.toUpperCase() : 'UPI'}!`, 'success');
+                    
+                    // Update transaction display
+                    document.getElementById('transactionId').textContent = txnId;
+                    document.getElementById('paymentMethodUsed').textContent = `${app ? CONFIG.upiApps[app]?.name || app.toUpperCase() : 'UPI'} Payment`;
+                    
+                    // Trigger confetti
+                    setTimeout(() => {
+                        triggerEnhancedConfetti();
+                    }, 1000);
+                    
+                }, 500);
+                
+            } else if (status === 'failure' || status === 'failed') {
+                // Payment failed
+                showToast(`Payment failed. Please try again.`, 'error');
+                
+                // Update status display
+                document.getElementById('statusIcon').className = 'status-icon error';
+                document.getElementById('statusIconContent').className = 'fas fa-times';
+                document.getElementById('statusTitle').textContent = 'Payment Failed';
+                document.getElementById('statusDesc').textContent = 'Your payment could not be processed. Please try again or use a different payment method.';
+                
+                // Hide timer
+                document.getElementById('timerDisplay').style.display = 'none';
+                
+                // Update footer button
+                document.getElementById('primaryBtnText').textContent = 'Try Again';
+                
+            } else if (status === 'cancelled' || status === 'canceled') {
+                // Payment cancelled by user
+                showToast('Payment cancelled by user', 'error');
+                
+                // Go back to payment page
+                setTimeout(() => {
+                    goToPopupPage(2);
+                    showToast('Choose a payment method to continue', 'default');
+                }, 2000);
+                
+            } else {
+                // Unknown status - treat as pending
+                showToast('Payment status unknown. Verifying...', 'default');
+                startVerification();
+            }
+        }
+        
+        // Verify Transaction Status (Mock implementation)
+        function verifyTransactionStatus(txnId, callback) {
+            console.log(`Verifying transaction: ${txnId}`);
+            
+            // Mock verification - In real implementation, call your backend
+            setTimeout(() => {
+                // Simulate random success/failure for demo
+                const mockStatuses = ['success', 'pending', 'failed'];
+                const randomStatus = mockStatuses[Math.floor(Math.random() * mockStatuses.length)];
+                
+                console.log(`Mock verification result for ${txnId}: ${randomStatus}`);
+                callback(randomStatus);
+            }, 2000);
+        }
+        
+        // Enhanced Transaction History Management
+        function saveTransactionToHistory(transaction) {
+            let history = [];
+            
+            try {
+                const existingHistory = localStorage.getItem('transactionHistory');
+                if (existingHistory) {
+                    history = JSON.parse(existingHistory);
+                }
+            } catch (e) {
+                console.error('Error reading transaction history:', e);
+            }
+            
+            // Add new transaction
+            history.unshift(transaction);
+            
+            // Keep only last 50 transactions
+            if (history.length > 50) {
+                history = history.slice(0, 50);
+            }
+            
+            try {
+                localStorage.setItem('transactionHistory', JSON.stringify(history));
+                console.log('Transaction saved to history:', transaction.id);
+            } catch (e) {
+                console.error('Error saving transaction history:', e);
+            }
+        }
+        
+        // Get Transaction History
+        function getTransactionHistory() {
+            try {
+                const history = localStorage.getItem('transactionHistory');
+                return history ? JSON.parse(history) : [];
+            } catch (e) {
+                console.error('Error reading transaction history:', e);
+                return [];
+            }
+        }
+        
+        // Clear Old Transactions (older than 30 days)
+        function clearOldTransactions() {
+            const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+            let history = getTransactionHistory();
+            
+            history = history.filter(txn => txn.timestamp > thirtyDaysAgo);
+            
+            try {
+                localStorage.setItem('transactionHistory', JSON.stringify(history));
+                console.log('Old transactions cleared');
+            } catch (e) {
+                console.error('Error clearing old transactions:', e);
+            }
+        }
+
+        // Enhanced UPI App Detection and Deep Linking
+        function checkAppInstallation(packageName, callback) {
+            // For mobile devices, we can attempt to detect app installation
+            const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (!isMobile) {
+                callback(false);
+                return;
+            }
+
+            // Create a hidden iframe for app detection
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+
+            let hasApp = false;
+            let timeout;
+
+            // Set a timeout to check if app opens
+            timeout = setTimeout(() => {
+                document.body.removeChild(iframe);
+                callback(hasApp);
+            }, 2000);
+
+            // Listen for visibility change (app might have opened)
+            const handleVisibilityChange = () => {
+                if (document.hidden) {
+                    hasApp = true;
+                    clearTimeout(timeout);
+                    document.body.removeChild(iframe);
+                    document.removeEventListener('visibilitychange', handleVisibilityChange);
+                    callback(hasApp);
+                }
+            };
+
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+
+            // Try to open the app
+            iframe.src = `intent://pay#Intent;package=${packageName};end`;
+        }
+
+        // Generate App-Specific Deep Link with Transaction ID and Redirect
+        function generateUPILink(appKey, includeRedirect = true) {
+            const app = CONFIG.upiApps[appKey];
+            if (!app) {
+                console.error(`Unknown UPI app: ${appKey}`);
+                return null;
+            }
+
+            // Generate unique transaction ID
+            const transactionId = `${CONFIG.transactionPrefix}${Date.now()}${Math.floor(Math.random() * 1000)}`;
+            
+            // Base UPI parameters
+            const upiParams = {
+                pa: CONFIG.upiId,                    // Payee UPI ID
+                pn: encodeURIComponent(CONFIG.merchantName), // Payee Name
+                am: CONFIG.amount,                   // Amount
+                cu: 'INR',                          // Currency
+                tn: encodeURIComponent(CONFIG.customMessage), // Transaction Note
+                tr: transactionId                   // Transaction Reference
+            };
+
+            // Add redirect URL if supported and requested
+            if (includeRedirect && CONFIG.redirectUrl) {
+                upiParams.url = encodeURIComponent(`${CONFIG.redirectUrl}success&txnId=${transactionId}&app=${appKey}`);
+            }
+
+            // Convert to URL parameters
+            const paramString = Object.entries(upiParams)
+                .map(([key, value]) => `${key}=${value}`)
+                .join('&');
+
+            const deepLink = `${app.scheme}?${paramString}`;
+            
+            console.log(`Generated ${app.name} deep link:`, deepLink);
+            return {
+                deepLink,
+                transactionId,
+                appName: app.name,
+                fallbackUrl: app.fallbackUrl || app.downloadUrl
+            };
+        }
+
+        // Open UPI App Function for new button with Enhanced Deep Linking
         function openUPIApp(event) {
             // Prevent default link behavior
             if (event) {
@@ -4094,36 +4414,82 @@
             
             showToast('Opening UPI app...', 'success');
             
-            // Use standardized UPI format (same as labnol.org)
-            const upiParams = new URLSearchParams({
+            // Generate standard UPI link with transaction ID
+            const transactionId = `${CONFIG.transactionPrefix}${Date.now()}${Math.floor(Math.random() * 1000)}`;
+            
+            const upiParams = {
                 pa: CONFIG.upiId,
-                pn: CONFIG.merchantName,
+                pn: encodeURIComponent(CONFIG.merchantName),
                 am: CONFIG.amount,
                 cu: 'INR',
-                tn: CONFIG.customMessage
-            });
+                tn: encodeURIComponent(CONFIG.customMessage),
+                tr: transactionId
+            };
+
+            // Add redirect URL for status callback
+            if (CONFIG.redirectUrl) {
+                upiParams.url = encodeURIComponent(`${CONFIG.redirectUrl}success&txnId=${transactionId}&app=upi`);
+            }
+
+            const paramString = Object.entries(upiParams)
+                .map(([key, value]) => `${key}=${value}`)
+                .join('&');
             
-            const upiLink = `upi://pay?${upiParams.toString()}`;
+            const upiLink = `upi://pay?${paramString}`;
             
-            // Try to redirect to UPI app
+            console.log('Generated UPI Link:', upiLink);
+            
+            // Store transaction ID for verification
+            localStorage.setItem('currentTransaction', JSON.stringify({
+                id: transactionId,
+                amount: CONFIG.amount,
+                merchantName: CONFIG.merchantName,
+                timestamp: Date.now(),
+                status: 'pending'
+            }));
+            
+            // Try to redirect to UPI app with fallback
             setTimeout(() => {
-                window.location.href = upiLink;
+                try {
+                    window.location.href = upiLink;
+                    
+                    // Fallback if UPI link doesn't work
+                    setTimeout(() => {
+                        if (!document.hidden) {
+                            showToast('⚠️ No UPI app found. Please install a UPI app first.', 'error');
+                            // Optionally redirect to app download page
+                            const isAndroid = /Android/i.test(navigator.userAgent);
+                            if (isAndroid) {
+                                setTimeout(() => {
+                                    if (confirm('Install Google Pay to continue payment?')) {
+                                        window.open('https://play.google.com/store/apps/details?id=com.google.android.apps.nbu.paisa.user', '_blank');
+                                    }
+                                }, 2000);
+                            }
+                        }
+                    }, 3000);
+                } catch (error) {
+                    console.error('Error opening UPI app:', error);
+                    showToast('Error opening UPI app. Please try again.', 'error');
+                }
             }, 1000);
         }
 
-        // Open Specific UPI App from QR section
-        function openSpecificUPIApp(app) {
+        // Open Specific UPI App from QR section with Enhanced Features
+        function openSpecificUPIApp(appKey) {
+            console.log(`Opening specific UPI app: ${appKey}`);
+            
             // Track selected UPI app and payment start time
-            selectedUPIApp = app.toUpperCase();
+            selectedUPIApp = appKey.toUpperCase();
             paymentStartTime = Date.now();
-            console.log(`Payment started via ${app} app at:`, new Date(paymentStartTime).toLocaleTimeString());
+            console.log(`Payment started via ${appKey} app at:`, new Date(paymentStartTime).toLocaleTimeString());
             
             // Set automatic warning at 30 seconds
             setTimeout(() => {
                 if (currentPopupPage === 2 && paymentStartTime) {
                     const timeSincePayment = Date.now() - paymentStartTime;
                     if (timeSincePayment >= 30000 && timeSincePayment < 40000) {
-                        console.log(`Auto-warning triggered at 30 seconds for ${app} payment`);
+                        console.log(`Auto-warning triggered at 30 seconds for ${appKey} payment`);
                         showToast('⚠️ Please complete payment first!', 'error');
                     }
                 }
@@ -4135,45 +4501,104 @@
             // Start payment timer display
             updatePaymentStatusDisplay();
             
-            showToast(`Opening ${app.toUpperCase()}...`, 'success');
+            // Generate app-specific deep link
+            const linkData = generateUPILink(appKey, true);
             
-            // Create app-specific UPI link
-            const upiParams = new URLSearchParams({
-                pa: CONFIG.upiId,
-                pn: CONFIG.merchantName,
-                am: CONFIG.amount,
-                cu: 'INR',
-                tn: CONFIG.customMessage
-            });
-            
-            let appLink;
-            switch(app) {
-                case 'gpay':
-                    appLink = `gpay://upi/pay?${upiParams.toString()}`;
-                    break;
-                case 'phonepe':
-                    appLink = `phonepe://pay?${upiParams.toString()}`;
-                    break;
-                case 'paytm':
-                    appLink = `paytmmp://pay?${upiParams.toString()}`;
-                    break;
-                case 'amazonpay':
-                    appLink = `amazonpay://pay?${upiParams.toString()}`;
-                    break;
-                case 'bhim':
-                    appLink = `bhim://pay?${upiParams.toString()}`;
-                    break;
-                case 'cred':
-                    appLink = `cred://pay?${upiParams.toString()}`;
-                    break;
-                default:
-                    appLink = `upi://pay?${upiParams.toString()}`;
+            if (!linkData) {
+                showToast(`${appKey.toUpperCase()} app not supported`, 'error');
+                return;
             }
             
-            // Redirect to app
+            // Show debug info
+            const debugElement = document.getElementById('deepLinkDebug');
+            if (debugElement) {
+                debugElement.innerHTML = `
+                    <strong>Generated Link:</strong><br>
+                    ${linkData.deepLink}<br><br>
+                    <strong>Transaction ID:</strong> ${linkData.transactionId}<br>
+                    <strong>App:</strong> ${linkData.appName}<br>
+                    <strong>Fallback:</strong> ${linkData.fallbackUrl}
+                `;
+            }
+            
+            showToast(`Opening ${linkData.appName}...`, 'success');
+            
+            // Store transaction ID for verification
+            localStorage.setItem('currentTransaction', JSON.stringify({
+                id: linkData.transactionId,
+                amount: CONFIG.amount,
+                merchantName: CONFIG.merchantName,
+                timestamp: Date.now(),
+                status: 'pending',
+                app: appKey
+            }));
+            
+            // Check if app is installed and open
+            const app = CONFIG.upiApps[appKey];
+            
+            checkAppInstallation(app.packageName, (hasApp) => {
+                if (hasApp || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    // Try to open the app
+                    setTimeout(() => {
+                        try {
+                            console.log(`Attempting to open ${linkData.appName} with link:`, linkData.deepLink);
+                            window.location.href = linkData.deepLink;
+                            
+                            // Fallback mechanism
+                            setTimeout(() => {
+                                if (!document.hidden) {
+                                    console.log(`${linkData.appName} didn't open, trying fallback...`);
+                                    
+                                    // Try fallback scheme for Google Pay
+                                    if (appKey === 'gpay' && app.fallbackScheme) {
+                                        const fallbackLink = linkData.deepLink.replace(app.scheme, app.fallbackScheme);
+                                        console.log('Trying GPay fallback scheme:', fallbackLink);
+                                        window.location.href = fallbackLink;
+                                        
+                                        setTimeout(() => {
+                                            if (!document.hidden) {
+                                                offerAppDownload(linkData);
+                                            }
+                                        }, 2000);
+                                    } else {
+                                        offerAppDownload(linkData);
+                                    }
+                                }
+                            }, 2500);
+                            
+                        } catch (error) {
+                            console.error(`Error opening ${linkData.appName}:`, error);
+                            offerAppDownload(linkData);
+                        }
+                    }, 500);
+                } else {
+                    offerAppDownload(linkData);
+                }
+            });
+        }
+
+        // Offer App Download with Enhanced UX
+        function offerAppDownload(linkData) {
+            const isAndroid = /Android/i.test(navigator.userAgent);
+            const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+            
+            showToast(`${linkData.appName} not found. Install app to continue.`, 'error');
+            
             setTimeout(() => {
-                window.location.href = appLink;
-            }, 500);
+                const message = `${linkData.appName} is not installed. Would you like to download it?`;
+                
+                if (confirm(message)) {
+                    if (isAndroid || isIOS) {
+                        window.open(linkData.fallbackUrl, '_blank');
+                    } else {
+                        // For desktop, show web version if available
+                        showToast('Please install the app on your mobile device', 'error');
+                    }
+                } else {
+                    // Offer alternative payment methods
+                    showToast('Try another UPI app or use QR code', 'default');
+                }
+            }, 1000);
         }
 
         // Add haptic feedback and sound
@@ -4662,15 +5087,24 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            // Set initial payment method
-            selectPaymentMethod('upi');
+            // Check for payment callback from URL first
+            const hasPaymentCallback = checkPaymentStatusFromURL();
             
-            // Create background particles
-            createParticles();
-            
-            // Detect available UPI apps
-            const availableApps = detectAndRedirectUPI();
-            console.log('Available UPI apps:', availableApps);
+            if (!hasPaymentCallback) {
+                // Normal initialization only if no payment callback
+                // Set initial payment method
+                selectPaymentMethod('upi');
+                
+                // Create background particles
+                createParticles();
+                
+                // Detect available UPI apps
+                const availableApps = detectAndRedirectUPI();
+                console.log('Available UPI apps:', availableApps);
+                
+                // Clear old transactions on startup
+                clearOldTransactions();
+            }
             
             // Initialize QR timer display
             const qrCountdown = document.getElementById('qrCountdown');
@@ -4775,7 +5209,7 @@
 
     <!-- TesTPaY Professional Branding -->
     <div class="brand-watermark">
-        Powered by TesTPaY Gateway v2.0
+        Powered by TesTPaY Gateway v2.1 - Enhanced Deep Linking
     </div>
 </body>
 </html>
