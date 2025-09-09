@@ -284,6 +284,16 @@
                 <button class="fallback-btn" onclick="showQR()">
                     📱 Show QR Code
                 </button>
+                
+                <!-- Debug Info -->
+                <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px; font-size: 12px; color: #666; border: 1px solid #eee;">
+                    <strong>Debug Info (remove in production):</strong><br>
+                    Platform: <span id="platformInfo"></span><br>
+                    User Agent: <span id="userAgentInfo" style="word-break: break-all;"></span><br>
+                    <button onclick="testDeepLinks()" style="margin-top: 10px; padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 11px;">
+                        Test Deep Links
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -318,7 +328,7 @@
             amount: 1,
             currency: 'INR',
             note: 'Payment for Order #123',
-            redirectUrl: window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/') + 'payment-status.html'
+            redirectUrl: window.location.href.split('?')[0].replace('payment.html', 'payment-status.html')
         };
 
         // UPI App Deep Links with package info for Android
@@ -379,19 +389,11 @@
             return /iPhone|iPad|iPod/i.test(navigator.userAgent);
         }
 
-        // Open UPI App with improved deep linking
+        // Open UPI App - Clean implementation as per your requirements
         function openApp(appName) {
             const txnId = generateTxnId();
-            const upiParams = new URLSearchParams({
-                pa: CONFIG.upiId,
-                pn: CONFIG.merchantName,
-                am: CONFIG.amount,
-                cu: CONFIG.currency,
-                tr: txnId,
-                tn: CONFIG.note
-            });
-            
             const appConfig = UPI_APPS[appName];
+            
             showLoading(`Opening ${appConfig.name}...`);
             
             // Store transaction
@@ -401,74 +403,83 @@
                 timestamp: Date.now()
             }));
 
+            // Build UPI parameters exactly as specified
+            const params = new URLSearchParams({
+                pa: CONFIG.upiId,           // Payee UPI ID
+                pn: CONFIG.merchantName,    // Payee Name  
+                am: CONFIG.amount,          // Amount
+                cu: CONFIG.currency,        // Currency (INR)
+                tr: txnId,                  // Transaction reference (unique)
+                tn: CONFIG.note,            // Transaction note
+                url: CONFIG.redirectUrl + '?txnId=' + txnId + '&status=success'  // Redirect URL
+            });
+
+            // Generate app-specific deep links exactly as you specified
+            let deepLink;
+            if (appName === 'phonepe') {
+                deepLink = `phonepe://pay?${params.toString()}`;
+            } else if (appName === 'gpay') {
+                deepLink = `tez://upi/pay?${params.toString()}`;
+            } else if (appName === 'paytm') {
+                deepLink = `paytmmp://pay?${params.toString()}`;
+            } else {
+                deepLink = `upi://pay?${params.toString()}`;
+            }
+
+            console.log(`Generated ${appName} deep link:`, deepLink);
+            console.log('Platform:', isAndroid() ? 'Android' : isIOS() ? 'iOS' : 'Desktop');
+
+            // Try to open the app after a short delay
             setTimeout(() => {
-                let deepLink;
-                
-                if (isAndroid()) {
-                    // For Android, use intent:// scheme for better reliability
-                    if (appName === 'phonepe') {
-                        deepLink = `intent://pay?${upiParams.toString()}#Intent;scheme=phonepe;package=com.phonepe.app;end`;
-                    } else if (appName === 'gpay') {
-                        deepLink = `intent://upi/pay?${upiParams.toString()}#Intent;scheme=tez;package=com.google.android.apps.nbu.paisa.user;end`;
-                    } else if (appName === 'paytm') {
-                        deepLink = `intent://pay?${upiParams.toString()}#Intent;scheme=paytmmp;package=net.one97.paytm;end`;
-                    } else {
-                        deepLink = `upi://pay?${upiParams.toString()}`;
-                    }
-                } else {
-                    // For iOS and others, use app-specific schemes
-                    if (appName === 'phonepe') {
-                        deepLink = `phonepe://pay?${upiParams.toString()}`;
-                    } else if (appName === 'gpay') {
-                        deepLink = `tez://upi/pay?${upiParams.toString()}`;
-                    } else if (appName === 'paytm') {
-                        deepLink = `paytmmp://pay?${upiParams.toString()}`;
-                    } else {
-                        deepLink = `upi://pay?${upiParams.toString()}`;
-                    }
-                }
-
-                // Try multiple methods for better compatibility
                 try {
-                    // Method 1: Direct location change
-                    window.location.href = deepLink;
-                } catch (e) {
-                    console.log('Method 1 failed:', e);
-                }
-
-                // Method 2: Create invisible iframe (Android fallback)
-                if (isAndroid()) {
-                    setTimeout(() => {
-                        try {
-                            const iframe = document.createElement('iframe');
-                            iframe.style.display = 'none';
-                            iframe.src = deepLink;
-                            document.body.appendChild(iframe);
-                            setTimeout(() => {
-                                if (iframe.parentNode) {
-                                    iframe.parentNode.removeChild(iframe);
-                                }
-                            }, 1000);
-                        } catch (e) {
-                            console.log('Method 2 failed:', e);
-                        }
-                    }, 500);
-                }
-
-                // Check if app opened (fallback after 2.5 seconds)
-                setTimeout(() => {
-                    hideLoading();
-                    if (!document.hidden) {
-                        // App didn't open, show alternatives
-                        showStatusModal('error', 'Unable to Open App', 
-                            `Could not open ${appConfig.name}. Please ensure it's installed or try the QR code option.`, txnId);
+                    console.log('Attempting to open app with:', deepLink);
+                    
+                    // Platform-specific handling
+                    if (isAndroid()) {
+                        // For Android, try both methods
+                        window.location.href = deepLink;
+                        
+                        // Additional method for Android
+                        setTimeout(() => {
+                            if (!document.hidden) {
+                                console.log('Trying alternative Android method');
+                                const a = document.createElement('a');
+                                a.href = deepLink;
+                                a.click();
+                            }
+                        }, 500);
                     } else {
-                        // App likely opened
-                        showStatusModal('processing', 'Payment in Progress', 
-                            'Please complete the payment in your UPI app and return here.', txnId);
+                        // For iOS and desktop
+                        window.location.href = deepLink;
                     }
-                }, 2500);
-            }, 300);
+                } catch (e) {
+                    console.error('Error opening app:', e);
+                    hideLoading();
+                    showToast('Failed to open app. Please try again.');
+                }
+
+                // Fallback detection after 3 seconds
+                setTimeout(() => {
+                    console.log('Checking if app opened. Page hidden:', document.hidden);
+                    
+                    // If page is still visible, app probably didn't open
+                    if (!document.hidden) {
+                        hideLoading();
+                        
+                        // Show manual link option
+                        showStatusModal('processing', 'Manual Open Required', 
+                            `<div style="margin: 15px 0;">
+                                ${appConfig.name} may not have opened automatically.
+                            </div>
+                            <a href="${deepLink}" style="display: inline-block; padding: 12px 24px; background: #007bff; color: white; text-decoration: none; border-radius: 8px; margin: 10px 0;">
+                                Open ${appConfig.name} Manually
+                            </a>
+                            <div style="margin: 15px 0; font-size: 14px; color: #666;">
+                                Or use the QR code option below if the app is not installed.
+                            </div>`, txnId);
+                    }
+                }, 3000);
+            }, 100);
         }
 
         // Show QR Code
@@ -576,8 +587,45 @@
             }, 3000);
         }
 
+        // Test deep links function
+        function testDeepLinks() {
+            const txnId = 'TEST' + Date.now();
+            const params = new URLSearchParams({
+                pa: CONFIG.upiId,
+                pn: CONFIG.merchantName,
+                am: CONFIG.amount,
+                cu: CONFIG.currency,
+                tr: txnId,
+                tn: CONFIG.note,
+                url: CONFIG.redirectUrl + '?txnId=' + txnId + '&status=success'
+            });
+
+            const links = {
+                phonepe: `phonepe://pay?${params.toString()}`,
+                gpay: `tez://upi/pay?${params.toString()}`,
+                paytm: `paytmmp://pay?${params.toString()}`,
+                other: `upi://pay?${params.toString()}`
+            };
+
+            console.log('Generated test deep links:', links);
+            
+            const linkText = Object.entries(links)
+                .map(([app, link]) => `${app}: ${link}`)
+                .join('\n\n');
+                
+            alert('Check console for deep links:\n\n' + linkText);
+        }
+
+        // Populate debug info on load
+        function updateDebugInfo() {
+            document.getElementById('platformInfo').textContent = 
+                isAndroid() ? 'Android' : isIOS() ? 'iOS' : 'Desktop/Other';
+            document.getElementById('userAgentInfo').textContent = navigator.userAgent;
+        }
+
         // Check for return from UPI app on page load
         window.addEventListener('load', function() {
+            updateDebugInfo();
             const urlParams = new URLSearchParams(window.location.search);
             const status = urlParams.get('status');
             const txnId = urlParams.get('txnId');
@@ -598,23 +646,33 @@
 
         // Handle page visibility (detect return from UPI app)
         document.addEventListener('visibilitychange', function() {
+            console.log('Page visibility changed. Hidden:', document.hidden);
+            
             if (!document.hidden) {
                 const currentTxn = localStorage.getItem('currentTxn');
                 if (currentTxn) {
                     const txn = JSON.parse(currentTxn);
                     const elapsed = Date.now() - txn.timestamp;
                     
-                    // If more than 5 seconds have passed, show verification
-                    if (elapsed > 5000) {
+                    console.log('Transaction found. Elapsed time:', elapsed, 'ms');
+                    
+                    // If more than 3 seconds have passed, assume user returned from app
+                    if (elapsed > 3000) {
                         showStatusModal('processing', 'Verify Payment', 
-                            'Did you complete the payment? We are verifying...', txn.id);
+                            'Welcome back! Did you complete the payment? We are verifying...', txn.id);
                         
                         // Simulate verification (in real app, call your backend)
                         setTimeout(() => {
-                            showStatusModal('success', 'Payment Verified!', 
-                                'Your payment has been confirmed.', txn.id);
+                            const success = Math.random() > 0.3; // 70% success rate for demo
+                            if (success) {
+                                showStatusModal('success', 'Payment Successful!', 
+                                    'Your payment has been confirmed. Thank you!', txn.id);
+                            } else {
+                                showStatusModal('error', 'Payment Failed', 
+                                    'Payment verification failed. Please try again.', txn.id);
+                            }
                             localStorage.removeItem('currentTxn');
-                        }, 3000);
+                        }, 2000);
                     }
                 }
             }

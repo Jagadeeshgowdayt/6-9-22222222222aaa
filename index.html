@@ -983,7 +983,27 @@
                         <div class="app-name">PhonePe</div>
                     </button>
 
-                    <!-- Paytm and Other UPI Apps removed per request -->
+                    <button class="app-button" onclick="openUPIApp('paytm')" data-app="paytm" title="Paytm">
+                        <div class="app-icon">
+                            <!-- Paytm clear badge -->
+                            <svg class="app-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <rect width="64" height="64" rx="12" fill="#00BAF2" />
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="34" font-weight="700" fill="#FFFFFF">P</text>
+                            </svg>
+                        </div>
+                        <div class="app-name">Paytm</div>
+                    </button>
+
+                    <button class="app-button" onclick="openUPIApp('other')" data-app="other" title="Other UPI Apps">
+                        <div class="app-icon">
+                            <!-- Generic UPI badge -->
+                            <svg class="app-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <rect width="64" height="64" rx="12" fill="#4F46E5" />
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="20" font-weight="700" fill="#FFFFFF">UPI</text>
+                            </svg>
+                        </div>
+                        <div class="app-name">Other UPI</div>
+                    </button>
                 </div>
             </div>
 
@@ -1142,7 +1162,22 @@
                 icon: '💜',
                 processingMessage: 'Redirecting to PhonePe...'
             },
-            // end of supported apps
+            paytm: {
+                name: 'Paytm',
+                scheme: 'paytmmp://pay',
+                package: 'net.one97.paytm',
+                fallback: 'https://paytm.com',
+                icon: '💙',
+                processingMessage: 'Redirecting to Paytm...'
+            },
+            other: {
+                name: 'Other UPI',
+                scheme: 'upi://pay',
+                package: null,
+                fallback: null,
+                icon: '📱',
+                processingMessage: 'Opening UPI app...'
+            }
         };
 
         // Initialize app
@@ -1179,6 +1214,54 @@
                 }
             } catch (e) {
                 // ignore
+            }
+        });
+
+        // Handle page visibility (detect return from UPI app) - from payment.html
+        document.addEventListener('visibilitychange', function() {
+            console.log('Page visibility changed. Hidden:', document.hidden);
+            
+            if (!document.hidden) {
+                const currentTxn = localStorage.getItem('currentTxn');
+                if (currentTxn) {
+                    const txn = JSON.parse(currentTxn);
+                    const elapsed = Date.now() - txn.timestamp;
+                    
+                    console.log('Transaction found. Elapsed time:', elapsed, 'ms');
+                    
+                    // If more than 3 seconds have passed, assume user returned from app
+                    if (elapsed > 3000) {
+                        hidePaymentLoader();
+                        showToast('Welcome back! Checking payment status...', 2000);
+                        
+                        // Start verification process
+                        const app = UPI_APPS[txn.app];
+                        if (app) {
+                            showVerificationScreen(txn.id, app);
+                        }
+                        
+                        localStorage.removeItem('currentTxn');
+                    }
+                }
+            }
+        });
+
+        // Check for return from UPI app on page load
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            const txnId = urlParams.get('txnId');
+
+            if (status && txnId) {
+                if (status === 'success') {
+                    showToast('Payment completed successfully!', 3000);
+                    // You can add success handling here
+                } else {
+                    showToast('Payment was not completed. Please try again.', 3000);
+                }
+                
+                // Clear URL parameters
+                window.history.replaceState({}, document.title, window.location.pathname);
             }
         });
 
@@ -1378,121 +1461,98 @@
             document.getElementById('paymentLoader').classList.remove('show');
         }
 
-        // Open UPI app with realistic processing
-        // Track deep-link attempts per session to avoid looping failures
-        const DEEP_LINK_ATTEMPTS = {};
-
+        // Open UPI app with working logic from payment.html
         function openUPIApp(appKey) {
             const app = UPI_APPS[appKey];
             if (!app) return;
 
-            // Create transaction and UPI URL
-            const { upiUrl, txnId } = createTransactionUPI(appKey);
+            // Generate transaction ID
+            const txnId = 'TXN' + Date.now() + Math.random().toString(36).substr(2, 5);
+            const amount = document.getElementById('paymentAmount').textContent.replace('₹', '') || '1';
+            
+            console.log(`Opening ${app.name} for amount: ₹${amount}, Transaction ID: ${txnId}`);
+            console.log('Platform:', isAndroid() ? 'Android' : isIOS() ? 'iOS' : 'Desktop');
 
-            // If the user is on Windows (desktop) — show QR immediately instead of trying deep links
-            if (isWindowsPlatform()) {
-                showPaymentLoader(app);
-                showQRCodeForPayment(upiUrl, txnId);
-                return;
+            // Store transaction for verification
+            localStorage.setItem('currentTxn', JSON.stringify({
+                id: txnId,
+                amount: amount,
+                app: appKey,
+                timestamp: Date.now()
+            }));
+
+            // Build UPI parameters exactly as specified in payment.html
+            const params = new URLSearchParams({
+                pa: '8105485460-982jp@jio',        // Payee UPI ID
+                pn: 'TesTPaY 8105',               // Payee Name  
+                am: amount,                       // Amount
+                cu: 'INR',                        // Currency (INR)
+                tr: txnId,                        // Transaction reference (unique)
+                tn: 'Payment to TesTPaY 8105',   // Transaction note
+                url: window.location.origin + window.location.pathname + '?txnId=' + txnId + '&status=success'  // Redirect URL
+            });
+
+            // Generate app-specific deep links exactly as in payment.html
+            let deepLink;
+            if (appKey === 'phonepe') {
+                deepLink = `phonepe://pay?${params.toString()}`;
+            } else if (appKey === 'gpay') {
+                deepLink = `tez://upi/pay?${params.toString()}`;
+            } else if (appKey === 'paytm') {
+                deepLink = `paytmmp://pay?${params.toString()}`;
+            } else {
+                deepLink = `upi://pay?${params.toString()}`;
             }
 
-            // Show processing loader immediately
+            console.log('Generated deep link:', deepLink);
+
+            // Show loading state
             showPaymentLoader(app);
             showToast(`Opening ${app.name}...`);
 
-            // Build deep link
-            let deepLink;
-            if (appKey === 'other' || !app.scheme) {
-                deepLink = upiUrl; // generic upi://pay?...
-            } else {
-                deepLink = app.scheme + '?' + upiUrl.split('?')[1];
-            }
-
-            // Initialize attempt counter
-            DEEP_LINK_ATTEMPTS[appKey] = (DEEP_LINK_ATTEMPTS[appKey] || 0) + 1;
-
-            // Realistic processing delay
+            // Try to open the app after a short delay
             setTimeout(() => {
                 try {
+                    console.log('Attempting to open app with:', deepLink);
+                    
+                    // Platform-specific handling
                     if (isAndroid()) {
-                        // Prefer Android intent URI which is more reliable in many browsers
-                        try {
-                            // Build intent URI from the canonical upiUrl (ensures proper upi: payload)
-                            const upiPayload = upiUrl.replace(/^upi:\/\//i, ''); // e.g. pay?pa=...
-                            // Use the common Chrome intent form: intent://upi/pay?pa=...#Intent;scheme=upi;package=...
-                            let intentUri = `intent://upi/${upiPayload}#Intent;scheme=upi;action=android.intent.action.VIEW;end`;
-                            if (app.package) {
-                                intentUri = `intent://upi/${upiPayload}#Intent;scheme=upi;package=${app.package};end`;
-                            }
-                            // Try intent first (this often opens the specific app)
-                            window.location = intentUri;
-
-                            // Some browsers/apps respond better to the app-specific scheme; try it shortly after
-                            setTimeout(() => {
-                                try { window.location = deepLink; } catch (e) {}
-                            }, 600);
-                        } catch (e) {
-                            // ignore
-                        }
-
-                        // If intent didn't open the app, fall back to iframe trick after short delay
-                        setTimeout(() => {
-                            if (!document.hidden) {
-                                // Try iframe as a second attempt
-                                const iframe = document.createElement('iframe');
-                                iframe.style.display = 'none';
-                                iframe.src = deepLink;
-                                document.body.appendChild(iframe);
-
-                                setTimeout(() => {
-                                    if (!document.hidden) {
-                                        if (DEEP_LINK_ATTEMPTS[appKey] >= 2) {
-                                            hidePaymentLoader();
-                                            showToast('Unable to open UPI app. Showing QR as fallback.');
-                                            showQRCodeForPayment(upiUrl, txnId);
-                                        } else {
-                                            hidePaymentLoader();
-                                            showToast(`${app.name} not found. Redirecting to web version...`);
-                                            if (app.fallback) window.open(app.fallback, '_blank');
-                                        }
-                                    }
-                                    if (iframe && iframe.parentNode) iframe.parentNode.removeChild(iframe);
-                                }, 2000);
-                            }
-                        }, 700);
-                    } else if (isIOS()) {
-                        // On iOS, try location change and fall back faster if it fails
-                        window.location = deepLink;
-                        setTimeout(() => {
-                            if (!document.hidden) {
-                                hidePaymentLoader();
-                                showToast('Unable to open UPI app on this device. Showing QR fallback.');
-                                showQRCodeForPayment(upiUrl, txnId);
-                            }
-                        }, 1500);
-                    } else {
-                        // Desktop or other mobile: try normal navigation
+                        // For Android, try both methods
                         window.location.href = deepLink;
+                        
+                        // Additional method for Android
                         setTimeout(() => {
                             if (!document.hidden) {
-                                if (DEEP_LINK_ATTEMPTS[appKey] >= 2) {
-                                    hidePaymentLoader();
-                                    showToast('Unable to open UPI app. Showing QR as fallback.');
-                                    showQRCodeForPayment(upiUrl, txnId);
-                                } else {
-                                    hidePaymentLoader();
-                                    showToast(`${app.name} not found. Redirecting to web version...`);
-                                    if (app.fallback) window.open(app.fallback, '_blank');
-                                }
+                                console.log('Trying alternative Android method');
+                                const a = document.createElement('a');
+                                a.href = deepLink;
+                                a.click();
                             }
-                        }, 3000);
+                        }, 500);
+                    } else {
+                        // For iOS and desktop
+                        window.location.href = deepLink;
                     }
-                } catch (error) {
-                    console.error('Error opening UPI app:', error);
+                } catch (e) {
+                    console.error('Error opening app:', e);
                     hidePaymentLoader();
-                    showToast('Error opening UPI app. Please try again.');
+                    showToast('Failed to open app. Please try again.');
                 }
-            }, CONFIG.processingDelay * 1000);
+
+                // Fallback detection after 3 seconds
+                setTimeout(() => {
+                    console.log('Checking if app opened. Page hidden:', document.hidden);
+                    
+                    // If page is still visible, app probably didn't open
+                    if (!document.hidden) {
+                        hidePaymentLoader();
+                        showToast(`${app.name} may not have opened automatically. Showing QR code as fallback.`);
+                        // Fall back to QR code
+                        const upiUrl = `upi://pay?${params.toString()}`;
+                        showQRCodeForPayment(upiUrl, txnId);
+                    }
+                }, 3000);
+            }, 100);
         }
 
         // Show verification screen with realistic steps
