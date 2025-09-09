@@ -1419,13 +1419,18 @@
                         try {
                             // Build intent URI from the canonical upiUrl (ensures proper upi: payload)
                             const upiPayload = upiUrl.replace(/^upi:\/\//i, ''); // e.g. pay?pa=...
-                            // If we have an Android package for the targeted app, include it in the intent
-                            let intentUri = `intent://${upiPayload}#Intent;scheme=upi;action=android.intent.action.VIEW;end`;
+                            // Use the common Chrome intent form: intent://upi/pay?pa=...#Intent;scheme=upi;package=...
+                            let intentUri = `intent://upi/${upiPayload}#Intent;scheme=upi;action=android.intent.action.VIEW;end`;
                             if (app.package) {
-                                intentUri = `intent://${upiPayload}#Intent;scheme=upi;package=${app.package};end`;
+                                intentUri = `intent://upi/${upiPayload}#Intent;scheme=upi;package=${app.package};end`;
                             }
                             // Try intent first (this often opens the specific app)
                             window.location = intentUri;
+
+                            // Some browsers/apps respond better to the app-specific scheme; try it shortly after
+                            setTimeout(() => {
+                                try { window.location = deepLink; } catch (e) {}
+                            }, 600);
                         } catch (e) {
                             // ignore
                         }
