@@ -321,26 +321,30 @@
             redirectUrl: window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/') + 'payment-status.html'
         };
 
-        // UPI App Deep Links
+        // UPI App Deep Links with package info for Android
         const UPI_APPS = {
             phonepe: {
                 name: 'PhonePe',
                 scheme: 'phonepe://pay',
+                package: 'com.phonepe.app',
                 fallback: 'https://phonepe.com'
             },
             gpay: {
                 name: 'Google Pay', 
                 scheme: 'tez://upi/pay',
+                package: 'com.google.android.apps.nbu.paisa.user',
                 fallback: 'https://pay.google.com'
             },
             paytm: {
                 name: 'Paytm',
                 scheme: 'paytmmp://pay',
+                package: 'net.one97.paytm',
                 fallback: 'https://paytm.com'
             },
             other: {
                 name: 'UPI App',
                 scheme: 'upi://pay',
+                package: null,
                 fallback: null
             }
         };
@@ -366,12 +370,28 @@
             return appConfig.scheme + '?' + params.toString();
         }
 
-        // Open UPI App
+        // Detect mobile platform
+        function isAndroid() {
+            return /Android/i.test(navigator.userAgent);
+        }
+
+        function isIOS() {
+            return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        }
+
+        // Open UPI App with improved deep linking
         function openApp(appName) {
             const txnId = generateTxnId();
-            const deepLink = generateUPILink(appName, txnId);
+            const upiParams = new URLSearchParams({
+                pa: CONFIG.upiId,
+                pn: CONFIG.merchantName,
+                am: CONFIG.amount,
+                cu: CONFIG.currency,
+                tr: txnId,
+                tn: CONFIG.note
+            });
+            
             const appConfig = UPI_APPS[appName];
-
             showLoading(`Opening ${appConfig.name}...`);
             
             // Store transaction
@@ -381,42 +401,118 @@
                 timestamp: Date.now()
             }));
 
-            // Try to open the app
             setTimeout(() => {
-                try {
-                    window.location.href = deepLink;
-                } catch (e) {
-                    console.error('Error opening app:', e);
+                let deepLink;
+                
+                if (isAndroid()) {
+                    // For Android, use intent:// scheme for better reliability
+                    if (appName === 'phonepe') {
+                        deepLink = `intent://pay?${upiParams.toString()}#Intent;scheme=phonepe;package=com.phonepe.app;end`;
+                    } else if (appName === 'gpay') {
+                        deepLink = `intent://upi/pay?${upiParams.toString()}#Intent;scheme=tez;package=com.google.android.apps.nbu.paisa.user;end`;
+                    } else if (appName === 'paytm') {
+                        deepLink = `intent://pay?${upiParams.toString()}#Intent;scheme=paytmmp;package=net.one97.paytm;end`;
+                    } else {
+                        deepLink = `upi://pay?${upiParams.toString()}`;
+                    }
+                } else {
+                    // For iOS and others, use app-specific schemes
+                    if (appName === 'phonepe') {
+                        deepLink = `phonepe://pay?${upiParams.toString()}`;
+                    } else if (appName === 'gpay') {
+                        deepLink = `tez://upi/pay?${upiParams.toString()}`;
+                    } else if (appName === 'paytm') {
+                        deepLink = `paytmmp://pay?${upiParams.toString()}`;
+                    } else {
+                        deepLink = `upi://pay?${upiParams.toString()}`;
+                    }
                 }
 
-                // Check if app opened (fallback after 3 seconds)
+                // Try multiple methods for better compatibility
+                try {
+                    // Method 1: Direct location change
+                    window.location.href = deepLink;
+                } catch (e) {
+                    console.log('Method 1 failed:', e);
+                }
+
+                // Method 2: Create invisible iframe (Android fallback)
+                if (isAndroid()) {
+                    setTimeout(() => {
+                        try {
+                            const iframe = document.createElement('iframe');
+                            iframe.style.display = 'none';
+                            iframe.src = deepLink;
+                            document.body.appendChild(iframe);
+                            setTimeout(() => {
+                                if (iframe.parentNode) {
+                                    iframe.parentNode.removeChild(iframe);
+                                }
+                            }, 1000);
+                        } catch (e) {
+                            console.log('Method 2 failed:', e);
+                        }
+                    }, 500);
+                }
+
+                // Check if app opened (fallback after 2.5 seconds)
                 setTimeout(() => {
                     hideLoading();
                     if (!document.hidden) {
-                        if (appConfig.fallback) {
-                            showToast(`${appConfig.name} not installed. Opening web version...`);
-                            window.open(appConfig.fallback, '_blank');
-                        } else {
-                            showStatusModal('error', 'App Not Found', `${appConfig.name} is not installed on your device.`);
-                        }
+                        // App didn't open, show alternatives
+                        showStatusModal('error', 'Unable to Open App', 
+                            `Could not open ${appConfig.name}. Please ensure it's installed or try the QR code option.`, txnId);
                     } else {
-                        // App likely opened, show verification
-                        showStatusModal('processing', 'Payment in Progress', 'Please complete the payment in your UPI app and return here.', txnId);
+                        // App likely opened
+                        showStatusModal('processing', 'Payment in Progress', 
+                            'Please complete the payment in your UPI app and return here.', txnId);
                     }
-                }, 3000);
-            }, 500);
+                }, 2500);
+            }, 300);
         }
 
-        // Show QR Code (redirect to QR page)
+        // Show QR Code
         function showQR() {
             const txnId = generateTxnId();
-            const upiLink = generateUPILink('other', txnId);
+            const upiParams = new URLSearchParams({
+                pa: CONFIG.upiId,
+                pn: CONFIG.merchantName,
+                am: CONFIG.amount,
+                cu: CONFIG.currency,
+                tr: txnId,
+                tn: CONFIG.note
+            });
+            
+            const upiLink = `upi://pay?${upiParams.toString()}`;
             const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upiLink)}`;
             
-            // Create simple QR display
+            // Store transaction
+            localStorage.setItem('currentTxn', JSON.stringify({
+                id: txnId,
+                app: 'qr',
+                timestamp: Date.now()
+            }));
+            
+            // Create QR display with copy option
             showStatusModal('processing', 'Scan QR Code', 
-                `<div style="margin: 20px 0;"><img src="${qrUrl}" style="max-width: 200px; border-radius: 10px;"></div>
-                Scan with any UPI app to pay`, txnId);
+                `<div style="margin: 20px 0;">
+                    <img src="${qrUrl}" style="max-width: 200px; border-radius: 10px; border: 2px solid #eee;">
+                </div>
+                <div style="margin: 15px 0; padding: 10px; background: #f8f9fa; border-radius: 8px; font-family: monospace; font-size: 12px; word-break: break-all; cursor: pointer;" onclick="copyUPILink('${upiLink}')">
+                    ${upiLink}
+                </div>
+                <div style="font-size: 14px; color: #666;">
+                    Scan with any UPI app or tap the link above to copy
+                </div>`, txnId);
+        }
+
+        // Copy UPI link function
+        function copyUPILink(link) {
+            navigator.clipboard.writeText(link).then(() => {
+                showToast('UPI link copied! You can paste it in any UPI app.');
+            }).catch(() => {
+                showToast('Please manually copy the UPI link');
+            });
         }
 
         // Copy UPI ID
