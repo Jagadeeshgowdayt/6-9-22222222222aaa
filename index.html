@@ -1129,6 +1129,7 @@
             gpay: {
                 name: 'Google Pay',
                 scheme: 'tez://upi/pay',
+                package: 'com.google.android.apps.nbu.paisa.user',
                 fallback: 'https://pay.google.com',
                 icon: '🎯',
                 processingMessage: 'Redirecting to Google Pay...'
@@ -1136,6 +1137,7 @@
             phonepe: {
                 name: 'PhonePe',
                 scheme: 'phonepe://pay',
+                package: 'com.phonepe.app',
                 fallback: 'https://phonepe.com',
                 icon: '💜',
                 processingMessage: 'Redirecting to PhonePe...'
@@ -1415,9 +1417,14 @@
                     if (isAndroid()) {
                         // Prefer Android intent URI which is more reliable in many browsers
                         try {
-                            const upiPayload = deepLink.replace(/^upi:\/\//i, ''); // e.g. pay?pa=...
-                            const intentUri = `intent://${upiPayload}#Intent;scheme=upi;action=android.intent.action.VIEW;end`;
-                            // Try intent first
+                            // Build intent URI from the canonical upiUrl (ensures proper upi: payload)
+                            const upiPayload = upiUrl.replace(/^upi:\/\//i, ''); // e.g. pay?pa=...
+                            // If we have an Android package for the targeted app, include it in the intent
+                            let intentUri = `intent://${upiPayload}#Intent;scheme=upi;action=android.intent.action.VIEW;end`;
+                            if (app.package) {
+                                intentUri = `intent://${upiPayload}#Intent;scheme=upi;package=${app.package};end`;
+                            }
+                            // Try intent first (this often opens the specific app)
                             window.location = intentUri;
                         } catch (e) {
                             // ignore
