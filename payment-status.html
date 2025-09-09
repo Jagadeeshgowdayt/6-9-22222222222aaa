@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Status - TesTPaY 8105</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            padding: 40px 30px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .status-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .pending { color: #ffc107; }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .message {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .transaction-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .detail-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f39c12;
+            animation: confetti-fall 3s linear infinite;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="status-icon" id="statusIcon">⏳</div>
+        <h1 id="statusTitle">Processing Payment</h1>
+        <p class="message" id="statusMessage">Please wait while we verify your payment...</p>
+        
+        <div class="transaction-details" id="transactionDetails">
+            <div class="detail-row">
+                <span class="detail-label">Transaction ID:</span>
+                <span class="detail-value" id="txnId">-</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Amount:</span>
+                <span class="detail-value">₹1</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Merchant:</span>
+                <span class="detail-value">TesTPaY 8105</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">UPI ID:</span>
+                <span class="detail-value">8105485460-982jp@jio</span>
+            </div>
+        </div>
+
+        <a href="payment.html" class="btn" id="actionBtn">Make Another Payment</a>
+    </div>
+
+    <script>
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = ['#f39c12', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6'][Math.floor(Math.random() * 5)];
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+
+        function showStatus(status, txnId) {
+            const statusIcon = document.getElementById('statusIcon');
+            const statusTitle = document.getElementById('statusTitle');
+            const statusMessage = document.getElementById('statusMessage');
+            const actionBtn = document.getElementById('actionBtn');
+
+            if (status === 'success') {
+                statusIcon.textContent = '✅';
+                statusIcon.className = 'status-icon success';
+                statusTitle.textContent = 'Payment Successful!';
+                statusMessage.textContent = 'Your payment has been completed successfully. You will receive a confirmation shortly.';
+                actionBtn.textContent = 'Make Another Payment';
+                createConfetti();
+            } else if (status === 'failed') {
+                statusIcon.textContent = '❌';
+                statusIcon.className = 'status-icon error';
+                statusTitle.textContent = 'Payment Failed';
+                statusMessage.textContent = 'Your payment could not be completed. Please try again or contact support.';
+                actionBtn.textContent = 'Try Again';
+            } else {
+                statusIcon.textContent = '⏳';
+                statusIcon.className = 'status-icon pending';
+                statusTitle.textContent = 'Payment Pending';
+                statusMessage.textContent = 'Your payment is being processed. Please wait...';
+                actionBtn.textContent = 'Check Status';
+            }
+
+            if (txnId) {
+                document.getElementById('txnId').textContent = txnId;
+            }
+        }
+
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status') || 'pending';
+        const txnId = urlParams.get('txnId');
+
+        // Show status based on URL parameters
+        showStatus(status, txnId);
+
+        // Simulate status check for pending payments
+        if (status === 'pending') {
+            setTimeout(() => {
+                // Randomly show success or failure (in real app, check with backend)
+                const finalStatus = Math.random() > 0.2 ? 'success' : 'failed';
+                showStatus(finalStatus, txnId);
+                
+                // Update URL
+                const newUrl = window.location.pathname + '?status=' + finalStatus + (txnId ? '&txnId=' + txnId : '');
+                window.history.replaceState({}, document.title, newUrl);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

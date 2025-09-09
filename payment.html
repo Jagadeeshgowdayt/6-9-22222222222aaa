@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPI Payment Gateway - TesTPaY 8105</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .content {
+            padding: 30px 20px;
+        }
+
+        .payment-info {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .merchant-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .amount {
+            font-size: 32px;
+            font-weight: 700;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        .upi-id {
+            font-family: monospace;
+            background: #e9ecef;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .upi-id:hover {
+            background: #dee2e6;
+        }
+
+        .apps-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .app-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .app-btn {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .app-btn:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+
+        .app-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .app-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .phonepe { border-color: #5f259f; }
+        .phonepe:hover { border-color: #5f259f; box-shadow: 0 8px 25px rgba(95, 37, 159, 0.15); }
+
+        .gpay { border-color: #34a853; }
+        .gpay:hover { border-color: #34a853; box-shadow: 0 8px 25px rgba(52, 168, 83, 0.15); }
+
+        .paytm { border-color: #00baf2; }
+        .paytm:hover { border-color: #00baf2; box-shadow: 0 8px 25px rgba(0, 186, 242, 0.15); }
+
+        .fallback-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .fallback-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .status-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 350px;
+            width: 90%;
+        }
+
+        .status-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .processing { color: #007bff; }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            display: none;
+            z-index: 1001;
+        }
+
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 999;
+        }
+
+        .loading-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .app-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>TesTPaY 8105</h1>
+            <p>Secure UPI Payment Gateway</p>
+        </div>
+        
+        <div class="content">
+            <div class="payment-info">
+                <div class="merchant-name">TesTPaY 8105</div>
+                <div class="amount">₹<span id="amount">1</span></div>
+                <div class="upi-id" onclick="copyUPI()" id="upiDisplay">8105485460-982jp@jio</div>
+            </div>
+
+            <div class="apps-section">
+                <h3>Choose Your UPI App</h3>
+                <div class="app-buttons">
+                    <div class="app-btn phonepe" onclick="openApp('phonepe')">
+                        <div class="app-icon">💜</div>
+                        <div class="app-name">PhonePe</div>
+                    </div>
+                    <div class="app-btn gpay" onclick="openApp('gpay')">
+                        <div class="app-icon">🎯</div>
+                        <div class="app-name">Google Pay</div>
+                    </div>
+                    <div class="app-btn paytm" onclick="openApp('paytm')">
+                        <div class="app-icon">💙</div>
+                        <div class="app-name">Paytm</div>
+                    </div>
+                    <div class="app-btn" onclick="openApp('other')">
+                        <div class="app-icon">📱</div>
+                        <div class="app-name">Other UPI</div>
+                    </div>
+                </div>
+                
+                <button class="fallback-btn" onclick="showQR()">
+                    📱 Show QR Code
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div class="loading" id="loading">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div id="loadingText">Opening UPI App...</div>
+        </div>
+    </div>
+
+    <!-- Status Modal -->
+    <div class="status-modal" id="statusModal">
+        <div class="modal-content">
+            <div class="status-icon" id="statusIcon">⏳</div>
+            <h3 id="statusTitle">Processing Payment</h3>
+            <p id="statusMessage">Please complete payment in your UPI app</p>
+            <div id="transactionId" style="margin: 15px 0; font-family: monospace; background: #f8f9fa; padding: 10px; border-radius: 5px; display: none;"></div>
+            <button onclick="closeModal()" style="margin-top: 15px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">Close</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            merchantName: 'TesTPaY 8105',
+            upiId: '8105485460-982jp@jio',
+            amount: 1,
+            currency: 'INR',
+            note: 'Payment for Order #123',
+            redirectUrl: window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/') + 'payment-status.html'
+        };
+
+        // UPI App Deep Links
+        const UPI_APPS = {
+            phonepe: {
+                name: 'PhonePe',
+                scheme: 'phonepe://pay',
+                fallback: 'https://phonepe.com'
+            },
+            gpay: {
+                name: 'Google Pay', 
+                scheme: 'tez://upi/pay',
+                fallback: 'https://pay.google.com'
+            },
+            paytm: {
+                name: 'Paytm',
+                scheme: 'paytmmp://pay',
+                fallback: 'https://paytm.com'
+            },
+            other: {
+                name: 'UPI App',
+                scheme: 'upi://pay',
+                fallback: null
+            }
+        };
+
+        // Generate transaction ID
+        function generateTxnId() {
+            return 'TXN' + Date.now() + Math.floor(Math.random() * 1000);
+        }
+
+        // Generate UPI deep link
+        function generateUPILink(app, txnId) {
+            const params = new URLSearchParams({
+                pa: CONFIG.upiId,
+                pn: CONFIG.merchantName,
+                am: CONFIG.amount,
+                cu: CONFIG.currency,
+                tr: txnId,
+                tn: CONFIG.note,
+                url: CONFIG.redirectUrl + '?txnId=' + txnId + '&status=success'
+            });
+
+            const appConfig = UPI_APPS[app];
+            return appConfig.scheme + '?' + params.toString();
+        }
+
+        // Open UPI App
+        function openApp(appName) {
+            const txnId = generateTxnId();
+            const deepLink = generateUPILink(appName, txnId);
+            const appConfig = UPI_APPS[appName];
+
+            showLoading(`Opening ${appConfig.name}...`);
+            
+            // Store transaction
+            localStorage.setItem('currentTxn', JSON.stringify({
+                id: txnId,
+                app: appName,
+                timestamp: Date.now()
+            }));
+
+            // Try to open the app
+            setTimeout(() => {
+                try {
+                    window.location.href = deepLink;
+                } catch (e) {
+                    console.error('Error opening app:', e);
+                }
+
+                // Check if app opened (fallback after 3 seconds)
+                setTimeout(() => {
+                    hideLoading();
+                    if (!document.hidden) {
+                        if (appConfig.fallback) {
+                            showToast(`${appConfig.name} not installed. Opening web version...`);
+                            window.open(appConfig.fallback, '_blank');
+                        } else {
+                            showStatusModal('error', 'App Not Found', `${appConfig.name} is not installed on your device.`);
+                        }
+                    } else {
+                        // App likely opened, show verification
+                        showStatusModal('processing', 'Payment in Progress', 'Please complete the payment in your UPI app and return here.', txnId);
+                    }
+                }, 3000);
+            }, 500);
+        }
+
+        // Show QR Code (redirect to QR page)
+        function showQR() {
+            const txnId = generateTxnId();
+            const upiLink = generateUPILink('other', txnId);
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upiLink)}`;
+            
+            // Create simple QR display
+            showStatusModal('processing', 'Scan QR Code', 
+                `<div style="margin: 20px 0;"><img src="${qrUrl}" style="max-width: 200px; border-radius: 10px;"></div>
+                Scan with any UPI app to pay`, txnId);
+        }
+
+        // Copy UPI ID
+        function copyUPI() {
+            navigator.clipboard.writeText(CONFIG.upiId).then(() => {
+                showToast('UPI ID copied to clipboard!');
+            }).catch(() => {
+                showToast('Failed to copy UPI ID');
+            });
+        }
+
+        // UI Functions
+        function showLoading(text) {
+            document.getElementById('loadingText').textContent = text;
+            document.getElementById('loading').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function showStatusModal(type, title, message, txnId = null) {
+            const modal = document.getElementById('statusModal');
+            const icon = document.getElementById('statusIcon');
+            const titleEl = document.getElementById('statusTitle');
+            const messageEl = document.getElementById('statusMessage');
+            const txnEl = document.getElementById('transactionId');
+
+            // Set icon based on type
+            const icons = {
+                success: '✅',
+                error: '❌', 
+                processing: '⏳'
+            };
+            
+            icon.textContent = icons[type] || '⏳';
+            icon.className = `status-icon ${type}`;
+            titleEl.textContent = title;
+            messageEl.innerHTML = message;
+
+            if (txnId) {
+                txnEl.textContent = `Transaction ID: ${txnId}`;
+                txnEl.style.display = 'block';
+            } else {
+                txnEl.style.display = 'none';
+            }
+
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('statusModal').style.display = 'none';
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Check for return from UPI app on page load
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            const txnId = urlParams.get('txnId');
+
+            if (status && txnId) {
+                if (status === 'success') {
+                    showStatusModal('success', 'Payment Successful!', 
+                        'Your payment has been completed successfully.', txnId);
+                } else {
+                    showStatusModal('error', 'Payment Failed', 
+                        'Payment was not completed. Please try again.', txnId);
+                }
+                
+                // Clear URL parameters
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        });
+
+        // Handle page visibility (detect return from UPI app)
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                const currentTxn = localStorage.getItem('currentTxn');
+                if (currentTxn) {
+                    const txn = JSON.parse(currentTxn);
+                    const elapsed = Date.now() - txn.timestamp;
+                    
+                    // If more than 5 seconds have passed, show verification
+                    if (elapsed > 5000) {
+                        showStatusModal('processing', 'Verify Payment', 
+                            'Did you complete the payment? We are verifying...', txn.id);
+                        
+                        // Simulate verification (in real app, call your backend)
+                        setTimeout(() => {
+                            showStatusModal('success', 'Payment Verified!', 
+                                'Your payment has been confirmed.', txn.id);
+                            localStorage.removeItem('currentTxn');
+                        }, 3000);
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
