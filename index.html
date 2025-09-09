@@ -1152,6 +1152,19 @@
             return false;
         }
 
+        // Mobile platform helpers
+        function isAndroid() {
+            try {
+                return /Android/i.test(navigator.userAgent || '');
+            } catch (e) { return false; }
+        }
+
+        function isIOS() {
+            try {
+                return /iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+            } catch (e) { return false; }
+        }
+
         // Show QR code prominently for the current transaction so the user can scan with a phone
         function showQRCodeForPayment(upiUrl, txnId = null) {
             // Ensure QR content is visible
@@ -1251,23 +1264,69 @@
             // Realistic processing delay
             setTimeout(() => {
                 try {
-                    window.location.href = deepLink;
-
-                    // After delay, if the page is still visible consider fallback
-                    setTimeout(() => {
-                        // If attempts exceed 2, show QR as fallback to avoid infinite redirects
-                        if (!document.hidden) {
-                            if (DEEP_LINK_ATTEMPTS[appKey] >= 2) {
-                                hidePaymentLoader();
-                                showToast('Unable to open UPI app. Showing QR as fallback.');
-                                showQRCodeForPayment(upiUrl, txnId);
-                            } else {
-                                hidePaymentLoader();
-                                showToast(`${app.name} not found. Redirecting to web version...`);
-                                if (app.fallback) window.open(app.fallback, '_blank');
-                            }
+                    if (isAndroid()) {
+                        // Prefer Android intent URI which is more reliable in many browsers
+                        try {
+                            const upiPayload = deepLink.replace(/^upi:\/\//i, ''); // e.g. pay?pa=...
+                            const intentUri = `intent://${upiPayload}#Intent;scheme=upi;action=android.intent.action.VIEW;end`;
+                            // Try intent first
+                            window.location = intentUri;
+                        } catch (e) {
+                            // ignore
                         }
-                    }, 3000);
+
+                        // If intent didn't open the app, fall back to iframe trick after short delay
+                        setTimeout(() => {
+                            if (!document.hidden) {
+                                // Try iframe as a second attempt
+                                const iframe = document.createElement('iframe');
+                                iframe.style.display = 'none';
+                                iframe.src = deepLink;
+                                document.body.appendChild(iframe);
+
+                                setTimeout(() => {
+                                    if (!document.hidden) {
+                                        if (DEEP_LINK_ATTEMPTS[appKey] >= 2) {
+                                            hidePaymentLoader();
+                                            showToast('Unable to open UPI app. Showing QR as fallback.');
+                                            showQRCodeForPayment(upiUrl, txnId);
+                                        } else {
+                                            hidePaymentLoader();
+                                            showToast(`${app.name} not found. Redirecting to web version...`);
+                                            if (app.fallback) window.open(app.fallback, '_blank');
+                                        }
+                                    }
+                                    if (iframe && iframe.parentNode) iframe.parentNode.removeChild(iframe);
+                                }, 2000);
+                            }
+                        }, 700);
+                    } else if (isIOS()) {
+                        // On iOS, try location change and fall back faster if it fails
+                        window.location = deepLink;
+                        setTimeout(() => {
+                            if (!document.hidden) {
+                                hidePaymentLoader();
+                                showToast('Unable to open UPI app on this device. Showing QR fallback.');
+                                showQRCodeForPayment(upiUrl, txnId);
+                            }
+                        }, 1500);
+                    } else {
+                        // Desktop or other mobile: try normal navigation
+                        window.location.href = deepLink;
+                        setTimeout(() => {
+                            if (!document.hidden) {
+                                if (DEEP_LINK_ATTEMPTS[appKey] >= 2) {
+                                    hidePaymentLoader();
+                                    showToast('Unable to open UPI app. Showing QR as fallback.');
+                                    showQRCodeForPayment(upiUrl, txnId);
+                                } else {
+                                    hidePaymentLoader();
+                                    showToast(`${app.name} not found. Redirecting to web version...`);
+                                    if (app.fallback) window.open(app.fallback, '_blank');
+                                }
+                            }
+                        }, 3000);
+                    }
                 } catch (error) {
                     console.error('Error opening UPI app:', error);
                     hidePaymentLoader();
