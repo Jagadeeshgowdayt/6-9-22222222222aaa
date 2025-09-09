@@ -206,6 +206,8 @@
             color: inherit;
             transform: translateZ(0);
             will-change: transform, box-shadow;
+            position: relative;
+            overflow: visible;
         }
 
         .app-button:hover {
@@ -232,6 +234,31 @@
             transition: transform 220ms cubic-bezier(0.2,0,0.2,1), filter 220ms ease;
             will-change: transform, filter;
             border-radius: 10px;
+        }
+
+        /* Recommended badge overlay */
+        .recommended-badge {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            background: linear-gradient(90deg, #16a34a, #059669);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 8px;
+            border-radius: 999px;
+            box-shadow: 0 6px 14px rgba(15,23,42,0.12);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transform-origin: center;
+            transition: transform 160ms ease, box-shadow 160ms ease;
+            z-index: 6;
+        }
+
+        .app-button:hover .recommended-badge {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(15,23,42,0.16);
         }
 
         .app-button:hover .app-logo {
@@ -860,6 +887,7 @@
                 <h2 class="section-title">Choose your UPI app</h2>
                 <div class="apps-grid">
                     <button class="app-button" onclick="openUPIApp('gpay')" data-app="gpay" title="Google Pay">
+                        <span class="recommended-badge">Recommended</span>
                         <div class="app-icon">
                             <!-- Google Pay clear badge -->
                             <svg class="app-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -871,6 +899,7 @@
                     </button>
 
                     <button class="app-button" onclick="openUPIApp('phonepe')" data-app="phonepe" title="PhonePe">
+                        <span class="recommended-badge">Recommended</span>
                         <div class="app-icon">
                             <!-- PhonePe clear badge -->
                             <svg class="app-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -881,27 +910,7 @@
                         <div class="app-name">PhonePe</div>
                     </button>
 
-                    <button class="app-button" onclick="openUPIApp('paytm')" data-app="paytm" title="Paytm">
-                        <div class="app-icon">
-                            <!-- Paytm clear badge -->
-                            <svg class="app-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                <rect width="64" height="64" rx="12" fill="#0033A0" />
-                                <text x="50%" y="54%" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="18" font-weight="800" fill="#FFFFFF">paytm</text>
-                            </svg>
-                        </div>
-                        <div class="app-name">Paytm</div>
-                    </button>
-
-                    <button class="app-button" onclick="openUPIApp('other')" data-app="other" title="Other UPI Apps">
-                        <div class="app-icon">
-                            <!-- Generic UPI badge -->
-                            <svg class="app-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                <rect width="64" height="64" rx="12" fill="#0f172a" />
-                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="20" font-weight="700" fill="#FFFFFF">UPI</text>
-                            </svg>
-                        </div>
-                        <div class="app-name">Other UPI Apps</div>
-                    </button>
+                    <!-- Paytm and Other UPI Apps removed per request -->
                 </div>
             </div>
 
@@ -1050,20 +1059,6 @@
                 fallback: 'https://phonepe.com',
                 icon: '💜',
                 processingMessage: 'Redirecting to PhonePe...'
-            },
-            paytm: {
-                name: 'Paytm',
-                scheme: 'paytmmp://pay',
-                fallback: 'https://paytm.com',
-                icon: '💙',
-                processingMessage: 'Redirecting to Paytm...'
-            },
-            other: {
-                name: 'Other UPI Apps',
-                scheme: null,
-                fallback: null,
-                icon: '🔁',
-                processingMessage: 'Opening UPI chooser on your device...'
             },
             // end of supported apps
         };
