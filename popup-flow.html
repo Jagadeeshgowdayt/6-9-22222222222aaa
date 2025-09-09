@@ -1,0 +1,4339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TesTPaY - Professional Payment Gateway</title>
+    <meta name="description" content="TesTPaY - Secure, Fast & Reliable UPI Payment Gateway for Businesses">
+    <meta name="keywords" content="TesTPaY, UPI payments, payment gateway, secure payments, business payments">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💳</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* TesTPaY Original Brand Colors */
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #3b82f6;
+            --secondary-color: #059669;
+            --accent-color: #dc2626;
+            
+            /* Refined UI Colors */
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --border-light: #e2e8f0;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-light: #f1f5f9;
+            
+            /* iPhone-like Shadows & Effects */
+            --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --shadow-3xl: 0 35px 60px -12px rgba(0, 0, 0, 0.35);
+            
+            /* iPhone-style Borders & Animations */
+            --border-radius: 20px;
+            --border-radius-sm: 12px;
+            --border-radius-md: 16px;
+            --border-radius-lg: 28px;
+            --border-radius-xl: 32px;
+            
+            /* Ultra-smooth iPhone Transitions - Optimized */
+            --transition-ultra: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            --transition-smooth: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --transition-fast: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-instant: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-spring: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --transition-bounce: all 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            --transition-elastic: all 0.9s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+            
+            /* iPhone 15 Pro Max style easing */
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+            
+            /* Status Colors */
+            --success-color: #059669;
+            --warning-color: #d97706;
+            --error-color: #dc2626;
+            --info-color: #0ea5e9;
+            
+            /* iPhone-like Blur Effects */
+            --blur-light: blur(10px);
+            --blur-medium: blur(20px);
+            --blur-heavy: blur(40px);
+        }
+
+        /* Ultra-smooth iPhone 15 Pro Max style animations */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+            -webkit-scroll-behavior: smooth;
+            
+            /* iPhone-level rendering optimization */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            -webkit-perspective: 1000px;
+            perspective: 1000px;
+        }
+
+        /* iPhone 15 Pro Max level smoothness */
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(145deg, #1e293b 0%, #334155 25%, #475569 50%, #64748b 75%, #94a3b8 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            font-feature-settings: 'cv11', 'ss01';
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            
+            /* iPhone-level touch optimization */
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            
+            /* Ultra-smooth rendering */
+            transform-style: preserve-3d;
+            will-change: transform;
+            -webkit-transform-style: preserve-3d;
+        }
+
+        /* Ultra-responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+        }
+
+        /* iPhone-like smooth scrolling */
+        * {
+            scroll-behavior: smooth;
+            -webkit-scroll-behavior: smooth;
+        }
+
+        /* iPhone 15 Pro Max Background with Liquid Motion */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(0, 102, 255, 0.15) 0%, transparent 70%),
+                radial-gradient(circle at 75% 75%, rgba(0, 200, 81, 0.12) 0%, transparent 70%),
+                radial-gradient(circle at 50% 20%, rgba(255, 107, 53, 0.10) 0%, transparent 60%),
+                radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+            animation: liquidMotion 35s ease-in-out infinite;
+            will-change: transform, opacity, filter;
+            filter: blur(0.5px);
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(45deg, rgba(255,255,255,0.012) 1px, transparent 1px),
+                linear-gradient(-45deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+            background-size: 100px 100px;
+            opacity: 0.5;
+            animation: patternFlow 45s linear infinite;
+            will-change: transform;
+        }
+
+        @keyframes liquidMotion {
+            0%, 100% { 
+                transform: translate3d(0, 0, 0) scale(1);
+                opacity: 1;
+            }
+            50% { 
+                transform: translate3d(10px, -10px, 0) scale(1.02);
+                opacity: 0.9;
+            }
+        }
+
+        @keyframes patternFlow {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(50px); }
+        }
+
+        /* TesTPaY Brand Enhancement */
+        .brand-watermark {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 1000;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        /* Professional Landing Page */
+        .landing-container {
+            text-align: center;
+            color: white;
+            max-width: 600px;
+            width: 100%;
+            z-index: 2;
+            position: relative;
+            padding: 40px 20px;
+        }
+
+        /* iPhone 15 Pro Max Logo with Dynamic Island effect */
+        .logo {
+            width: 110px;
+            height: 110px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 30%, var(--secondary-color) 70%, var(--accent-color) 100%);
+            border-radius: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 40px;
+            box-shadow: 
+                0 50px 100px -20px rgba(0, 0, 0, 0.4),
+                0 25px 50px -10px rgba(0, 102, 255, 0.3),
+                0 10px 30px -5px rgba(0, 200, 81, 0.2),
+                inset 0 2px 0 rgba(255, 255, 255, 0.25),
+                inset 0 -2px 0 rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.15);
+            animation: iPhoneDynamicLogo 8s var(--ease-out-expo) infinite;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            will-change: transform, box-shadow, filter;
+            filter: brightness(1) contrast(1.05) saturate(1.1);
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: -150%;
+            left: -150%;
+            width: 400%;
+            height: 400%;
+            background: 
+                conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.2) 180deg, transparent 360deg),
+                linear-gradient(45deg, transparent 20%, rgba(255,255,255,0.15) 50%, transparent 80%);
+            animation: logoShineFlow 5s var(--ease-in-out-quart) infinite;
+            transform-origin: center;
+            will-change: transform, opacity;
+        }
+
+        .logo::after {
+            content: 'T';
+            font-size: 48px;
+            font-weight: 900;
+            color: white;
+            z-index: 3;
+            position: relative;
+            text-shadow: 
+                0 4px 12px rgba(0, 0, 0, 0.4),
+                0 2px 6px rgba(0, 0, 0, 0.2),
+                0 1px 2px rgba(255, 255, 255, 0.3);
+            filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.2));
+            will-change: transform;
+            animation: logoTextFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes iPhoneDynamicLogo {
+            0%, 100% { 
+                transform: translateY(0) scale(1) rotateX(0deg) rotateY(0deg);
+                box-shadow: 
+                    0 50px 100px -20px rgba(0, 0, 0, 0.4),
+                    0 25px 50px -10px rgba(0, 102, 255, 0.3),
+                    0 10px 30px -5px rgba(0, 200, 81, 0.2),
+                    inset 0 2px 0 rgba(255, 255, 255, 0.25),
+                    inset 0 -2px 0 rgba(0, 0, 0, 0.1);
+                filter: brightness(1) contrast(1.05) saturate(1.1);
+            }
+            25% { 
+                transform: translateY(-8px) scale(1.03) rotateX(3deg) rotateY(-2deg);
+                filter: brightness(1.05) contrast(1.1) saturate(1.15);
+            }
+            50% { 
+                transform: translateY(-15px) scale(1.08) rotateX(5deg) rotateY(0deg);
+                box-shadow: 
+                    0 70px 140px -25px rgba(0, 0, 0, 0.5),
+                    0 35px 70px -15px rgba(0, 102, 255, 0.4),
+                    0 15px 40px -8px rgba(0, 200, 81, 0.3),
+                    inset 0 2px 0 rgba(255, 255, 255, 0.35),
+                    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+                filter: brightness(1.1) contrast(1.15) saturate(1.2);
+            }
+            75% { 
+                transform: translateY(-8px) scale(1.03) rotateX(3deg) rotateY(2deg);
+                filter: brightness(1.05) contrast(1.1) saturate(1.15);
+            }
+        }
+
+        @keyframes logoShineFlow {
+            0% { 
+                transform: translate3d(-200%, -200%, 0) rotate(45deg) scale(0.8);
+                opacity: 0;
+            }
+            30% { 
+                opacity: 0.6;
+            }
+            70% { 
+                opacity: 0.8;
+            }
+            100% { 
+                transform: translate3d(200%, 200%, 0) rotate(45deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        @keyframes logoTextFloat {
+            0%, 100% { 
+                transform: translateY(0) scale(1);
+            }
+            50% { 
+                transform: translateY(-2px) scale(1.02);
+            }
+        }
+
+        /* Responsive Logo */
+        @media (max-width: 768px) {
+            .logo {
+                width: 80px;
+                height: 80px;
+                border-radius: 22px;
+                margin-bottom: 28px;
+            }
+            .logo::after {
+                font-size: 32px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                width: 70px;
+                height: 70px;
+                border-radius: 18px;
+                margin-bottom: 24px;
+            }
+            .logo::after {
+                font-size: 28px;
+            }
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes logoShine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(200%) rotate(45deg); }
+        }
+
+        .logo i {
+            font-size: 32px;
+            color: var(--primary-color);
+        }
+
+        /* iPhone-style Professional Brand Title */
+        .main-title {
+            font-size: clamp(48px, 8vw, 64px);
+            font-weight: 900;
+            margin-bottom: 24px;
+            text-shadow: 
+                0 8px 32px rgba(0,0,0,0.4),
+                0 4px 16px rgba(0,0,0,0.2);
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 30%, #e2e8f0 70%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            animation: titleBreath 3s ease-in-out infinite alternate;
+            transform-style: preserve-3d;
+            will-change: transform, filter;
+        }
+
+        @keyframes titleBreath {
+            0% { 
+                transform: scale(1) translateZ(0);
+                filter: brightness(1) contrast(1);
+            }
+            100% { 
+                transform: scale(1.02) translateZ(0);
+                filter: brightness(1.05) contrast(1.1);
+            }
+        }
+
+        .main-subtitle {
+            font-size: clamp(20px, 4vw, 26px);
+            opacity: 0.94;
+            margin-bottom: 20px;
+            line-height: 1.4;
+            text-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            font-weight: 600;
+            color: #e2e8f0;
+            transition: var(--transition-smooth);
+        }
+
+        .brand-tagline {
+            font-size: clamp(14px, 3vw, 18px);
+            opacity: 0.78;
+            margin-bottom: 56px;
+            font-weight: 500;
+            color: #cbd5e1;
+            letter-spacing: 0.8px;
+            line-height: 1.5;
+            transition: var(--transition-smooth);
+        }
+
+        /* Responsive Typography */
+        @media (max-width: 768px) {
+            .main-subtitle {
+                margin-bottom: 16px;
+                font-size: 22px;
+            }
+            .brand-tagline {
+                margin-bottom: 48px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-subtitle {
+                margin-bottom: 12px;
+                font-size: 20px;
+            }
+            .brand-tagline {
+                margin-bottom: 40px;
+                font-size: 14px;
+                letter-spacing: 0.5px;
+            }
+        }
+
+        /* Professional Feature Cards */
+        .app-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .feature-card-landing {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 28px 20px;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card-landing::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .feature-card-landing:hover::before {
+            left: 100%;
+        }
+
+        .feature-card-landing:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .feature-card-landing i {
+            font-size: 32px;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .feature-card-landing h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .feature-card-landing p {
+            font-size: 14px;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        /* iPhone-style Ultra-smooth Trigger Button */
+        .trigger-button {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 50%, var(--secondary-color) 100%);
+            color: white;
+            border: none;
+            padding: clamp(16px, 4vw, 20px) clamp(32px, 8vw, 40px);
+            font-size: clamp(16px, 4vw, 18px);
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition-ultra);
+            box-shadow: 
+                var(--shadow-3xl),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            will-change: transform, box-shadow;
+            
+            /* iPhone-like touch optimization */
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            user-select: none;
+            letter-spacing: 0.5px;
+        }
+
+        .trigger-button:hover {
+            transform: translateY(-4px) scale(1.05) translateZ(0);
+            box-shadow: 
+                0 25px 80px rgba(0, 102, 255, 0.4),
+                0 15px 40px rgba(0, 200, 81, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.15);
+        }
+
+        .trigger-button:active {
+            transform: translateY(-2px) scale(1.02) translateZ(0);
+            transition: var(--transition-instant);
+        }
+
+        .trigger-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: ultraShine 3s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes ultraShine {
+            0% { left: -100%; opacity: 0; }
+            50% { opacity: 1; }
+            100% { left: 100%; opacity: 0; }
+        }
+
+        /* Ultra-responsive trigger button */
+        @media (max-width: 768px) {
+            .trigger-button {
+                padding: 16px 32px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .trigger-button {
+                padding: 14px 28px;
+                font-size: 15px;
+                border-radius: 40px;
+            }
+        }
+
+        /* Popup Overlay - Now the main app interface */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .popup-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* Popup Container - The main app window */
+        /* iPhone 15 Pro Max Popup with Liquid Animation */
+        .popup-container {
+            background: 
+                linear-gradient(145deg, 
+                    rgba(255, 255, 255, 0.98) 0%, 
+                    rgba(248, 250, 252, 0.95) 30%, 
+                    rgba(241, 245, 249, 0.92) 70%, 
+                    rgba(226, 232, 240, 0.90) 100%
+                );
+            backdrop-filter: var(--blur-heavy);
+            -webkit-backdrop-filter: var(--blur-heavy);
+            border-radius: var(--border-radius-xl);
+            width: 100%;
+            max-width: 430px;
+            max-height: 94vh;
+            overflow: hidden;
+            box-shadow: 
+                0 60px 180px rgba(0, 0, 0, 0.12),
+                0 30px 80px rgba(0, 0, 0, 0.08),
+                0 15px 40px rgba(0, 0, 0, 0.06),
+                0 5px 15px rgba(0, 0, 0, 0.04),
+                0 0 0 1px rgba(255, 255, 255, 0.95),
+                inset 0 2px 0 rgba(255, 255, 255, 1),
+                inset 0 0 60px rgba(255, 255, 255, 0.15);
+            transform: scale(0.82) translateY(80px) rotateX(8deg);
+            transition: var(--transition-elastic);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            will-change: transform, opacity, filter;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            filter: brightness(1) contrast(1.02) saturate(1.05);
+        }
+
+        .popup-overlay.show .popup-container {
+            transform: scale(1) translateY(0) rotateX(0deg);
+            filter: brightness(1.02) contrast(1.05) saturate(1.1);
+        }
+
+        /* Dynamic Island style popup shimmer */
+        .popup-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.1) 25%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                rgba(255, 255, 255, 0.1) 75%, 
+                transparent 100%
+            );
+            animation: popupShimmer 4s var(--ease-out-expo) infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @keyframes popupShimmer {
+            0% { 
+                left: -100%; 
+                opacity: 0;
+            }
+            50% { 
+                opacity: 1;
+            }
+            100% { 
+                left: 100%; 
+                opacity: 0;
+            }
+        }
+
+        /* Ultra-smooth responsive design */
+        @media (max-width: 768px) {
+            .popup-container {
+                max-width: 95vw;
+                max-height: 90vh;
+                border-radius: var(--border-radius-lg);
+                transform: scale(0.9) translateY(40px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .popup-container {
+                max-width: 98vw;
+                max-height: 88vh;
+                border-radius: var(--border-radius-md);
+                transform: scale(0.95) translateY(30px);
+            }
+        }
+
+        @media (max-height: 700px) {
+            .popup-container {
+                max-height: 85vh;
+            }
+        }
+
+        /* App window decorations */
+        .popup-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            z-index: 1;
+        }
+
+        /* Popup Header */
+        /* Professional TesTPaY Header */
+        .popup-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 50%, var(--secondary-color) 100%);
+            color: white;
+            padding: 32px 32px 28px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .popup-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            animation: headerShine 4s infinite ease-in-out;
+        }
+
+        .popup-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        }
+
+        @keyframes headerShine {
+            0% { left: -100%; opacity: 0; }
+            50% { opacity: 1; }
+            100% { left: 100%; opacity: 0; }
+        }
+
+        /* TesTPaY Brand Title */
+        .popup-title {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1;
+            position: relative;
+            margin-bottom: 4px;
+        }
+
+        .popup-subtitle {
+            font-size: 15px;
+            opacity: 0.92;
+            margin-top: 8px;
+            z-index: 1;
+            position: relative;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 2;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            margin-top: 16px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 2px;
+            transition: width 0.5s ease;
+            width: 33.33%;
+        }
+
+        /* Popup Content */
+        .popup-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            position: relative;
+        }
+
+        .popup-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
+        }
+
+        .popup-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .popup-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .popup-content::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.1);
+            border-radius: 3px;
+        }
+
+        .popup-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,0,0,0.2);
+        }
+
+        /* Page Styles inside Popup - Enhanced App-like pages */
+        .popup-page {
+            display: none;
+            padding: 32px;
+            min-height: 450px;
+            opacity: 0;
+            transform: translateX(30px);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .popup-page.active {
+            display: block;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Product Page Styles */
+        .product-showcase {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .product-image {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            border-radius: 24px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: productPulse 2s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes productPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .product-image::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: sparkle 1.5s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+
+        .product-icon {
+            font-size: 48px;
+            color: white;
+        }
+
+        .product-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .product-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .price-section {
+            background: var(--bg-light);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 2px solid var(--border-color);
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .price-row:last-child {
+            margin-bottom: 0;
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--primary-color);
+            border-top: 1px solid var(--border-color);
+            padding-top: 8px;
+            margin-top: 8px;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .feature-icon {
+            color: var(--primary-color);
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .feature-text {
+            font-size: 12px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Payment Page Styles */
+        .order-summary {
+            background: var(--bg-light);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .summary-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .summary-details h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .summary-details p {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .payment-methods {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .payment-option {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .payment-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .payment-option:hover::before {
+            left: 100%;
+        }
+
+        .payment-option:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+
+        .payment-option.selected {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            transform: scale(1.02);
+        }
+
+        .payment-option.recommended::before {
+            content: 'Recommended';
+            position: absolute;
+            top: -8px;
+            right: 12px;
+            background: linear-gradient(135deg, #FBBF24, #F59E0B);
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            animation: badgePulse 2s ease-in-out infinite;
+            z-index: 2;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .payment-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-icon.upi {
+            background: linear-gradient(135deg, #FF9500, #FF6B00);
+        }
+
+        .payment-icon.card {
+            background: linear-gradient(135deg, #007AFF, #0051D5);
+        }
+
+        .payment-icon.wallet {
+            background: linear-gradient(135deg, #32D74B, #248A3D);
+        }
+
+        .payment-icon.bank {
+            background: linear-gradient(135deg, #5856D6, #3634A3);
+        }
+
+        .payment-info {
+            flex: 1;
+        }
+
+        .payment-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .payment-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .payment-badge {
+            background: linear-gradient(135deg, #34D399, #10B981);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .upi-icon { background: linear-gradient(135deg, #ff6b35, #f7931e); }
+        .card-icon { background: linear-gradient(135deg, #1a1f71, #eb001b); }
+        .wallet-icon { background: linear-gradient(135deg, #00baf2, #d32f2f); }
+
+        .payment-info {
+            flex: 1;
+        }
+
+        .payment-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .payment-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Additional UPI Payment Button */
+        .upi-payment-section {
+            margin: 20px 0;
+        }
+
+        .upi-pay-button {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 16px;
+            padding: 20px 24px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            transform: translateY(0px);
+            user-select: none;
+        }
+
+        /* Glowing circle outline for UPI button */
+        .upi-pay-button::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #667eea, #764ba2, #667eea, #764ba2);
+            background-size: 300% 300%;
+            border-radius: 18px;
+            z-index: -1;
+            animation: glowRotate 3s ease-in-out infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .upi-pay-button:hover::before {
+            opacity: 1;
+        }
+
+        /* Shine effect */
+        .upi-pay-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .upi-pay-button:hover::after {
+            left: 100%;
+        }
+
+        .upi-pay-button:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+
+        .upi-pay-button:active {
+            transform: translateY(-1px) scale(0.98);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.1s ease;
+        }
+
+        /* Floating animation for UPI button */
+        @keyframes floatButton {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-2px); }
+        }
+
+        .upi-pay-button {
+            animation: floatButton 3s ease-in-out infinite;
+        }
+
+        .upi-pay-button:hover {
+            animation: none;
+        }
+
+        .upi-button-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upi-button-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .upi-pay-button:hover .upi-button-icon::before {
+            opacity: 1;
+            animation: iconPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .upi-button-content {
+            flex: 1;
+            text-align: left;
+            transition: transform 0.3s ease;
+        }
+
+        .upi-pay-button:hover .upi-button-content {
+            transform: translateX(3px);
+        }
+
+        .upi-button-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .upi-pay-button:hover .upi-button-title {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .upi-button-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        .upi-pay-button:hover .upi-button-subtitle {
+            opacity: 1;
+        }
+
+        .upi-button-arrow {
+            font-size: 18px;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .upi-pay-button:hover .upi-button-arrow {
+            transform: translateX(4px);
+            opacity: 1;
+            animation: arrowBounce 1s ease-in-out infinite;
+        }
+
+        @keyframes arrowBounce {
+            0%, 100% { transform: translateX(4px); }
+            50% { transform: translateX(8px); }
+        }
+
+        /* Show QR Code Button */
+        .show-qr-section {
+            margin: 20px 0;
+        }
+
+        .show-qr-button {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            border-radius: 16px;
+            padding: 18px 24px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+            width: 100%;
+            text-align: left;
+            transform: translateY(0px);
+            user-select: none;
+        }
+
+        /* Glowing circle outline for QR button */
+        .show-qr-button::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #10b981, #059669, #10b981, #059669);
+            background-size: 300% 300%;
+            border-radius: 18px;
+            z-index: -1;
+            animation: glowRotate 3s ease-in-out infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .show-qr-button:hover::before {
+            opacity: 1;
+        }
+
+        /* Shine effect for QR button */
+        .show-qr-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .show-qr-button:hover::after {
+            left: 100%;
+        }
+
+        .show-qr-button:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 35px rgba(16, 185, 129, 0.4);
+        }
+
+        .show-qr-button:active {
+            transform: translateY(-1px) scale(0.98);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            transition: all 0.1s ease;
+        }
+
+        .show-qr-button.active {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        .show-qr-button.active::before {
+            background: linear-gradient(45deg, #ef4444, #dc2626, #ef4444, #dc2626);
+            background-size: 300% 300%;
+        }
+
+        /* Floating animation for QR button */
+        @keyframes floatButtonSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-1px); }
+        }
+
+        .show-qr-button {
+            animation: floatButtonSlow 4s ease-in-out infinite;
+        }
+
+        .show-qr-button:hover {
+            animation: none;
+        }
+
+        .qr-button-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .qr-button-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .show-qr-button:hover .qr-button-icon::before {
+            opacity: 1;
+            animation: iconPulse 1.2s ease-in-out infinite;
+        }
+
+        .qr-button-content {
+            flex: 1;
+            text-align: left;
+            transition: transform 0.3s ease;
+        }
+
+        .show-qr-button:hover .qr-button-content {
+            transform: translateX(3px);
+        }
+
+        .qr-button-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .show-qr-button:hover .qr-button-title {
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+
+        .qr-button-subtitle {
+            font-size: 13px;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        .show-qr-button:hover .qr-button-subtitle {
+            opacity: 1;
+        }
+
+        .qr-button-arrow {
+            font-size: 16px;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .show-qr-button:hover .qr-button-arrow {
+            transform: translateY(2px);
+            opacity: 1;
+            animation: arrowBounceVertical 1.2s ease-in-out infinite;
+        }
+
+        .show-qr-button.active .qr-button-arrow {
+            transform: rotate(180deg);
+            animation: none;
+        }
+
+        @keyframes arrowBounceVertical {
+            0%, 100% { transform: translateY(2px); }
+            50% { transform: translateY(-1px); }
+        }
+
+        /* Shake animation for error feedback */
+        @keyframes shakeApp {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+            20%, 40%, 60%, 80% { transform: translateX(2px); }
+        }
+
+        /* QR Section Animation */
+        .qr-section {
+            transition: all 0.5s ease;
+            transform: translateY(-20px);
+        }
+
+        .qr-section.show {
+            display: block !important;
+            opacity: 1 !important;
+            transform: translateY(0);
+        }
+
+        /* Enhanced floating coins animation */
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-coin {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            border-radius: 50%;
+            animation: floatCoin 6s ease-in-out infinite;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .floating-coin::before {
+            content: '₹';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            color: #b8860b;
+            font-size: 14px;
+        }
+
+        .floating-coin:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-coin:nth-child(2) {
+            top: 40%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .floating-coin:nth-child(3) {
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes floatCoin {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg); 
+                opacity: 0.7; 
+            }
+            25% { 
+                transform: translateY(-20px) rotate(90deg); 
+                opacity: 1; 
+            }
+            50% { 
+                transform: translateY(-10px) rotate(180deg); 
+                opacity: 0.8; 
+            }
+            75% { 
+                transform: translateY(-15px) rotate(270deg); 
+                opacity: 1; 
+            }
+        }
+
+        /* Particle background enhancement */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(102, 126, 234, 0.6);
+            border-radius: 50%;
+            animation: particleMove 15s linear infinite;
+        }
+
+        @keyframes particleMove {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        .upi-app-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 8px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .upi-app-icon.gpay {
+            background: linear-gradient(135deg, #4285F4, #34A853, #FBBC05, #EA4335);
+        }
+
+        .upi-app-icon.phonepe {
+            background: linear-gradient(135deg, #5F259F, #3C1A78);
+        }
+
+        .upi-app-icon.paytm {
+            background: linear-gradient(135deg, #002970, #00BAF2);
+        }
+
+        .upi-app-icon.bhim {
+            background: linear-gradient(135deg, #FF9500, #FF6B00);
+        }
+
+        .upi-app-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-dark);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Enhanced Form Styling */
+        .merchant-form {
+            background: var(--bg-light);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            position: relative;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        /* Security Info */
+        .security-info {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .security-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            flex: 1;
+            min-width: 140px;
+            justify-content: center;
+            animation: securityPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes securityPulse {
+            0%, 100% { 
+                transform: scale(1); 
+                box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3); 
+            }
+            50% { 
+                transform: scale(1.02); 
+                box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4); 
+            }
+        }
+
+        .security-badge i {
+            font-size: 14px;
+        }
+
+        .payment-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* Verification Page Styles */
+        .verification-status {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .status-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 32px;
+            color: white;
+            animation: iconPulse 2s ease-in-out infinite;
+        }
+
+        .status-icon.verifying {
+            background: var(--warning-color);
+        }
+
+        .status-icon.success {
+            background: var(--success-color);
+            animation: successPop 0.6s ease;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes successPop {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Confetti Animation */
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #f39c12;
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        .confetti-piece:nth-child(odd) {
+            background: #e74c3c;
+            border-radius: 50%;
+        }
+
+        .confetti-piece:nth-child(3n) {
+            background: #3498db;
+            transform: rotate(45deg);
+        }
+
+        .confetti-piece:nth-child(4n) {
+            background: #2ecc71;
+        }
+
+        .confetti-piece:nth-child(5n) {
+            background: #9b59b6;
+            border-radius: 50%;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Shining Circle Animation for UPI Apps */
+        .shine-circle {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            border-radius: 50%;
+            animation: shineRotate 2s linear infinite;
+        }
+
+        /* QR Code Section */
+        .qr-section {
+            background: linear-gradient(135deg, #f8fafc, #ffffff);
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+            padding: 32px 24px;
+            margin: 20px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .qr-section::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #667eea, #764ba2, #667eea, #764ba2);
+            border-radius: 26px;
+            z-index: -1;
+            animation: qrBorderRotate 4s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes qrBorderRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .qr-container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .qr-header {
+            margin-bottom: 24px;
+        }
+
+        .qr-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .qr-subtitle {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .qr-code-wrapper {
+            display: flex;
+            justify-content: center;
+            margin: 24px 0;
+        }
+
+        .qr-code {
+            width: 220px;
+            height: 220px;
+            background: #ffffff;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            border: 2px solid #f1f5f9;
+        }
+
+        .qr-image {
+            width: 180px;
+            height: 180px;
+            border-radius: 12px;
+            position: relative;
+            z-index: 3;
+        }
+
+        .qr-scanner-frame {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        .qr-corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #667eea;
+            border-radius: 3px;
+        }
+
+        .qr-corner-tl {
+            top: 0;
+            left: 0;
+            border-right: none;
+            border-bottom: none;
+            animation: cornerPulse 2s ease-in-out infinite;
+        }
+
+        .qr-corner-tr {
+            top: 0;
+            right: 0;
+            border-left: none;
+            border-bottom: none;
+            animation: cornerPulse 2s ease-in-out infinite 0.5s;
+        }
+
+        .qr-corner-bl {
+            bottom: 0;
+            left: 0;
+            border-right: none;
+            border-top: none;
+            animation: cornerPulse 2s ease-in-out infinite 1s;
+        }
+
+        .qr-corner-br {
+            bottom: 0;
+            right: 0;
+            border-left: none;
+            border-top: none;
+            animation: cornerPulse 2s ease-in-out infinite 1.5s;
+        }
+
+        .qr-scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #667eea, transparent);
+            animation: scanlineMove 3s ease-in-out infinite;
+        }
+
+        @keyframes cornerPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        @keyframes scanlineMove {
+            0% { top: 0; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: calc(100% - 2px); opacity: 0; }
+        }
+
+        .qr-details {
+            margin: 24px 0;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .qr-amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: #059669;
+            margin-bottom: 8px;
+        }
+
+        .qr-upi {
+            font-size: 14px;
+            color: #475569;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .qr-ref {
+            font-size: 12px;
+            color: #64748b;
+            font-family: 'Courier New', monospace;
+        }
+
+        .qr-timer {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            animation: timerPulse 2s ease-in-out infinite;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        @keyframes timerPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Labnol.org Style QR Code */
+        .qr-container-labnol {
+            background: #ffffff;
+            padding: 30px 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+            border: 1px solid #e5e7eb;
+        }
+
+        .qr-merchant-header {
+            font-size: 18px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .qr-code-labnol {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .qr-image-labnol {
+            width: 225px;
+            height: 225px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* UPI Center Logo Overlay */
+        .qr-center-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            border: 2px solid #f8fafc;
+        }
+
+        .upi-center-text {
+            font-size: 12px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FF6633, #32A852);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .upi-center-text {
+            font-size: 10px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .qr-upi-id {
+            font-size: 16px;
+            color: #6b7280;
+            margin: 20px 0;
+            font-weight: 500;
+        }
+
+        .qr-scan-text {
+            font-size: 16px;
+            color: #374151;
+            margin: 25px 0;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .qr-upi-logos {
+            margin: 25px 0;
+        }
+
+        .qr-logo-row {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .qr-logo-item {
+            text-align: center;
+            min-width: 140px;
+        }
+
+        .qr-logo-upi {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1f2937;
+            margin-bottom: 4px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .qr-logo-subtext {
+            font-size: 9px;
+            color: #6b7280;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .qr-app-logos {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .qr-app-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            color: white;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .qr-app-logo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .qr-app-logo:hover::before {
+            opacity: 1;
+        }
+
+        .qr-app-logo:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .qr-app-logo:active {
+            transform: translateY(-1px) scale(0.98);
+            transition: all 0.1s ease;
+        }
+
+        /* Haptic Animation */
+        @keyframes hapticPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .qr-app-logo.haptic-pulse {
+            animation: hapticPulse 0.3s ease-in-out;
+        }
+
+        /* Button Click Animation */
+        @keyframes buttonBounce {
+            0% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-2px) scale(1.05); }
+            100% { transform: translateY(0px) scale(1); }
+        }
+
+        .button-bounce {
+            animation: buttonBounce 0.3s ease-in-out;
+        }
+
+        /* Glowing rotation animation */
+        @keyframes glowRotate {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Pulse glow animation */
+        @keyframes pulseGlow {
+            0%, 100% { 
+                box-shadow: 0 0 5px rgba(102, 126, 234, 0.5),
+                           0 0 10px rgba(102, 126, 234, 0.3),
+                           0 0 15px rgba(102, 126, 234, 0.1);
+            }
+            50% { 
+                box-shadow: 0 0 10px rgba(102, 126, 234, 0.8),
+                           0 0 20px rgba(102, 126, 234, 0.5),
+                           0 0 30px rgba(102, 126, 234, 0.3);
+            }
+        }
+
+        /* Breathing animation */
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* Shine Animation */
+        @keyframes shineEffect {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .qr-app-logo::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.4), transparent);
+            transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            transition: all 0.6s ease;
+        }
+
+        .qr-app-logo:hover::after {
+            animation: shineEffect 0.6s ease-in-out;
+        }
+
+        .gpay-logo {
+            background: linear-gradient(135deg, #4285f4, #34a853);
+        }
+
+        .phonepe-logo {
+            background: linear-gradient(135deg, #5f259f, #7c4dff);
+        }
+
+        .paytm-logo {
+            background: linear-gradient(135deg, #00baf2, #0082c8);
+        }
+
+        .bhim-logo {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+        }
+
+        .cred-logo {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+        }
+
+        .amazon-logo {
+            background: linear-gradient(135deg, #ff9900, #ff6600);
+        }
+
+        .qr-app-text {
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .qr-footer-credit {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        /* Responsive Design for QR Labnol Style */
+        @media (max-width: 480px) {
+            .qr-container-labnol {
+                padding: 20px 15px;
+                margin: 0 10px;
+            }
+
+            .qr-image-labnol {
+                width: 200px;
+                height: 200px;
+            }
+
+            .qr-logo-row {
+                gap: 20px;
+            }
+
+            .qr-app-logos {
+                gap: 10px;
+            }
+
+            .qr-app-logo {
+                width: 60px;
+                height: 28px;
+                font-size: 10px;
+            }
+        }
+
+        .status-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .status-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .timer-display {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--warning-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--warning-color);
+        }
+
+        .transaction-details {
+            background: var(--bg-light);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .detail-row:last-child {
+            margin-bottom: 0;
+            font-weight: 600;
+            border-top: 1px solid var(--border-color);
+            padding-top: 8px;
+        }
+
+        .detail-label {
+            color: var(--text-secondary);
+        }
+
+        .detail-value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Popup Footer */
+        .popup-footer {
+            padding: 20px 24px;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-light);
+        }
+
+        /* iPhone 15 Pro Max Ultra-smooth Button */
+        .btn {
+            width: 100%;
+            padding: 20px 28px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-elastic);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+            min-height: 64px;
+            box-shadow: var(--shadow-lg);
+            transform-style: preserve-3d;
+            will-change: transform, box-shadow, filter;
+            
+            /* iPhone 15 Pro Max touch optimization */
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-drag: none;
+            -webkit-touch-callout: none;
+            
+            /* Enhanced rendering */
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            filter: brightness(1) contrast(1.02);
+        }
+
+        /* Liquid haptic feedback like iPhone */
+        .btn:active {
+            transform: scale(0.96) translateZ(0) rotateX(1deg);
+            transition: var(--transition-instant);
+            filter: brightness(0.95) contrast(1.05);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255,255,255,0.2) 25%, 
+                rgba(255,255,255,0.4) 50%, 
+                rgba(255,255,255,0.2) 75%, 
+                transparent 100%
+            );
+            transition: var(--transition-smooth);
+            z-index: 2;
+            will-change: transform, opacity;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+            animation: buttonRipple 0.8s var(--ease-out-expo);
+        }
+
+        @keyframes buttonRipple {
+            0% { 
+                left: -100%; 
+                opacity: 0;
+                transform: scaleY(0.5);
+            }
+            50% { 
+                opacity: 1;
+                transform: scaleY(1);
+            }
+            100% { 
+                left: 100%; 
+                opacity: 0;
+                transform: scaleY(0.5);
+            }
+        }
+
+        /* iPhone 15 Pro Max Primary Button */
+        .btn-primary {
+            background: linear-gradient(135deg, 
+                var(--primary-color) 0%, 
+                var(--primary-light) 25%, 
+                var(--secondary-color) 75%, 
+                var(--accent-color) 100%
+            );
+            color: white;
+            box-shadow: 
+                0 15px 50px rgba(0, 102, 255, 0.25),
+                0 8px 25px rgba(0, 102, 255, 0.15),
+                0 3px 10px rgba(0, 200, 81, 0.1),
+                inset 0 2px 0 rgba(255, 255, 255, 0.3),
+                inset 0 -2px 0 rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(255,255,255,0.2) 0%, 
+                transparent 30%, 
+                transparent 70%, 
+                rgba(255,255,255,0.15) 100%
+            );
+            opacity: 0;
+            transition: var(--transition-smooth);
+            will-change: opacity, transform;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px) scale(1.03) translateZ(0) rotateX(-2deg);
+            box-shadow: 
+                0 25px 80px rgba(0, 102, 255, 0.35),
+                0 15px 40px rgba(0, 102, 255, 0.25),
+                0 8px 20px rgba(0, 200, 81, 0.15),
+                inset 0 2px 0 rgba(255, 255, 255, 0.4),
+                inset 0 -2px 0 rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+            filter: brightness(1.05) contrast(1.1) saturate(1.15);
+        }
+
+        .btn-primary:hover::after {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        /* Responsive Button Design */
+        @media (max-width: 768px) {
+            .btn {
+                padding: 16px 20px;
+                min-height: 56px;
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn {
+                padding: 14px 18px;
+                min-height: 52px;
+                font-size: 14px;
+                border-radius: var(--border-radius-sm);
+            }
+        }
+
+        /* Professional TesTPaY Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 50%, var(--secondary-color) 100%);
+            color: white;
+            box-shadow: 
+                0 8px 32px rgba(0, 102, 255, 0.25),
+                0 4px 12px rgba(0, 102, 255, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn-primary:hover::before {
+            opacity: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 
+                0 12px 48px rgba(0, 102, 255, 0.35),
+                0 8px 24px rgba(0, 102, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0) scale(1);
+            transition: all 0.1s ease;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            margin-top: 16px;
+            box-shadow: 
+                0 4px 16px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 
+                0 8px 24px rgba(0, 102, 255, 0.2),
+                0 4px 12px rgba(0, 102, 255, 0.1);
+        }
+
+        .btn-loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Perfect Toast Backdrop for Center Positioning */
+        .toast-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(18, 25, 38, 0.12);
+            backdrop-filter: blur(4px) brightness(0.95);
+            -webkit-backdrop-filter: blur(4px) brightness(0.95);
+            z-index: 10000;
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            pointer-events: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .toast-backdrop.show {
+            opacity: 1;
+        }
+
+        /* Enhanced Toast with Perfect Center Alignment */
+        .toast {
+            position: fixed;
+            top: 50vh;
+            left: 50vw;
+            transform: translate(-50%, -50%) scale(0.85);
+            background: linear-gradient(145deg, #1a202c 0%, #2d3748 45%, #1a202c 100%);
+            color: #f7fafc;
+            padding: 24px 40px;
+            border-radius: 18px;
+            font-size: 16px;
+            font-weight: 600;
+            z-index: 10001;
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 
+                0 20px 60px rgba(26, 32, 44, 0.4),
+                0 10px 30px rgba(45, 55, 72, 0.3),
+                0 5px 15px rgba(26, 32, 44, 0.2),
+                inset 0 1px 0 rgba(247, 250, 252, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(113, 128, 150, 0.2);
+            min-width: 280px;
+            max-width: 85vw;
+            text-align: center;
+            backdrop-filter: blur(8px) saturate(1.4);
+            -webkit-backdrop-filter: blur(8px) saturate(1.4);
+            border: 1px solid rgba(113, 128, 150, 0.15);
+            will-change: transform, opacity;
+            
+            /* iPhone 15 Pro Max design touches */
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            font-feature-settings: 'cv11', 'ss01';
+            letter-spacing: 0.3px;
+            line-height: 1.4;
+            
+            /* Perfect centering for all devices */
+            margin: 0;
+            box-sizing: border-box;
+            
+            /* Prevent interaction with background */
+            pointer-events: auto;
+            
+            /* Ensure proper rendering */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            
+            /* Ultra-smooth GPU acceleration */
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+        }
+
+        .toast::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.12) 50%, 
+                transparent 100%
+            );
+            animation: toastShimmerCenter 3s var(--ease-out-expo) infinite;
+            z-index: 1;
+        }
+
+        @keyframes toastShimmerCenter {
+            0% { 
+                left: -100%; 
+                opacity: 0;
+            }
+            50% { 
+                opacity: 1;
+            }
+            100% { 
+                left: 100%; 
+                opacity: 0;
+            }
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            filter: brightness(1.01) contrast(1.02) saturate(1.05);
+            animation: toastSlowPulse 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        @keyframes toastSlowPulse {
+            0% { 
+                transform: translate(-50%, -50%) scale(0.85);
+                opacity: 0;
+                filter: brightness(0.9) blur(2px);
+            }
+            40% { 
+                transform: translate(-50%, -50%) scale(0.98);
+                opacity: 0.8;
+                filter: brightness(1) blur(0px);
+            }
+            70% { 
+                transform: translate(-50%, -50%) scale(1.01);
+                opacity: 0.95;
+                filter: brightness(1.01) blur(0px);
+            }
+            100% { 
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+                filter: brightness(1.01) contrast(1.02) saturate(1.05);
+            }
+        }
+
+        .toast.success {
+            background: linear-gradient(135deg, 
+                #2f7d5e 0%, 
+                #38a169 45%,
+                #48bb78 80%,
+                #38a169 100%
+            );
+            color: #f0fff4;
+            border: 1px solid #68d391;
+            box-shadow: 
+                0 20px 60px rgba(47, 125, 94, 0.25),
+                0 10px 30px rgba(56, 161, 105, 0.2),
+                0 5px 15px rgba(72, 187, 120, 0.15),
+                inset 0 1px 0 rgba(240, 255, 244, 0.3),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+                0 0 0 1px rgba(104, 211, 145, 0.3);
+        }
+
+        .toast.error {
+            background: linear-gradient(135deg, 
+                #c53030 0%, 
+                #e53e3e 45%,
+                #fc8181 80%,
+                #e53e3e 100%
+            );
+            color: #fed7d7;
+            border: 1px solid #fc8181;
+            box-shadow: 
+                0 20px 60px rgba(197, 48, 48, 0.25),
+                0 10px 30px rgba(229, 62, 62, 0.2),
+                0 5px 15px rgba(252, 129, 129, 0.15),
+                inset 0 1px 0 rgba(254, 215, 215, 0.3),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+                0 0 0 1px rgba(252, 129, 129, 0.3);
+        }
+
+        /* Ultra-responsive center toast design */
+        @media (max-width: 768px) {
+            .toast {
+                padding: 18px 32px;
+                min-width: 300px;
+                font-size: 15px;
+                border-radius: var(--border-radius);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .toast {
+                padding: 16px 28px;
+                min-width: 280px;
+                font-size: 14px;
+                margin: 0 15px;
+                max-width: calc(100vw - 30px);
+            }
+        }
+
+        @media (max-height: 600px) {
+            .toast {
+                top: 40%;
+                padding: 14px 24px;
+            }
+        }
+
+        .toast.error {
+            background: var(--error-color);
+            border: 2px solid #ef4444;
+            animation: toastShake 0.5s ease-in-out;
+        }
+
+        @keyframes toastShake {
+            0%, 100% { transform: translateX(-50%) translateY(-10px); }
+            25% { transform: translateX(-45%) translateY(-10px); }
+            75% { transform: translateX(-55%) translateY(-10px); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .popup-container {
+                max-width: 95vw;
+                max-height: 95vh;
+                margin: 10px;
+            }
+
+            .popup-page {
+                padding: 20px;
+            }
+
+            .main-title {
+                font-size: 36px;
+            }
+
+            .main-subtitle {
+                font-size: 18px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .upi-app-name {
+                font-size: 11px !important;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Confetti Effect */
+        .confetti {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10002;
+            animation: confettiFall 3s linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Landing Page -->
+    <div class="landing-container">
+        <!-- Floating Background Elements -->
+        <div class="floating-elements">
+            <div class="floating-coin"></div>
+            <div class="floating-coin"></div>
+            <div class="floating-coin"></div>
+        </div>
+        
+        <!-- Particles Background -->
+        <div class="particles" id="particles"></div>
+        
+        <div class="logo">
+            <!-- TesTPaY Professional Logo with T -->
+        </div>
+        <h1 class="main-title">TesTPaY</h1>
+        <p class="main-subtitle">Professional Payment Gateway</p>
+        <p class="brand-tagline">Secure • Fast • Reliable • Trusted by Businesses</p>
+        <button class="trigger-button" onclick="openPaymentPopup()">
+            <i class="fas fa-credit-card" style="margin-right: 8px;"></i>
+            Start Payment Gateway
+        </button>
+    </div>
+
+    <!-- Payment Popup Overlay -->
+    <div class="popup-overlay" id="paymentPopup">
+        <div class="popup-container">
+            <!-- Popup Header -->
+            <div class="popup-header">
+                <div class="popup-title" id="popupTitle">TesTPaY Gateway</div>
+                <div class="popup-subtitle" id="popupSubtitle">Professional Payment Processing</div>
+                <button class="close-btn" onclick="closePaymentPopup()">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <!-- Popup Content -->
+            <div class="popup-content">
+                <!-- Page 1: Merchant Setup -->
+                <div class="popup-page active" id="page-1">
+                    <div class="product-showcase">
+                        <div class="product-image">
+                            <div class="product-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                        </div>
+                        <h2 class="product-title">TesTPaY Configuration</h2>
+                        <p class="product-desc">Setup your professional payment gateway</p>
+                    </div>
+
+                    <div class="merchant-form">
+                        <div class="form-group">
+                            <label for="merchantName">Business/Merchant Name</label>
+                            <input type="text" id="merchantName" class="form-input" placeholder="Your business name" value="TesTPaY Demo">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="upiId">UPI ID</label>
+                            <input type="text" id="upiId" class="form-input" placeholder="business@upi" value="india@ibl">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="paymentAmount">Payment Amount (₹)</label>
+                            <input type="number" id="paymentAmount" class="form-input" placeholder="Enter amount" value="1" min="1" max="100000">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="customMessage">Transaction Reference</label>
+                            <input type="text" id="customMessage" class="form-input" placeholder="Payment reference ID" value="#TesTPaY_Demo_001">
+                        </div>
+                    </div>
+
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="feature-text">100% Secure</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div class="feature-text">Instant Process</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-qrcode"></i>
+                            </div>
+                            <div class="feature-text">QR Code Ready</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="feature-text">UPI Compatible</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 2: Payment -->
+                <div class="popup-page" id="page-2">
+                    <div class="order-summary">
+                        <div class="summary-item">
+                            <div class="summary-icon">
+                                <i class="fas fa-store"></i>
+                            </div>
+                            <div class="summary-details">
+                                <h4 id="summaryMerchantName">TestPaY</h4>
+                                <p id="summaryAmount">₹1</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Show QR Code Button - At Top -->
+                    <div class="show-qr-section">
+                        <button class="show-qr-button" onclick="toggleQRCode()" id="showQRButton">
+                            <div class="qr-button-icon">
+                                <i class="fas fa-qrcode"></i>
+                            </div>
+                            <div class="qr-button-content">
+                                <div class="qr-button-title">Show UPI QR Code</div>
+                                <div class="qr-button-subtitle">Scan to pay instantly</div>
+                            </div>
+                            <div class="qr-button-arrow">
+                                <i class="fas fa-chevron-down" id="qrArrow"></i>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- QR Code Section - labnol.org Style -->
+                    <div class="qr-section" id="qrSection" style="display: none; opacity: 0;">
+                        <div class="qr-container-labnol">
+                            <!-- Merchant Name Header -->
+                            <div class="qr-merchant-header" id="qrMerchantName">
+                                MERCHANT NAME
+                            </div>
+                            
+                            <!-- QR Code Image -->
+                            <div class="qr-code-labnol">
+                                <img id="qrCodeImage" src="https://api.qrserver.com/v1/create-qr-code/?size=225x225&data=upi://pay?pa=india@ibl%26pn=TestPaY%26am=1%26cu=INR%26tn=%234486474537453" 
+                                     alt="UPI QR Code" class="qr-image-labnol">
+                                <div class="qr-center-logo">
+                                    <div class="upi-center-text">UPI</div>
+                                </div>
+                            </div>
+                            
+                            <!-- UPI ID -->
+                            <div class="qr-upi-id" id="qrUpiDisplay">
+                                merchant@upi
+                            </div>
+                            
+                            <!-- Scan Instruction -->
+                            <div class="qr-scan-text">
+                                Scan and pay with any UPI app
+                            </div>
+                            
+                            <!-- UPI Logos Section -->
+                            <div class="qr-upi-logos">
+                                <div class="qr-logo-row">
+                                    <!-- UPI Official Logo Only -->
+                                    <div class="qr-logo-item">
+                                        <div class="qr-logo-upi">UPI</div>
+                                        <div class="qr-logo-subtext">UNIFIED PAYMENTS INTERFACE</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Payment App Logos -->
+                                <div class="qr-app-logos">
+                                    <div class="qr-app-logo gpay-logo clickable-app" data-app="gpay">
+                                        <span class="qr-app-text">GPay</span>
+                                    </div>
+                                    <div class="qr-app-logo phonepe-logo clickable-app" data-app="phonepe">
+                                        <span class="qr-app-text">PhonePe</span>
+                                    </div>
+                                    <div class="qr-app-logo paytm-logo clickable-app" data-app="paytm">
+                                        <span class="qr-app-text">Paytm</span>
+                                    </div>
+                                    <div class="qr-app-logo amazon-logo clickable-app" data-app="amazonpay">
+                                        <span class="qr-app-text">Amazon Pay</span>
+                                    </div>
+                                    <div class="qr-app-logo bhim-logo clickable-app" data-app="bhim">
+                                        <span class="qr-app-text">BHIM</span>
+                                    </div>
+                                    <div class="qr-app-logo cred-logo clickable-app" data-app="cred">
+                                        <span class="qr-app-text">CRED</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+
+                        </div>
+                    </div>
+
+                    <!-- Additional UPI Payment Button -->
+                    <div class="upi-payment-section">
+                        <a href="#" class="upi-pay-button" onclick="openUPIApp(event)" id="generalUPIButton">
+                            <div class="upi-button-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="upi-button-content">
+                                <div class="upi-button-title">Pay using any UPI app</div>
+                                <div class="upi-button-subtitle">Quick & Secure Payment</div>
+                            </div>
+                            <div class="upi-button-arrow">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- Page 3: Verification -->
+                <div class="popup-page" id="page-3">
+                    <div class="verification-status">
+                        <div class="status-icon verifying" id="statusIcon">
+                            <i class="fas fa-clock" id="statusIconContent"></i>
+                        </div>
+                        <h3 class="status-title" id="statusTitle">Verifying Payment</h3>
+                        <p class="status-desc" id="statusDesc">Please wait while we confirm your payment. This usually takes a few seconds.</p>
+                        
+                        <div class="timer-display" id="timerDisplay">
+                            <i class="fas fa-hourglass-half"></i>
+                            <span>Please wait </span>
+                            <span id="timer">15</span>
+                            <span> seconds</span>
+                        </div>
+                    </div>
+
+                    <div class="transaction-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Transaction ID</span>
+                            <span class="detail-value" id="transactionId">CJ2025090687451</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Payment Method</span>
+                            <span class="detail-value" id="paymentMethodUsed">UPI Payment</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Date & Time</span>
+                            <span class="detail-value" id="paymentDateTime"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Amount</span>
+                            <span class="detail-value">₹1.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Popup Footer -->
+            <div class="popup-footer">
+                <button class="btn btn-primary" id="primaryBtn" onclick="handlePrimaryAction()">
+                    <i class="fas fa-heart"></i>
+                    <span id="primaryBtnText">Donate Now - ₹1</span>
+                </button>
+                <button class="btn btn-secondary" id="secondaryBtn" onclick="handleSecondaryAction()" style="display: none;">
+                    <i class="fas fa-times"></i>
+                    <span id="secondaryBtnText">Cancel Transaction</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Global State
+        let currentPopupPage = 1;
+        let selectedPaymentMethod = 'upi';
+        let selectedUPIApp = 'UPI App'; // Track which UPI app was selected
+        let paymentStartTime = null; // Track when payment was initiated
+        let verificationTimer = null;
+        let verificationTime = 15;
+
+        // TesTPaY Professional Configuration
+        const CONFIG = {
+            amount: 1,
+            merchantName: 'TesTPaY Demo',
+            upiId: 'india@ibl',
+            customMessage: '#TesTPaY_Demo_001',
+            transactionPrefix: 'TTP',
+            paymentMethods: {
+                upi: 'UPI Payment Gateway'
+            },
+            pageConfig: {
+                1: {
+                    title: 'TesTPaY Setup',
+                    subtitle: 'Configure payment gateway',
+                    progress: 33.33
+                },
+                2: {
+                    title: 'Process Payment',
+                    subtitle: 'Secure UPI transaction',
+                    progress: 66.66
+                },
+                3: {
+                    title: 'Payment Complete',
+                    subtitle: 'Transaction successful',
+                    progress: 100
+                }
+            }
+        };
+
+        // Popup Management
+        function openPaymentPopup() {
+            const popup = document.getElementById('paymentPopup');
+            popup.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            
+            // Initialize popup features
+            startQRTimer();
+            
+            // Update UPI links with current config
+            updateUPILinks();
+            updateQRCode();
+            
+            // Reset to page 1
+            goToPopupPage(1);
+            showToast('Welcome to TestPaY!', 'success');
+        }
+
+        function closePaymentPopup() {
+            const popup = document.getElementById('paymentPopup');
+            popup.classList.remove('show');
+            document.body.style.overflow = 'auto';
+            
+            // Clean up timers
+            if (qrTimer) {
+                clearInterval(qrTimer);
+                qrTimer = null;
+            }
+            
+            // Reset state
+            resetPopupState();
+        }
+
+        function resetPopupState() {
+            currentPopupPage = 1;
+            selectedPaymentMethod = 'upi';
+            selectedUPIApp = 'UPI App';
+            paymentStartTime = null;
+            if (verificationTimer) {
+                clearInterval(verificationTimer);
+                verificationTimer = null;
+            }
+            verificationTime = 15;
+            qrTimeRemaining = 300;
+            
+            // Reset form to default values
+            document.getElementById('merchantName').value = 'TestPaY';
+            document.getElementById('upiId').value = 'india@ibl';
+            document.getElementById('paymentAmount').value = '1';
+            document.getElementById('customMessage').value = '#4486474537453';
+            
+            // Reset button states
+            const primaryBtn = document.getElementById('primaryBtn');
+            const primaryBtnText = document.getElementById('primaryBtnText');
+            if (primaryBtn) {
+                primaryBtn.classList.remove('btn-loading');
+                primaryBtn.style.opacity = '1';
+            }
+            if (primaryBtnText) {
+                primaryBtnText.textContent = `Continue with ₹1`;
+            }
+            
+            // Hide QR section if visible
+            const qrSection = document.getElementById('qrSection');
+            if (qrSection) {
+                qrSection.style.display = 'none';
+                qrSection.style.opacity = '0';
+                qrSection.classList.remove('show');
+            }
+            
+            // Reset QR button state
+            const showQRButton = document.getElementById('showQRButton');
+            if (showQRButton) {
+                showQRButton.classList.remove('active');
+                const buttonTitle = showQRButton.querySelector('.qr-button-title');
+                const buttonSubtitle = showQRButton.querySelector('.qr-button-subtitle');
+                const arrow = showQRButton.querySelector('.qr-button-arrow');
+                
+                if (buttonTitle) buttonTitle.textContent = 'Show QR Code';
+                if (buttonSubtitle) buttonSubtitle.textContent = 'Scan to pay instantly';
+                if (arrow) arrow.style.transform = '';
+            }
+            
+            // Reset UI elements
+            document.querySelectorAll('.popup-page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById('page-1').classList.add('active');
+            
+            document.getElementById('primaryBtn').classList.remove('btn-loading');
+            document.getElementById('primaryBtnText').textContent = `Continue with ₹${CONFIG.amount}`;
+            document.getElementById('secondaryBtn').style.display = 'none';
+        }
+
+        // Page Navigation within Popup
+        function goToPopupPage(pageNumber) {
+            // Validate and update payment details when moving from page 1 to page 2
+            if (currentPopupPage === 1 && pageNumber === 2) {
+                if (!updatePaymentDetails()) {
+                    return; // Don't proceed if validation fails
+                }
+            }
+
+            // Hide all pages
+            document.querySelectorAll('.popup-page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // Show target page
+            setTimeout(() => {
+                document.getElementById(`page-${pageNumber}`).classList.add('active');
+            }, 150);
+
+            // Update header and progress
+            const config = CONFIG.pageConfig[pageNumber];
+            document.getElementById('popupTitle').textContent = config.title;
+            document.getElementById('popupSubtitle').textContent = config.subtitle;
+            document.getElementById('progressFill').style.width = config.progress + '%';
+
+            currentPopupPage = pageNumber;
+
+            // Update footer buttons
+            updateFooterButtons(pageNumber);
+
+            // Page-specific initialization
+            if (pageNumber === 3) {
+                startVerification();
+            }
+        }
+
+        function updateFooterButtons(pageNumber) {
+            const primaryBtn = document.getElementById('primaryBtn');
+            const secondaryBtn = document.getElementById('secondaryBtn');
+            const primaryBtnText = document.getElementById('primaryBtnText');
+            const secondaryBtnText = document.getElementById('secondaryBtnText');
+
+            switch (pageNumber) {
+                case 1:
+                    primaryBtnText.textContent = `Continue with ₹${CONFIG.amount}`;
+                    primaryBtn.querySelector('i').className = 'fas fa-arrow-right';
+                    secondaryBtn.style.display = 'none';
+                    break;
+                case 2:
+                    primaryBtnText.textContent = `Paid Successfully via ${getSelectedPaymentModeName()}`;
+                    primaryBtn.querySelector('i').className = 'fas fa-check-circle';
+                    secondaryBtn.style.display = 'none';
+                    break;
+                case 3:
+                    primaryBtnText.textContent = 'Processing...';
+                    primaryBtn.querySelector('i').className = 'fas fa-clock';
+                    secondaryBtn.style.display = 'block';
+                    secondaryBtnText.textContent = 'Cancel Transaction';
+                    secondaryBtn.querySelector('i').className = 'fas fa-times';
+                    break;
+            }
+        }
+
+        // Update Payment Details from Form
+        function updatePaymentDetails() {
+            const merchantName = document.getElementById('merchantName').value.trim();
+            const upiId = document.getElementById('upiId').value.trim();
+            const amount = document.getElementById('paymentAmount').value.trim();
+            const customMessage = document.getElementById('customMessage').value.trim();
+
+            // Validation
+            if (!merchantName) {
+                showToast('Please enter merchant name', 'error');
+                return false;
+            }
+            if (!upiId || !upiId.includes('@')) {
+                showToast('Please enter a valid UPI ID', 'error');
+                return false;
+            }
+            if (!amount || amount <= 0) {
+                showToast('Please enter a valid amount', 'error');
+                return false;
+            }
+
+            // Update global config
+            CONFIG.merchantName = merchantName;
+            CONFIG.upiId = upiId;
+            CONFIG.amount = parseFloat(amount);
+            CONFIG.customMessage = customMessage;
+
+            // Update all UPI links and QR code
+            updateUPILinks();
+            updateQRCode();
+            updateDisplayAmounts();
+
+            showToast('Payment details updated successfully!', 'success');
+            return true;
+        }
+
+        // Update UPI Links
+        function updateUPILinks() {
+            // Create standardized UPI parameters (same as labnol.org format)
+            const upiParams = new URLSearchParams({
+                pa: CONFIG.upiId,
+                pn: CONFIG.merchantName,
+                am: CONFIG.amount,
+                cu: 'INR',
+                tn: CONFIG.customMessage
+            });
+            
+            const baseUPIUrl = `upi://pay?${upiParams.toString()}`;
+            
+            // Update general UPI button only
+            const generalUPIButton = document.getElementById('generalUPIButton');
+            
+            if (generalUPIButton) {
+                // Standard UPI scheme (compatible with all UPI apps)
+                generalUPIButton.href = baseUPIUrl;
+            }
+            
+            // Debug log to verify URL format
+            console.log('Generated Base UPI URL:', baseUPIUrl);
+        }
+
+        // Update QR Code
+        function updateQRCode() {
+            // Use the same format as labnol.org - proper UPI URL structure
+            const upiParams = new URLSearchParams({
+                pa: CONFIG.upiId,
+                pn: CONFIG.merchantName,
+                am: CONFIG.amount,
+                cu: 'INR',
+                tn: CONFIG.customMessage
+            });
+            
+            const qrData = `upi://pay?${upiParams.toString()}`;
+            const qrImage = document.getElementById('qrCodeImage');
+            
+            if (qrImage) {
+                // Use the same QR service and format as labnol.org (225x225 size like the original)
+                const encodedData = encodeURIComponent(qrData);
+                qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=225x225&data=${encodedData}`;
+                qrImage.alt = `UPI QR Code for ${CONFIG.merchantName}`;
+            }
+
+            // Update labnol-style QR display elements
+            const qrMerchantName = document.getElementById('qrMerchantName');
+            const qrUpiDisplay = document.getElementById('qrUpiDisplay');
+            
+            if (qrMerchantName) {
+                qrMerchantName.textContent = CONFIG.merchantName.toUpperCase();
+            }
+            if (qrUpiDisplay) {
+                qrUpiDisplay.textContent = CONFIG.upiId;
+            }
+
+            // Update legacy QR details (if they exist)
+            const qrAmount = document.querySelector('.qr-amount');
+            const qrUpi = document.querySelector('.qr-upi');
+            const qrRef = document.querySelector('.qr-ref');
+            
+            if (qrAmount) qrAmount.textContent = `₹${CONFIG.amount}`;
+            if (qrUpi) qrUpi.textContent = `UPI: ${CONFIG.upiId}`;
+            if (qrRef) qrRef.textContent = `Ref: ${CONFIG.customMessage}`;
+            
+            // Debug log to verify UPI format
+            console.log('Generated UPI URL:', qrData);
+        }
+
+        // Update Display Amounts
+        function updateDisplayAmounts() {
+            // Update summary details
+            const summaryMerchantName = document.getElementById('summaryMerchantName');
+            const summaryAmount = document.getElementById('summaryAmount');
+            
+            if (summaryMerchantName) summaryMerchantName.textContent = CONFIG.merchantName;
+            if (summaryAmount) summaryAmount.textContent = `₹${CONFIG.amount}`;
+
+            // Update button text
+            const primaryBtnText = document.getElementById('primaryBtnText');
+            if (primaryBtnText && currentPopupPage === 1) {
+                primaryBtnText.textContent = `Continue with ₹${CONFIG.amount}`;
+            }
+        }
+
+        // Get Selected Payment Mode Name
+        function getSelectedPaymentModeName() {
+            if (selectedUPIApp && selectedUPIApp !== 'UPI App' && selectedUPIApp !== '') {
+                // Return proper case formatting for app names
+                switch(selectedUPIApp.toUpperCase()) {
+                    case 'GPAY': return 'GPay';
+                    case 'PHONEPE': return 'PhonePe';
+                    case 'PAYTM': return 'Paytm';
+                    case 'AMAZONPAY': return 'Amazon Pay';
+                    case 'BHIM': return 'BHIM';
+                    case 'CRED': return 'CRED';
+                    case 'QR CODE': return 'QR Code';
+                    default: return selectedUPIApp;
+                }
+            }
+            return 'UPI';
+        }
+
+        // Check Payment Status and Show Countdown
+        function checkPaymentStatus() {
+            if (!paymentStartTime) return 'No payment initiated';
+            
+            const timeSincePayment = Date.now() - paymentStartTime;
+            const oneMinute = 60 * 1000;
+            
+            if (timeSincePayment >= oneMinute) {
+                return 'Payment time elapsed';
+            } else {
+                const remainingSeconds = Math.ceil((oneMinute - timeSincePayment) / 1000);
+                return `Wait ${remainingSeconds}s or complete payment`;
+            }
+        }
+
+        // Update Payment Status Display
+        function updatePaymentStatusDisplay() {
+            // Timer functionality is hidden - no visual countdown on button
+            // Only used internally for validation
+            if (currentPopupPage === 2 && paymentStartTime) {
+                const timeSincePayment = Date.now() - paymentStartTime;
+                const oneMinute = 60 * 1000;
+                
+                if (timeSincePayment < oneMinute) {
+                    // Keep original button text without timer
+                    document.getElementById('primaryBtnText').textContent = `Paid Successfully via ${getSelectedPaymentModeName()}`;
+                    
+                    // Schedule next update (for internal tracking only)
+                    setTimeout(updatePaymentStatusDisplay, 1000);
+                } else {
+                    // Timer finished, keep normal text
+                    document.getElementById('primaryBtnText').textContent = `Paid Successfully via ${getSelectedPaymentModeName()}`;
+                }
+            }
+        }
+
+        // Payment Method Selection
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            
+            // Update selected state
+            document.querySelectorAll('.payment-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            document.querySelector(`[data-method="${method}"]`).classList.add('selected');
+            
+            // UPI apps are always visible now since we only have UPI payment
+            const upiApps = document.getElementById('upiApps');
+            upiApps.style.display = 'grid';
+            
+            showToast(`${CONFIG.paymentMethods[method]} selected`, 'success');
+        }
+
+        // Open UPI App Function for new button
+        function openUPIApp(event) {
+            // Prevent default link behavior
+            if (event) {
+                event.preventDefault();
+            }
+            
+            // Track that general UPI button was used and payment start time
+            selectedUPIApp = 'UPI';
+            paymentStartTime = Date.now();
+            console.log('Payment started via UPI button at:', new Date(paymentStartTime).toLocaleTimeString());
+            
+            // Set automatic warning at 30 seconds
+            setTimeout(() => {
+                if (currentPopupPage === 2 && paymentStartTime) {
+                    const timeSincePayment = Date.now() - paymentStartTime;
+                    if (timeSincePayment >= 30000 && timeSincePayment < 40000) {
+                        console.log('Auto-warning triggered at 30 seconds for UPI payment');
+                        showToast('⚠️ Please complete payment first!', 'error');
+                    }
+                }
+            }, 30000);
+            
+            // Update button text immediately
+            updateFooterButtons(currentPopupPage);
+            
+            // Start payment timer display
+            updatePaymentStatusDisplay();
+            
+            showToast('Opening UPI app...', 'success');
+            
+            // Use standardized UPI format (same as labnol.org)
+            const upiParams = new URLSearchParams({
+                pa: CONFIG.upiId,
+                pn: CONFIG.merchantName,
+                am: CONFIG.amount,
+                cu: 'INR',
+                tn: CONFIG.customMessage
+            });
+            
+            const upiLink = `upi://pay?${upiParams.toString()}`;
+            
+            // Try to redirect to UPI app
+            setTimeout(() => {
+                window.location.href = upiLink;
+            }, 1000);
+        }
+
+        // Open Specific UPI App from QR section
+        function openSpecificUPIApp(app) {
+            // Track selected UPI app and payment start time
+            selectedUPIApp = app.toUpperCase();
+            paymentStartTime = Date.now();
+            console.log(`Payment started via ${app} app at:`, new Date(paymentStartTime).toLocaleTimeString());
+            
+            // Set automatic warning at 30 seconds
+            setTimeout(() => {
+                if (currentPopupPage === 2 && paymentStartTime) {
+                    const timeSincePayment = Date.now() - paymentStartTime;
+                    if (timeSincePayment >= 30000 && timeSincePayment < 40000) {
+                        console.log(`Auto-warning triggered at 30 seconds for ${app} payment`);
+                        showToast('⚠️ Please complete payment first!', 'error');
+                    }
+                }
+            }, 30000);
+            
+            // Update button text immediately
+            updateFooterButtons(currentPopupPage);
+            
+            // Start payment timer display
+            updatePaymentStatusDisplay();
+            
+            showToast(`Opening ${app.toUpperCase()}...`, 'success');
+            
+            // Create app-specific UPI link
+            const upiParams = new URLSearchParams({
+                pa: CONFIG.upiId,
+                pn: CONFIG.merchantName,
+                am: CONFIG.amount,
+                cu: 'INR',
+                tn: CONFIG.customMessage
+            });
+            
+            let appLink;
+            switch(app) {
+                case 'gpay':
+                    appLink = `gpay://upi/pay?${upiParams.toString()}`;
+                    break;
+                case 'phonepe':
+                    appLink = `phonepe://pay?${upiParams.toString()}`;
+                    break;
+                case 'paytm':
+                    appLink = `paytmmp://pay?${upiParams.toString()}`;
+                    break;
+                case 'amazonpay':
+                    appLink = `amazonpay://pay?${upiParams.toString()}`;
+                    break;
+                case 'bhim':
+                    appLink = `bhim://pay?${upiParams.toString()}`;
+                    break;
+                case 'cred':
+                    appLink = `cred://pay?${upiParams.toString()}`;
+                    break;
+                default:
+                    appLink = `upi://pay?${upiParams.toString()}`;
+            }
+            
+            // Redirect to app
+            setTimeout(() => {
+                window.location.href = appLink;
+            }, 500);
+        }
+
+        // Add haptic feedback and sound
+        function addButtonFeedback(element) {
+            // Visual feedback
+            element.classList.add('button-bounce');
+            setTimeout(() => {
+                element.classList.remove('button-bounce');
+            }, 300);
+
+            // Audio feedback (gentle click sound)
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } catch (e) {
+                // Audio feedback not available, continue with visual feedback only
+            }
+        }
+
+        // Toggle QR Code Display
+        function toggleQRCode() {
+            const qrSection = document.getElementById('qrSection');
+            const button = document.getElementById('showQRButton');
+            const arrow = document.getElementById('qrArrow');
+            const buttonTitle = button.querySelector('.qr-button-title');
+            const buttonSubtitle = button.querySelector('.qr-button-subtitle');
+            
+            if (qrSection.style.display === 'none' || qrSection.style.opacity === '0') {
+                // Show QR Code
+                qrSection.style.display = 'block';
+                setTimeout(() => {
+                    qrSection.style.opacity = '1';
+                    qrSection.classList.add('show');
+                }, 10);
+                
+                // Track QR code usage and payment start time
+                selectedUPIApp = 'QR Code';
+                paymentStartTime = Date.now();
+                console.log('Payment started via QR Code at:', new Date(paymentStartTime).toLocaleTimeString());
+                
+                // Set automatic warning at 30 seconds
+                setTimeout(() => {
+                    if (currentPopupPage === 2 && paymentStartTime) {
+                        const timeSincePayment = Date.now() - paymentStartTime;
+                        if (timeSincePayment >= 30000 && timeSincePayment < 40000) {
+                            console.log('Auto-warning triggered at 30 seconds for QR Code payment');
+                            showToast('⚠️ Please complete payment first!', 'error');
+                        }
+                    }
+                }, 30000);
+                
+                updateFooterButtons(currentPopupPage);
+                
+                // Start payment timer display
+                updatePaymentStatusDisplay();
+                
+                // Update button
+                button.classList.add('active');
+                buttonTitle.textContent = 'Hide UPI QR Code';
+                buttonSubtitle.textContent = 'QR code is now visible';
+                arrow.className = 'fas fa-chevron-up';
+                
+                // Start QR timer
+                startQRTimer();
+                
+                showToast('QR Code displayed!', 'success');
+            } else {
+                // Hide QR Code
+                qrSection.classList.remove('show');
+                qrSection.style.opacity = '0';
+                setTimeout(() => {
+                    qrSection.style.display = 'none';
+                }, 500);
+                
+                // Reset tracking when hidden
+                selectedUPIApp = 'UPI App';
+                updateFooterButtons(currentPopupPage);
+                
+                // Update button
+                button.classList.remove('active');
+                buttonTitle.textContent = 'Show UPI QR Code';
+                buttonSubtitle.textContent = 'Scan to pay instantly';
+                arrow.className = 'fas fa-chevron-down';
+                
+                // Stop QR timer
+                if (qrTimer) {
+                    clearInterval(qrTimer);
+                }
+                
+                showToast('QR Code hidden', 'info');
+            }
+        }
+
+        // QR Code Timer
+        let qrTimer = null;
+        let qrTimeRemaining = 300; // 5 minutes
+
+        function startQRTimer() {
+            const qrCountdown = document.getElementById('qrCountdown');
+            
+            qrTimer = setInterval(() => {
+                const minutes = Math.floor(qrTimeRemaining / 60);
+                const seconds = qrTimeRemaining % 60;
+                qrCountdown.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                qrTimeRemaining--;
+                
+                if (qrTimeRemaining < 0) {
+                    clearInterval(qrTimer);
+                    refreshQRCode();
+                }
+            }, 1000);
+        }
+
+        function refreshQRCode() {
+            qrTimeRemaining = 300;
+            startQRTimer();
+            showToast('QR Code refreshed', 'info');
+        }
+
+        // Create floating particles
+        function createParticles() {
+            const particles = document.getElementById('particles');
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particles.appendChild(particle);
+            }
+        }
+
+        // Enhanced page redirect functions
+        function redirectToApp(appUrl, appName) {
+            showToast(`Opening ${appName}...`, 'info');
+            
+            // Try to open the app
+            window.location.href = appUrl;
+            
+            // Fallback: if app doesn't open, show manual instructions
+            setTimeout(() => {
+                if (document.hasFocus()) {
+                    showToast(`Please install ${appName} to continue`, 'warning');
+                }
+            }, 3000);
+        }
+
+        // Auto-redirect based on detected UPI apps
+        function detectAndRedirectUPI() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isAndroid = userAgent.includes('android');
+            const isIOS = userAgent.includes('iphone') || userAgent.includes('ipad');
+            
+            if (isAndroid) {
+                // Android deep links
+                const androidApps = [
+                    { name: 'GPay', scheme: 'upi://pay', package: 'com.google.android.apps.nbu.paisa.user' },
+                    { name: 'PhonePe', scheme: 'phonepe://pay', package: 'com.phonepe.app' },
+                    { name: 'Paytm', scheme: 'paytmmp://pay', package: 'net.one97.paytm' }
+                ];
+                
+                return androidApps;
+            } else if (isIOS) {
+                // iOS URL schemes
+                const iosApps = [
+                    { name: 'GPay', scheme: 'gpay://pay' },
+                    { name: 'PhonePe', scheme: 'phonepe://pay' },
+                    { name: 'Paytm', scheme: 'paytm://pay' }
+                ];
+                
+                return iosApps;
+            }
+            
+            return [];
+        }
+
+        // Verification Process
+        function startVerification() {
+            // Set transaction details
+            const now = new Date();
+            const dateTimeString = now.toLocaleString('en-IN', {
+                dateStyle: 'medium',
+                timeStyle: 'short'
+            });
+            
+            document.getElementById('paymentDateTime').textContent = dateTimeString;
+            document.getElementById('paymentMethodUsed').textContent = CONFIG.paymentMethods[selectedPaymentMethod];
+
+            // Generate transaction ID
+            const transactionId = CONFIG.transactionPrefix + Date.now().toString().slice(-10);
+            document.getElementById('transactionId').textContent = transactionId;
+
+            // Start timer
+            verificationTime = 15;
+            verificationTimer = setInterval(() => {
+                document.getElementById('timer').textContent = verificationTime;
+                verificationTime--;
+
+                if (verificationTime < 0) {
+                    clearInterval(verificationTimer);
+                    showSuccess();
+                }
+            }, 1000);
+        }
+
+        function showSuccess() {
+            // Update status icon and content
+            const statusIcon = document.getElementById('statusIcon');
+            const statusIconContent = document.getElementById('statusIconContent');
+            const statusTitle = document.getElementById('statusTitle');
+            const statusDesc = document.getElementById('statusDesc');
+
+            statusIcon.classList.remove('verifying');
+            statusIcon.classList.add('success');
+            statusIconContent.className = 'fas fa-check';
+            statusTitle.textContent = 'Payment Successful!';
+            statusDesc.textContent = 'Thank you for your donation! Your contribution will make a real difference.';
+
+            // Hide timer
+            document.getElementById('timerDisplay').style.display = 'none';
+
+            // Update footer
+            document.getElementById('primaryBtnText').textContent = 'Donate Again';
+            document.getElementById('primaryBtn').querySelector('i').className = 'fas fa-heart';
+            document.getElementById('secondaryBtnText').textContent = 'Close';
+            document.getElementById('secondaryBtn').querySelector('i').className = 'fas fa-check';
+
+            // Update header
+            document.getElementById('popupTitle').textContent = 'Success!';
+            document.getElementById('popupSubtitle').textContent = 'Payment completed';
+
+            // Show confetti and toast
+            createConfetti();
+            triggerEnhancedConfetti();
+            showToast('Payment successful! Thank you for your donation.', 'success');
+        }
+
+        // Enhanced Confetti Animation
+        function triggerEnhancedConfetti() {
+            const colors = ['#f39c12', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6', '#ff6b35', '#ffd700'];
+            const confettiContainer = document.body;
+            
+            for (let i = 0; i < 150; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'fixed';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = '-10px';
+                    confetti.style.width = Math.random() * 10 + 5 + 'px';
+                    confetti.style.height = Math.random() * 10 + 5 + 'px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.pointerEvents = 'none';
+                    confetti.style.zIndex = '10000';
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0%';
+                    
+                    const animation = confetti.animate([
+                        {
+                            transform: 'translateY(-100vh) rotate(0deg)',
+                            opacity: 1
+                        },
+                        {
+                            transform: `translateY(100vh) translateX(${(Math.random() - 0.5) * 200}px) rotate(720deg)`,
+                            opacity: 0
+                        }
+                    ], {
+                        duration: Math.random() * 2000 + 3000,
+                        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                    });
+                    
+                    confettiContainer.appendChild(confetti);
+                    
+                    animation.addEventListener('finish', () => {
+                        confetti.remove();
+                    });
+                }, i * 30);
+            }
+        }
+
+        // Action Handlers
+        function handlePrimaryAction() {
+            const btn = document.getElementById('primaryBtn');
+            const primaryBtnText = document.getElementById('primaryBtnText');
+            
+            if (currentPopupPage === 1) {
+                // Validate form before proceeding
+                if (!updatePaymentDetails()) {
+                    return; // Validation failed, stay on page 1
+                }
+                goToPopupPage(2);
+            } else if (currentPopupPage === 2) {
+                // Check if payment was initiated
+                if (!paymentStartTime) {
+                    showToast('⚠️ Please select a payment method first!', 'error');
+                    console.log('Warning: No payment method selected');
+                    
+                    // Add visual feedback to buttons
+                    const upiButtons = document.querySelectorAll('.upi-pay-button, .show-qr-button, .clickable-app');
+                    upiButtons.forEach(button => {
+                        button.style.animation = 'shakeApp 0.5s ease-in-out';
+                        setTimeout(() => {
+                            button.style.animation = '';
+                        }, 500);
+                    });
+                    return;
+                }
+                
+                const timeSincePayment = Date.now() - paymentStartTime;
+                const fortySeconds = 40 * 1000; // 40 seconds in milliseconds
+                const thirtySeconds = 30 * 1000; // 30 seconds in milliseconds
+                
+                console.log(`Time since payment: ${timeSincePayment}ms, Required: ${fortySeconds}ms`);
+                
+                if (timeSincePayment < fortySeconds) {
+                    // Only show warning after 30 seconds of waiting
+                    if (timeSincePayment >= thirtySeconds) {
+                        showToast(`⚠️ Please complete payment first!`, 'error');
+                        console.log(`Warning shown - payment not yet allowed`);
+                        
+                        // Update button text to show waiting
+                        primaryBtnText.textContent = `Please wait...`;
+                        setTimeout(() => {
+                            primaryBtnText.textContent = `Paid Successfully via ${getSelectedPaymentModeName()}`;
+                        }, 2000);
+                    } else {
+                        // Show gentle message in silent period
+                        console.log(`Silent period - gentle message shown`);
+                        showToast(`First complete payment & then click`, 'error');
+                        
+                        btn.style.opacity = '0.7';
+                        primaryBtnText.textContent = `Please wait...`;
+                        
+                        setTimeout(() => {
+                            btn.style.opacity = '1';
+                            primaryBtnText.textContent = `Paid Successfully via ${getSelectedPaymentModeName()}`;
+                        }, 1000);
+                    }
+                    return;
+                }
+                
+                // Payment time has elapsed, proceed to verification
+                console.log('Payment time elapsed (40+ seconds), proceeding to verification');
+                btn.classList.add('btn-loading');
+                primaryBtnText.textContent = 'Verifying Payment...';
+                
+                setTimeout(() => {
+                    btn.classList.remove('btn-loading');
+                    goToPopupPage(3);
+                }, 2000);
+            } else if (currentPopupPage === 3) {
+                if (document.getElementById('statusTitle').textContent === 'Payment Successful!') {
+                    // Restart donation flow
+                    resetPopupState();
+                    goToPopupPage(1);
+                    showToast('Starting new payment...', 'success');
+                }
+            }
+        }
+
+        function handleSecondaryAction() {
+            if (currentPopupPage === 3) {
+                if (document.getElementById('statusTitle').textContent === 'Payment Successful!') {
+                    closePaymentPopup();
+                } else {
+                    // Cancel transaction
+                    if (confirm('Are you sure you want to cancel this transaction?')) {
+                        clearInterval(verificationTimer);
+                        showToast('Transaction cancelled', 'error');
+                        setTimeout(() => {
+                            goToPopupPage(2);
+                        }, 1000);
+                    }
+                }
+            }
+        }
+
+        // Utility Functions
+        function showToast(message, type = 'default') {
+            const toast = document.getElementById('toast');
+            if (!toast) {
+                console.error('Toast element not found!');
+                return;
+            }
+            
+            // Clear any existing timeout
+            if (window.toastTimeout) {
+                clearTimeout(window.toastTimeout);
+            }
+            
+            // Create backdrop if it doesn't exist
+            let backdrop = document.querySelector('.toast-backdrop');
+            if (!backdrop) {
+                backdrop = document.createElement('div');
+                backdrop.className = 'toast-backdrop';
+                document.body.appendChild(backdrop);
+            }
+            
+            toast.textContent = message;
+            toast.className = 'toast';
+            
+            if (type !== 'default') {
+                toast.classList.add(type);
+            }
+            
+            // Show with ultra-smooth, responsive animation sequence
+            requestAnimationFrame(() => {
+                backdrop.classList.add('show');
+                
+                // Faster toast appearance for better responsiveness
+                setTimeout(() => {
+                    // Force reflow to ensure animation works
+                    toast.offsetHeight;
+                    
+                    toast.classList.add('show');
+                    console.log(`Toast shown: ${message} (type: ${type})`);
+                }, 100);
+            });
+            
+            // Auto-hide after 3.5 seconds with optimized exit
+            window.toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+                
+                // Faster backdrop removal for smoother exit
+                setTimeout(() => {
+                    backdrop.classList.remove('show');
+                    console.log('Toast hidden');
+                    
+                    // Remove backdrop after animation completes
+                    setTimeout(() => {
+                        if (backdrop && backdrop.parentNode) {
+                            backdrop.remove();
+                        }
+                    }, 500);
+                }, 200);
+            }, 3500);
+        }
+
+        function createConfetti() {
+            const colors = ['#00C851', '#2563eb', '#f59e0b', '#ef4444', '#8b5cf6'];
+            
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 3000);
+                }, i * 50);
+            }
+        }
+
+        // Event Listeners
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closePaymentPopup();
+            }
+        });
+
+        // Click outside to close
+        document.getElementById('paymentPopup').addEventListener('click', (e) => {
+            if (e.target.classList.contains('popup-overlay')) {
+                closePaymentPopup();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set initial payment method
+            selectPaymentMethod('upi');
+            
+            // Create background particles
+            createParticles();
+            
+            // Detect available UPI apps
+            const availableApps = detectAndRedirectUPI();
+            console.log('Available UPI apps:', availableApps);
+            
+            // Initialize QR timer display
+            const qrCountdown = document.getElementById('qrCountdown');
+            if (qrCountdown) {
+                qrCountdown.textContent = '5:00';
+            }
+            
+            // Add enhanced click handlers for UPI apps in QR section
+            document.querySelectorAll('.clickable-app').forEach(app => {
+                app.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Add haptic pulse animation
+                    this.classList.add('haptic-pulse');
+                    
+                    // Remove animation class after it completes
+                    setTimeout(() => {
+                        this.classList.remove('haptic-pulse');
+                    }, 300);
+                    
+                    const appName = this.dataset.app;
+                    openSpecificUPIApp(appName);
+                });
+            });
+
+            // Enhanced button feedback for main UPI button
+            const upiButton = document.getElementById('generalUPIButton');
+            if (upiButton) {
+                upiButton.addEventListener('click', function(e) {
+                    addButtonFeedback(this);
+                    // Add intense glow effect on click
+                    this.style.animation = 'pulseGlow 1s ease-in-out';
+                    setTimeout(() => {
+                        this.style.animation = 'floatButton 3s ease-in-out infinite';
+                    }, 1000);
+                });
+                
+                upiButton.addEventListener('mousedown', function() {
+                    this.style.transform = 'translateY(-1px) scale(0.98)';
+                });
+                
+                upiButton.addEventListener('mouseup', function() {
+                    this.style.transform = 'translateY(-3px) scale(1.02)';
+                });
+                
+                upiButton.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0px) scale(1)';
+                });
+
+                // Add breathing animation on focus
+                upiButton.addEventListener('focus', function() {
+                    this.style.animation = 'breathe 2s ease-in-out infinite';
+                });
+                
+                upiButton.addEventListener('blur', function() {
+                    this.style.animation = 'floatButton 3s ease-in-out infinite';
+                });
+            }
+
+            // Enhanced button feedback for QR button
+            const qrButton = document.getElementById('showQRButton');
+            if (qrButton) {
+                qrButton.addEventListener('click', function(e) {
+                    addButtonFeedback(this);
+                    // Add glow effect on click
+                    this.style.boxShadow = '0 0 20px rgba(16, 185, 129, 0.8), 0 0 40px rgba(16, 185, 129, 0.4)';
+                    setTimeout(() => {
+                        this.style.boxShadow = '0 6px 20px rgba(16, 185, 129, 0.3)';
+                    }, 1000);
+                });
+                
+                qrButton.addEventListener('mousedown', function() {
+                    this.style.transform = 'translateY(-1px) scale(0.98)';
+                });
+                
+                qrButton.addEventListener('mouseup', function() {
+                    this.style.transform = 'translateY(-3px) scale(1.02)';
+                });
+                
+                qrButton.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0px) scale(1)';
+                });
+
+                // Add subtle breathing on focus
+                qrButton.addEventListener('focus', function() {
+                    this.style.animation = 'breathe 2.5s ease-in-out infinite';
+                });
+                
+                qrButton.addEventListener('blur', function() {
+                    this.style.animation = 'floatButtonSlow 4s ease-in-out infinite';
+                });
+            }
+        });
+
+        // Cleanup
+        window.addEventListener('beforeunload', () => {
+            if (verificationTimer) {
+                clearInterval(verificationTimer);
+            }
+        });
+    </script>
+
+    <!-- TesTPaY Professional Branding -->
+    <div class="brand-watermark">
+        Powered by TesTPaY Gateway v2.0
+    </div>
+</body>
+</html>

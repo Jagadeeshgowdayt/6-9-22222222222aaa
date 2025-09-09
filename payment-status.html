@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Status - TesTPaY 8105</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Payment Verification</title>
+    
+    <!-- Google Fonts & Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
     <style>
         * {
             margin: 0;
@@ -14,207 +18,692 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(120deg, #f3f4f6 0%, #e0e7ff 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 24px;
         }
 
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-            padding: 40px 30px;
-            text-align: center;
-            max-width: 400px;
+        .status-container {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(60,72,88,0.12), 0 1.5px 4px rgba(60,72,88,0.08);
             width: 100%;
+            max-width: 440px;
+            overflow: hidden;
+            animation: slideUp 0.7s cubic-bezier(.4,0,.2,1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(120deg, #6366f1 0%, #3b82f6 100%);
+            color: #fff;
+            padding: 36px 32px 24px 32px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 2px 12px rgba(59,130,246,0.08);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.1;
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 15px;
+            opacity: 0.92;
+            font-weight: 500;
+        }
+
+        .verification-section {
+            padding: 38px 32px 24px 32px;
+            text-align: center;
+        }
+
+        .verification-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 38px;
+            position: relative;
+            gap: 0px;
+        }
+
+        .verification-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 32px;
+            right: 32px;
+            height: 2px;
+            background: #e0e7ff;
+            z-index: 1;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 20px;
+            left: 32px;
+            height: 2px;
+            background: linear-gradient(90deg, #6366f1, #10b981);
+            z-index: 2;
+            width: 0%;
+            transition: width 0.8s cubic-bezier(.4,0,.2,1);
+        }
+
+        .step {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .step-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #e0e7ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6366f1;
+            font-size: 20px;
+            transition: all 0.3s cubic-bezier(.4,0,.2,1);
+            margin-bottom: 8px;
+            box-shadow: 0 1px 6px rgba(60,72,88,0.04);
+        }
+
+        .step-icon.active {
+            background: linear-gradient(120deg, #6366f1 0%, #3b82f6 100%);
+            color: #fff;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .step-icon.completed {
+            background: linear-gradient(120deg, #10b981 0%, #059669 100%);
+            color: #fff;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .step-label {
+            font-size: 13px;
+            color: #6366f1;
+            font-weight: 600;
+            text-align: center;
+            max-width: 90px;
+            line-height: 1.3;
+            transition: color 0.3s cubic-bezier(.4,0,.2,1);
+            letter-spacing: -0.5px;
+        }
+
+        .step-label.active {
+            color: #3b82f6;
+            font-weight: 700;
+        }
+
+        .step-label.completed {
+            color: #10b981;
+            font-weight: 700;
+        }
+
+        .current-status {
+            margin-bottom: 38px;
         }
 
         .status-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
+            font-size: 62px;
+            margin-bottom: 22px;
+            animation: fadeInScale 0.5s cubic-bezier(.4,0,.2,1);
         }
 
-        .success { color: #28a745; }
-        .error { color: #dc3545; }
-        .pending { color: #ffc107; }
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
 
-        h1 {
-            font-size: 28px;
-            font-weight: 700;
+        .status-title {
+            font-size: 25px;
+            font-weight: 800;
+            color: #334155;
             margin-bottom: 10px;
-            color: #333;
+            animation: fadeInUp 0.6s cubic-bezier(.4,0,.2,1);
         }
 
-        .message {
-            color: #666;
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .status-message {
             font-size: 16px;
-            line-height: 1.5;
-            margin-bottom: 25px;
+            color: #6366f1;
+            font-weight: 500;
+            animation: fadeInUp 0.6s cubic-bezier(.4,0,.2,1) 0.2s both;
         }
 
-        .transaction-details {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
+        .payment-details {
+            background: linear-gradient(120deg, #f1f5f9 0%, #e0e7ff 100%);
+            border-radius: 16px;
+            padding: 26px 20px 18px 20px;
+            margin-bottom: 32px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 6px rgba(60,72,88,0.04);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s cubic-bezier(.4,0,.2,1) 0.4s forwards;
         }
 
         .detail-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 14px;
+            align-items: center;
+            margin-bottom: 13px;
+            font-size: 15px;
+        }
+
+        .detail-row:last-child {
+            margin-bottom: 0;
         }
 
         .detail-label {
-            color: #666;
-            font-weight: 500;
+            color: #6366f1;
+            font-weight: 600;
         }
 
         .detail-value {
-            color: #333;
-            font-weight: 600;
-            font-family: monospace;
+            color: #334155;
+            font-weight: 700;
         }
 
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: transform 0.2s;
+        .amount-highlight {
+            color: #10b981;
+            font-size: 19px;
+            font-weight: 800;
         }
 
-        .btn:hover {
-            transform: translateY(-1px);
+        .success-animation {
+            display: none;
         }
 
+        .success-animation.show {
+            display: block;
+        }
+
+        .checkmark {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            background: linear-gradient(120deg, #10b981 0%, #059669 100%);
+            position: relative;
+            margin: 0 auto 22px;
+            animation: checkmarkBounce 0.7s cubic-bezier(.4,0,.2,1);
+        }
+
+        @keyframes checkmarkBounce {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .checkmark::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 44px;
+            font-weight: bold;
+        }
+
+        .redirect-info {
+            background: linear-gradient(120deg, #e0e7ff 0%, #f1f5f9 100%);
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 22px 18px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s cubic-bezier(.4,0,.2,1) 0.6s forwards;
+        }
+
+        .redirect-info.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .countdown {
+            font-size: 25px;
+            font-weight: 800;
+            color: #6366f1;
+            margin-bottom: 10px;
+        }
+
+        .redirect-text {
+            font-size: 15px;
+            color: #6366f1;
+            font-weight: 500;
+        }
+
+        /* Loading spinner for verification steps */
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e5e7eb;
+            border-top: 2px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+            .status-container {
+                max-width: 100%;
+                border-radius: 16px;
+            }
+            .header {
+                padding: 24px 12px 18px 12px;
+            }
+            .verification-section {
+                padding: 18px 12px 10px 12px;
+            }
+            .verification-steps {
+                margin-bottom: 22px;
+            }
+            .step-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+            .step-label {
+                font-size: 11px;
+                max-width: 60px;
+            }
+            .status-icon {
+                font-size: 38px;
+            }
+            .status-title {
+                font-size: 16px;
+            }
+            .payment-details {
+                padding: 12px 8px 8px 8px;
+            }
+        }
+
+        /* Confetti animation */
         .confetti {
             position: fixed;
-            width: 10px;
-            height: 10px;
-            background: #f39c12;
-            animation: confetti-fall 3s linear infinite;
+            width: 6px;
+            height: 6px;
+            pointer-events: none;
+            z-index: 1000;
+            border-radius: 50%;
+            animation: confettiFall 3s linear forwards;
         }
 
-        @keyframes confetti-fall {
+        @keyframes confettiFall {
             0% {
                 transform: translateY(-100vh) rotate(0deg);
                 opacity: 1;
             }
             100% {
-                transform: translateY(100vh) rotate(720deg);
+                transform: translateY(100vh) rotate(360deg);
                 opacity: 0;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="status-icon" id="statusIcon">⏳</div>
-        <h1 id="statusTitle">Processing Payment</h1>
-        <p class="message" id="statusMessage">Please wait while we verify your payment...</p>
-        
-        <div class="transaction-details" id="transactionDetails">
-            <div class="detail-row">
-                <span class="detail-label">Transaction ID:</span>
-                <span class="detail-value" id="txnId">-</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Amount:</span>
-                <span class="detail-value">₹1</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Merchant:</span>
-                <span class="detail-value">TesTPaY 8105</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">UPI ID:</span>
-                <span class="detail-value">8105485460-982jp@jio</span>
-            </div>
+    <div class="status-container">
+        <div class="header">
+            <h1>Payment Verification</h1>
+            <p>Processing your transaction</p>
         </div>
 
-        <a href="payment.html" class="btn" id="actionBtn">Make Another Payment</a>
+        <div class="verification-section">
+            <!-- Verification Steps -->
+            <div class="verification-steps">
+                <div class="progress-line" id="progressLine"></div>
+                
+                <div class="step">
+                    <div class="step-icon" id="step1">
+                        <span class="material-icons">payment</span>
+                    </div>
+                    <div class="step-label" id="label1">Verifying Payment</div>
+                </div>
+
+                <div class="step">
+                    <div class="step-icon" id="step2">
+                        <span class="material-icons">account_balance</span>
+                    </div>
+                    <div class="step-label" id="label2">Bank Response</div>
+                </div>
+
+                <div class="step">
+                    <div class="step-icon" id="step3">
+                        <span class="material-icons">sync</span>
+                    </div>
+                    <div class="step-label" id="label3">Finalizing</div>
+                </div>
+
+                <div class="step">
+                    <div class="step-icon" id="step4">
+                        <span class="material-icons">check_circle</span>
+                    </div>
+                    <div class="step-label" id="label4">Complete</div>
+                </div>
+            </div>
+
+            <!-- Current Status -->
+            <div class="current-status">
+                <div class="status-icon" id="statusIcon">⏳</div>
+                <div class="status-title" id="statusTitle">Verifying Payment...</div>
+                <div class="status-message" id="statusMessage">Please wait while we verify your transaction</div>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="payment-details" id="paymentDetails">
+                <div class="detail-row">
+                    <span class="detail-label">Amount Paid</span>
+                    <span class="detail-value amount-highlight" id="amountPaid">₹10.00</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">UPI ID</span>
+                    <span class="detail-value" id="upiId">testmerchant@upi</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Transaction ID</span>
+                    <span class="detail-value" id="transactionId">TXN12345</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Mode</span>
+                    <span class="detail-value">UPI</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Status</span>
+                    <span class="detail-value" id="paymentStatus">Processing</span>
+                </div>
+            </div>
+
+            <!-- Success Animation (initially hidden) -->
+            <div class="success-animation" id="successAnimation">
+                <div class="checkmark"></div>
+            </div>
+
+            <!-- Redirect Information (initially hidden) -->
+            <div class="redirect-info" id="redirectInfo">
+                <div class="countdown" id="countdown">5</div>
+                <div class="redirect-text">Redirecting to order confirmation...</div>
+            </div>
+        </div>
     </div>
 
     <script>
-        function createConfetti() {
-            for (let i = 0; i < 50; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.backgroundColor = ['#f39c12', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6'][Math.floor(Math.random() * 5)];
-                confetti.style.animationDelay = Math.random() * 3 + 's';
-                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                document.body.appendChild(confetti);
-                
-                setTimeout(() => {
-                    confetti.remove();
-                }, 5000);
+        // Get payment info from sessionStorage
+        const paymentInfo = JSON.parse(sessionStorage.getItem('paymentInfo') || '{}');
+        
+        // Generate random transaction ID for demo
+        const generateTransactionId = () => {
+            return 'TXN' + Math.floor(Math.random() * 1000000000);
+        };
+
+        // Update payment details if available
+        if (paymentInfo.amount) {
+            document.getElementById('amountPaid').textContent = `₹${paymentInfo.amount}.00`;
+        }
+        if (paymentInfo.transactionId) {
+            document.getElementById('transactionId').textContent = paymentInfo.transactionId;
+        } else {
+            document.getElementById('transactionId').textContent = generateTransactionId();
+        }
+
+        // Verification steps
+        const verificationSteps = [
+            {
+                title: "Verifying Payment...",
+                message: "Checking transaction details",
+                duration: 2000,
+                icon: "⏳"
+            },
+            {
+                title: "Checking Bank Response...",
+                message: "Waiting for bank confirmation",
+                duration: 2000,
+                icon: "🏦"
+            },
+            {
+                title: "Finalizing Transaction...",
+                message: "Processing final verification",
+                duration: 2000,
+                icon: "⚡"
+            },
+            {
+                title: "Payment Successful ✅",
+                message: "Transaction completed successfully",
+                duration: 5000,
+                icon: "✅"
+            }
+        ];
+
+        let currentStep = 0;
+
+        // Update progress line
+        function updateProgressLine(step) {
+            const progressLine = document.getElementById('progressLine');
+            const percentage = (step / 3) * 100; // 3 gaps between 4 steps
+            progressLine.style.width = percentage + '%';
+        }
+
+        // Update step UI
+        function updateStepUI(stepIndex, isActive = false, isCompleted = false) {
+            const stepIcon = document.getElementById(`step${stepIndex + 1}`);
+            const stepLabel = document.getElementById(`label${stepIndex + 1}`);
+
+            stepIcon.classList.remove('active', 'completed');
+            stepLabel.classList.remove('active', 'completed');
+
+            if (isCompleted) {
+                stepIcon.classList.add('completed');
+                stepLabel.classList.add('completed');
+                stepIcon.innerHTML = '<span class="material-icons">check</span>';
+            } else if (isActive) {
+                stepIcon.classList.add('active');
+                stepLabel.classList.add('active');
+                stepIcon.innerHTML = '<div class="loading-spinner"></div>';
             }
         }
 
-        function showStatus(status, txnId) {
+        // Update current status
+        function updateCurrentStatus(step) {
             const statusIcon = document.getElementById('statusIcon');
             const statusTitle = document.getElementById('statusTitle');
             const statusMessage = document.getElementById('statusMessage');
-            const actionBtn = document.getElementById('actionBtn');
+            const paymentStatus = document.getElementById('paymentStatus');
 
-            if (status === 'success') {
-                statusIcon.textContent = '✅';
-                statusIcon.className = 'status-icon success';
-                statusTitle.textContent = 'Payment Successful!';
-                statusMessage.textContent = 'Your payment has been completed successfully. You will receive a confirmation shortly.';
-                actionBtn.textContent = 'Make Another Payment';
-                createConfetti();
-            } else if (status === 'failed') {
-                statusIcon.textContent = '❌';
-                statusIcon.className = 'status-icon error';
-                statusTitle.textContent = 'Payment Failed';
-                statusMessage.textContent = 'Your payment could not be completed. Please try again or contact support.';
-                actionBtn.textContent = 'Try Again';
+            statusIcon.textContent = step.icon;
+            statusTitle.textContent = step.title;
+            statusMessage.textContent = step.message;
+
+            if (currentStep < 3) {
+                paymentStatus.textContent = 'Processing';
+                paymentStatus.style.color = '#f59e0b';
             } else {
-                statusIcon.textContent = '⏳';
-                statusIcon.className = 'status-icon pending';
-                statusTitle.textContent = 'Payment Pending';
-                statusMessage.textContent = 'Your payment is being processed. Please wait...';
-                actionBtn.textContent = 'Check Status';
+                paymentStatus.textContent = 'Completed';
+                paymentStatus.style.color = '#10b981';
             }
 
-            if (txnId) {
-                document.getElementById('txnId').textContent = txnId;
-            }
-        }
-
-        // Get URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const status = urlParams.get('status') || 'pending';
-        const txnId = urlParams.get('txnId');
-
-        // Show status based on URL parameters
-        showStatus(status, txnId);
-
-        // Simulate status check for pending payments
-        if (status === 'pending') {
+            // Trigger animations
+            statusIcon.style.animation = 'none';
+            statusTitle.style.animation = 'none';
+            statusMessage.style.animation = 'none';
+            
             setTimeout(() => {
-                // Randomly show success or failure (in real app, check with backend)
-                const finalStatus = Math.random() > 0.2 ? 'success' : 'failed';
-                showStatus(finalStatus, txnId);
-                
-                // Update URL
-                const newUrl = window.location.pathname + '?status=' + finalStatus + (txnId ? '&txnId=' + txnId : '');
-                window.history.replaceState({}, document.title, newUrl);
-            }, 3000);
+                statusIcon.style.animation = 'fadeInScale 0.5s ease-out';
+                statusTitle.style.animation = 'fadeInUp 0.6s ease-out';
+                statusMessage.style.animation = 'fadeInUp 0.6s ease-out 0.2s both';
+            }, 10);
         }
+
+        // Create confetti
+        function createConfetti() {
+            const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 3 + 's';
+                    
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        if (confetti.parentNode) {
+                            confetti.parentNode.removeChild(confetti);
+                        }
+                    }, 3000);
+                }, i * 50);
+            }
+        }
+
+        // Start countdown
+        function startCountdown() {
+            const redirectInfo = document.getElementById('redirectInfo');
+            const countdown = document.getElementById('countdown');
+            
+            redirectInfo.classList.add('show');
+            
+            let count = 5;
+            const countdownInterval = setInterval(() => {
+                count--;
+                countdown.textContent = count;
+                
+                if (count <= 0) {
+                    clearInterval(countdownInterval);
+                    // Redirect to order confirmation page
+                    window.location.href = 'order-confirmation.html';
+                }
+            }, 1000);
+        }
+
+        // Process verification steps
+        function processVerificationSteps() {
+            if (currentStep < verificationSteps.length) {
+                const step = verificationSteps[currentStep];
+                
+                // Update current step as active
+                updateStepUI(currentStep, true, false);
+                updateCurrentStatus(step);
+                updateProgressLine(currentStep);
+                
+                setTimeout(() => {
+                    // Mark current step as completed
+                    updateStepUI(currentStep, false, true);
+                    
+                    currentStep++;
+                    
+                    if (currentStep < verificationSteps.length) {
+                        processVerificationSteps();
+                    } else {
+                        // All steps completed - show success
+                        setTimeout(() => {
+                            showSuccess();
+                        }, 500);
+                    }
+                }, step.duration);
+            }
+        }
+
+        // Show success animation
+        function showSuccess() {
+            const successAnimation = document.getElementById('successAnimation');
+            const currentStatus = document.querySelector('.current-status');
+            
+            currentStatus.style.display = 'none';
+            successAnimation.classList.add('show');
+            
+            // Update final progress
+            updateProgressLine(3);
+            
+            // Create confetti
+            createConfetti();
+            
+            // Start countdown after 1 second
+            setTimeout(() => {
+                startCountdown();
+            }, 1000);
+        }
+
+        // Start the verification process when page loads
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                processVerificationSteps();
+            }, 1000);
+        });
+
+        // Handle back button
+        window.addEventListener('beforeunload', () => {
+            sessionStorage.removeItem('paymentInfo');
+        });
     </script>
 </body>
 </html>

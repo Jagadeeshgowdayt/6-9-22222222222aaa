@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#1e293b">
-    <title>TesTPaY 8105 - Fast UPI Payment Gateway</title>
+    <title>TesTPaY - Fast UPI Payment Gateway</title>
     
     <!-- Preload critical resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -206,8 +206,6 @@
             color: inherit;
             transform: translateZ(0);
             will-change: transform, box-shadow;
-            position: relative;
-            overflow: visible;
         }
 
         .app-button:hover {
@@ -236,68 +234,6 @@
             border-radius: 10px;
         }
 
-        /* Recommended badge overlay */
-    .recommended-badge {
-            position: absolute;
-            /* place outside the top-right corner so it doesn't cover the icon */
-            top: -8px;
-            right: -8px;
-            background: linear-gradient(90deg, #16a34a, #059669);
-            color: #fff;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 4px 6px;
-            border-radius: 999px;
-            box-shadow: 0 6px 14px rgba(15,23,42,0.12);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transform-origin: center;
-            transition: transform 160ms ease, box-shadow 160ms ease;
-            z-index: 6;
-            border: 2px solid rgba(255,255,255,0.95);
-        }
-
-        .app-button:hover .recommended-badge {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 10px 20px rgba(15,23,42,0.16);
-        }
-
-        @media (max-width: 480px) {
-            .recommended-badge {
-                top: -6px;
-                right: -6px;
-                font-size: 10px;
-                padding: 3px 6px;
-            }
-        }
-
-        /* New inline badge placed beside the app name to avoid covering the icon */
-    /* inline recommended pills removed; use `.recommend-top` instead */
-
-        /* Hide absolute badge if still present */
-        .recommended-badge { display: none !important; }
-
-        /* Small recommend button placed above the app card */
-        .recommend-top {
-            position: absolute;
-            top: -18px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(90deg, #16a34a, #059669);
-            color: #fff;
-            padding: 4px 10px;
-            border-radius: 999px;
-            font-size: 11px;
-            font-weight: 700;
-            border: none;
-            box-shadow: 0 8px 20px rgba(15,23,42,0.12);
-            cursor: default;
-            z-index: 8;
-        }
-
-        .app-button { padding-top: 26px; }
-
         .app-button:hover .app-logo {
             transform: translateY(-4px) scale(1.06) rotate(-4deg);
             filter: drop-shadow(0 6px 18px rgba(15,23,42,0.12));
@@ -317,7 +253,6 @@
             text-align: center;
             margin-bottom: 24px;
             border: 1px solid var(--gray-200);
-            cursor: default; /* allow internal controls like buttons to be clickable without pointer conflicts */
         }
 
         .qr-toggle {
@@ -330,23 +265,6 @@
             margin-bottom: 16px;
             transition: var(--transition);
         }
-
-        /* Button shown below QR for users to confirm they've paid */
-        .qr-paid {
-            display: inline-block;
-            margin-top: 12px;
-            padding: 10px 14px;
-            border-radius: 8px;
-            background: linear-gradient(90deg, var(--secondary), #059669);
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            font-weight: 700;
-            box-shadow: 0 6px 18px rgba(5,150,105,0.12);
-            transition: transform 0.12s ease, box-shadow 0.12s ease;
-        }
-
-        .qr-paid:active { transform: translateY(1px) scale(0.995); }
 
         .qr-toggle:hover {
             text-decoration: underline;
@@ -389,28 +307,10 @@
             margin-bottom: 8px;
             cursor: pointer;
             transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            justify-content: center;
         }
 
         .upi-id:hover {
             background: var(--gray-100);
-        }
-
-        .copy-icon {
-            width: 16px;
-            height: 16px;
-            display: inline-block;
-            vertical-align: middle;
-            opacity: 0.9;
-            transition: transform 0.15s ease, opacity 0.15s ease;
-        }
-
-        .upi-id:hover .copy-icon {
-            transform: scale(1.1);
-            opacity: 1;
         }
 
         /* Status modal */
@@ -936,7 +836,7 @@
         <!-- Header -->
         <div class="header">
             <div class="logo">TP</div>
-            <h1 class="title">TesTPaY 8105</h1>
+            <h1 class="title">TesTPaY</h1>
             <p class="subtitle">Secure & Fast UPI Payments</p>
         </div>
 
@@ -949,7 +849,7 @@
                         <i class="fas fa-store"></i>
                     </div>
                     <div class="merchant-details">
-                        <h3 id="merchantName">TesTPaY 8105</h3>
+                        <h3 id="merchantName">TesTPaY test</h3>
                         <div class="amount" id="paymentAmount">₹1</div>
                     </div>
                 </div>
@@ -960,7 +860,6 @@
                 <h2 class="section-title">Choose your UPI app</h2>
                 <div class="apps-grid">
                     <button class="app-button" onclick="openUPIApp('gpay')" data-app="gpay" title="Google Pay">
-                        <span class="recommend-top" role="status" aria-hidden="true">Recommended</span>
                         <div class="app-icon">
                             <!-- Google Pay clear badge -->
                             <svg class="app-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -972,7 +871,6 @@
                     </button>
 
                     <button class="app-button" onclick="openUPIApp('phonepe')" data-app="phonepe" title="PhonePe">
-                        <span class="recommend-top" role="status" aria-hidden="true">Recommended</span>
                         <div class="app-icon">
                             <!-- PhonePe clear badge -->
                             <svg class="app-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -987,8 +885,8 @@
                         <div class="app-icon">
                             <!-- Paytm clear badge -->
                             <svg class="app-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                <rect width="64" height="64" rx="12" fill="#00BAF2" />
-                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="34" font-weight="700" fill="#FFFFFF">P</text>
+                                <rect width="64" height="64" rx="12" fill="#0033A0" />
+                                <text x="50%" y="54%" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="18" font-weight="800" fill="#FFFFFF">paytm</text>
                             </svg>
                         </div>
                         <div class="app-name">Paytm</div>
@@ -998,11 +896,11 @@
                         <div class="app-icon">
                             <!-- Generic UPI badge -->
                             <svg class="app-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                <rect width="64" height="64" rx="12" fill="#4F46E5" />
+                                <rect width="64" height="64" rx="12" fill="#0f172a" />
                                 <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="20" font-weight="700" fill="#FFFFFF">UPI</text>
                             </svg>
                         </div>
-                        <div class="app-name">Other UPI</div>
+                        <div class="app-name">Other UPI Apps</div>
                     </button>
                 </div>
             </div>
@@ -1014,16 +912,9 @@
                 </button>
                 <div class="qr-content" id="qrContent">
                     <div class="qr-code">
-                        <img id="qrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=8105485460-982jp@jio%26pn=TesTPaY%208105%26am=1%26cu=INR%26tn=%23ABCD001" alt="UPI QR Code">
+                        <img id="qrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=7795211589@ibl%26pn=TesTPaY%20test%26am=1%26cu=INR%26tn=%23ABCD001" alt="UPI QR Code">
                     </div>
-                    <div class="upi-id" onclick="copyUPIId()" id="upiId">8105485460-982jp@jio
-                        <span class="copy-icon" aria-hidden="false" role="img" title="Copy UPI ID">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
-                                <path d="M16 1H4c-1.1 0-2 .9-2 2v12h2V3h12V1z"/>
-                                <path d="M20 5H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h12v14z"/>
-                            </svg>
-                        </span>
-                    </div>
+                    <div class="upi-id" onclick="copyUPIId()" id="upiId">7795211589@ibl</div>
                     <p style="font-size: 14px; color: var(--gray-600);">Tap UPI ID to copy</p>
                 </div>
             </div>
@@ -1107,7 +998,7 @@
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">UPI ID:</span>
-                    <span class="detail-value">8105485460-982jp@jio</span>
+                    <span class="detail-value">7795211589@ibl</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Transaction ID:</span>
@@ -1128,8 +1019,8 @@
     <script>
         // Configuration
         const CONFIG = {
-            merchantName: 'TesTPaY 8105',
-            upiId: '8105485460-982jp@jio',
+            merchantName: 'TesTPaY test',
+            upiId: '7795211589@ibl',
             amount: 1,
             currency: 'INR',
             note: '#ABCD001',
@@ -1149,7 +1040,6 @@
             gpay: {
                 name: 'Google Pay',
                 scheme: 'tez://upi/pay',
-                package: 'com.google.android.apps.nbu.paisa.user',
                 fallback: 'https://pay.google.com',
                 icon: '🎯',
                 processingMessage: 'Redirecting to Google Pay...'
@@ -1157,7 +1047,6 @@
             phonepe: {
                 name: 'PhonePe',
                 scheme: 'phonepe://pay',
-                package: 'com.phonepe.app',
                 fallback: 'https://phonepe.com',
                 icon: '💜',
                 processingMessage: 'Redirecting to PhonePe...'
@@ -1165,104 +1054,24 @@
             paytm: {
                 name: 'Paytm',
                 scheme: 'paytmmp://pay',
-                package: 'net.one97.paytm',
                 fallback: 'https://paytm.com',
                 icon: '💙',
                 processingMessage: 'Redirecting to Paytm...'
             },
             other: {
-                name: 'Other UPI',
-                scheme: 'upi://pay',
-                package: null,
+                name: 'Other UPI Apps',
+                scheme: null,
                 fallback: null,
-                icon: '📱',
-                processingMessage: 'Opening UPI app...'
-            }
+                icon: '🔁',
+                processingMessage: 'Opening UPI chooser on your device...'
+            },
+            // end of supported apps
         };
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
             checkPaymentStatus();
             updatePaymentDetails();
-            // Make QR area fully clickable (toggle QR when clicking the section or QR image)
-            try {
-                const qrSection = document.querySelector('.qr-section');
-                const qrCode = document.querySelector('.qr-code');
-                const qrToggleBtn = document.querySelector('.qr-toggle');
-
-                if (qrSection) {
-                    qrSection.addEventListener('click', function(e) {
-                        // If clicking on a link or button inside, let it behave normally
-                        if (e.target.tagName.toLowerCase() === 'a' || e.target.tagName.toLowerCase() === 'button') return;
-                        toggleQR();
-                    });
-                }
-
-                if (qrCode) {
-                    qrCode.style.cursor = 'pointer';
-                    qrCode.addEventListener('click', function(e) {
-                        toggleQR();
-                        e.stopPropagation();
-                    });
-                }
-
-                if (qrToggleBtn) {
-                    qrToggleBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        toggleQR();
-                    });
-                }
-            } catch (e) {
-                // ignore
-            }
-        });
-
-        // Handle page visibility (detect return from UPI app) - from payment.html
-        document.addEventListener('visibilitychange', function() {
-            console.log('Page visibility changed. Hidden:', document.hidden);
-            
-            if (!document.hidden) {
-                const currentTxn = localStorage.getItem('currentTxn');
-                if (currentTxn) {
-                    const txn = JSON.parse(currentTxn);
-                    const elapsed = Date.now() - txn.timestamp;
-                    
-                    console.log('Transaction found. Elapsed time:', elapsed, 'ms');
-                    
-                    // If more than 3 seconds have passed, assume user returned from app
-                    if (elapsed > 3000) {
-                        hidePaymentLoader();
-                        showToast('Welcome back! Checking payment status...', 2000);
-                        
-                        // Start verification process
-                        const app = UPI_APPS[txn.app];
-                        if (app) {
-                            showVerificationScreen(txn.id, app);
-                        }
-                        
-                        localStorage.removeItem('currentTxn');
-                    }
-                }
-            }
-        });
-
-        // Check for return from UPI app on page load
-        window.addEventListener('load', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const status = urlParams.get('status');
-            const txnId = urlParams.get('txnId');
-
-            if (status && txnId) {
-                if (status === 'success') {
-                    showToast('Payment completed successfully!', 3000);
-                    // You can add success handling here
-                } else {
-                    showToast('Payment was not completed. Please try again.', 3000);
-                }
-                
-                // Clear URL parameters
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
         });
 
         // Generate realistic transaction ID
@@ -1386,48 +1195,6 @@
 
             hidePaymentLoader();
             showToast('Scan the QR code with your UPI app to pay');
-
-            // Add an "I paid" button to allow users to confirm they paid using the QR code.
-            // The button enforces a hidden rule: it will only proceed if at least 50 seconds
-            // have passed since the QR section was opened. If clicked earlier, show a warning
-            // message and do not proceed. The rule is intentionally not shown to users.
-            try {
-                const qrContentEl = document.getElementById('qrContent');
-                let paidBtn = document.getElementById('qrPaidButton');
-                if (!paidBtn) {
-                    paidBtn = document.createElement('button');
-                    paidBtn.className = 'btn qr-paid';
-                    paidBtn.id = 'qrPaidButton';
-                    paidBtn.textContent = 'I paid using QR';
-                    paidBtn.addEventListener('click', function (e) {
-                        // Hidden timing rule: require 50 seconds to have elapsed since QR shown
-                        const shownAt = parseInt(qrContentEl.getAttribute('data-shown-at') || '0', 10);
-                        const elapsed = Date.now() - shownAt;
-                        if (isNaN(shownAt) || elapsed < 50000) {
-                            // Too early: show a subtle warning and do nothing
-                            showToast('Please complete the payment in your UPI app first, then tap "I paid" if you already paid please wait some time', 4000);
-                            return;
-                        }
-
-                        // Proceed to verification flow (simulate acceptance of payment)
-                        hideQRCodeSection();
-                        if (txnId) {
-                            showVerificationScreen(txnId, null);
-                            startVerificationProcess();
-                        } else {
-                            // If no transaction id, just show verification UI
-                            const fakeTxn = generateTransactionId();
-                            showVerificationScreen(fakeTxn, null);
-                            startVerificationProcess();
-                        }
-                    });
-                    // place the button below the QR code
-                    qrContentEl.appendChild(paidBtn);
-                }
-
-                // record the time the QR was shown (used by hidden rule)
-                qrContentEl.setAttribute('data-shown-at', Date.now().toString());
-            } catch (e) {}
         }
 
         // Store transaction for tracking
@@ -1461,98 +1228,111 @@
             document.getElementById('paymentLoader').classList.remove('show');
         }
 
-        // Open UPI app with working logic from payment.html
+        // Open UPI app with realistic processing
+        // Track deep-link attempts per session to avoid looping failures
+        const DEEP_LINK_ATTEMPTS = {};
+
         function openUPIApp(appKey) {
             const app = UPI_APPS[appKey];
             if (!app) return;
 
-            // Generate transaction ID
-            const txnId = 'TXN' + Date.now() + Math.random().toString(36).substr(2, 5);
-            const amount = document.getElementById('paymentAmount').textContent.replace('₹', '') || '1';
-            
-            console.log(`Opening ${app.name} for amount: ₹${amount}, Transaction ID: ${txnId}`);
-            console.log('Platform:', isAndroid() ? 'Android' : isIOS() ? 'iOS' : 'Desktop');
+            // Create transaction and UPI URL
+            const { upiUrl, txnId } = createTransactionUPI(appKey);
 
-            // Store transaction for verification
-            localStorage.setItem('currentTxn', JSON.stringify({
-                id: txnId,
-                amount: amount,
-                app: appKey,
-                timestamp: Date.now()
-            }));
-
-            // Build UPI parameters exactly as specified in payment.html
-            const params = new URLSearchParams({
-                pa: '8105485460-982jp@jio',        // Payee UPI ID
-                pn: 'TesTPaY 8105',               // Payee Name  
-                am: amount,                       // Amount
-                cu: 'INR',                        // Currency (INR)
-                tr: txnId,                        // Transaction reference (unique)
-                tn: 'Payment to TesTPaY 8105',   // Transaction note
-                url: window.location.origin + window.location.pathname + '?txnId=' + txnId + '&status=success'  // Redirect URL
-            });
-
-            // Generate app-specific deep links exactly as in payment.html
-            let deepLink;
-            if (appKey === 'phonepe') {
-                deepLink = `phonepe://pay?${params.toString()}`;
-            } else if (appKey === 'gpay') {
-                deepLink = `tez://upi/pay?${params.toString()}`;
-            } else if (appKey === 'paytm') {
-                deepLink = `paytmmp://pay?${params.toString()}`;
-            } else {
-                deepLink = `upi://pay?${params.toString()}`;
+            // If the user is on Windows (desktop) — show QR immediately instead of trying deep links
+            if (isWindowsPlatform()) {
+                showPaymentLoader(app);
+                showQRCodeForPayment(upiUrl, txnId);
+                return;
             }
 
-            console.log('Generated deep link:', deepLink);
-
-            // Show loading state
+            // Show processing loader immediately
             showPaymentLoader(app);
             showToast(`Opening ${app.name}...`);
 
-            // Try to open the app after a short delay
+            // Build deep link
+            let deepLink;
+            if (appKey === 'other' || !app.scheme) {
+                deepLink = upiUrl; // generic upi://pay?...
+            } else {
+                deepLink = app.scheme + '?' + upiUrl.split('?')[1];
+            }
+
+            // Initialize attempt counter
+            DEEP_LINK_ATTEMPTS[appKey] = (DEEP_LINK_ATTEMPTS[appKey] || 0) + 1;
+
+            // Realistic processing delay
             setTimeout(() => {
                 try {
-                    console.log('Attempting to open app with:', deepLink);
-                    
-                    // Platform-specific handling
                     if (isAndroid()) {
-                        // For Android, try both methods
-                        window.location.href = deepLink;
-                        
-                        // Additional method for Android
+                        // Prefer Android intent URI which is more reliable in many browsers
+                        try {
+                            const upiPayload = deepLink.replace(/^upi:\/\//i, ''); // e.g. pay?pa=...
+                            const intentUri = `intent://${upiPayload}#Intent;scheme=upi;action=android.intent.action.VIEW;end`;
+                            // Try intent first
+                            window.location = intentUri;
+                        } catch (e) {
+                            // ignore
+                        }
+
+                        // If intent didn't open the app, fall back to iframe trick after short delay
                         setTimeout(() => {
                             if (!document.hidden) {
-                                console.log('Trying alternative Android method');
-                                const a = document.createElement('a');
-                                a.href = deepLink;
-                                a.click();
-                            }
-                        }, 500);
-                    } else {
-                        // For iOS and desktop
-                        window.location.href = deepLink;
-                    }
-                } catch (e) {
-                    console.error('Error opening app:', e);
-                    hidePaymentLoader();
-                    showToast('Failed to open app. Please try again.');
-                }
+                                // Try iframe as a second attempt
+                                const iframe = document.createElement('iframe');
+                                iframe.style.display = 'none';
+                                iframe.src = deepLink;
+                                document.body.appendChild(iframe);
 
-                // Fallback detection after 3 seconds
-                setTimeout(() => {
-                    console.log('Checking if app opened. Page hidden:', document.hidden);
-                    
-                    // If page is still visible, app probably didn't open
-                    if (!document.hidden) {
-                        hidePaymentLoader();
-                        showToast(`${app.name} may not have opened automatically. Showing QR code as fallback.`);
-                        // Fall back to QR code
-                        const upiUrl = `upi://pay?${params.toString()}`;
-                        showQRCodeForPayment(upiUrl, txnId);
+                                setTimeout(() => {
+                                    if (!document.hidden) {
+                                        if (DEEP_LINK_ATTEMPTS[appKey] >= 2) {
+                                            hidePaymentLoader();
+                                            showToast('Unable to open UPI app. Showing QR as fallback.');
+                                            showQRCodeForPayment(upiUrl, txnId);
+                                        } else {
+                                            hidePaymentLoader();
+                                            showToast(`${app.name} not found. Redirecting to web version...`);
+                                            if (app.fallback) window.open(app.fallback, '_blank');
+                                        }
+                                    }
+                                    if (iframe && iframe.parentNode) iframe.parentNode.removeChild(iframe);
+                                }, 2000);
+                            }
+                        }, 700);
+                    } else if (isIOS()) {
+                        // On iOS, try location change and fall back faster if it fails
+                        window.location = deepLink;
+                        setTimeout(() => {
+                            if (!document.hidden) {
+                                hidePaymentLoader();
+                                showToast('Unable to open UPI app on this device. Showing QR fallback.');
+                                showQRCodeForPayment(upiUrl, txnId);
+                            }
+                        }, 1500);
+                    } else {
+                        // Desktop or other mobile: try normal navigation
+                        window.location.href = deepLink;
+                        setTimeout(() => {
+                            if (!document.hidden) {
+                                if (DEEP_LINK_ATTEMPTS[appKey] >= 2) {
+                                    hidePaymentLoader();
+                                    showToast('Unable to open UPI app. Showing QR as fallback.');
+                                    showQRCodeForPayment(upiUrl, txnId);
+                                } else {
+                                    hidePaymentLoader();
+                                    showToast(`${app.name} not found. Redirecting to web version...`);
+                                    if (app.fallback) window.open(app.fallback, '_blank');
+                                }
+                            }
+                        }, 3000);
                     }
-                }, 3000);
-            }, 100);
+                } catch (error) {
+                    console.error('Error opening UPI app:', error);
+                    hidePaymentLoader();
+                    showToast('Error opening UPI app. Please try again.');
+                }
+            }, CONFIG.processingDelay * 1000);
         }
 
         // Show verification screen with realistic steps
@@ -1679,8 +1459,8 @@
                 
                 if (countdown <= 0) {
                     clearInterval(interval);
-                    // Redirect to the animated thank-you page (use a simple relative path)
-                    window.location.href = 'thankyou.html';
+                    // Redirect to order confirmation (or back to main page)
+                    window.location.href = window.location.pathname;
                 }
             }, 1000);
         }
@@ -1696,51 +1476,7 @@
             } else {
                 qrContent.classList.add('show');
                 button.innerHTML = '<i class="fas fa-qrcode"></i> Hide QR Code';
-                // Ensure the "I paid" button exists when the QR is shown and record shown timestamp
-                try {
-                    qrContent.setAttribute('data-shown-at', Date.now().toString());
-                    let paidBtn = document.getElementById('qrPaidButton');
-                    if (!paidBtn) {
-                        paidBtn = document.createElement('button');
-                        paidBtn.className = 'btn qr-paid';
-                        paidBtn.id = 'qrPaidButton';
-                        paidBtn.textContent = 'I paid using QR';
-                        paidBtn.addEventListener('click', function (e) {
-                            const shownAt = parseInt(qrContent.getAttribute('data-shown-at') || '0', 10);
-                            const elapsed = Date.now() - shownAt;
-                            if (isNaN(shownAt) || elapsed < 50000) {
-                                showToast('Please complete the payment in your UPI app first, then tap "I paid" if you already paid please wait some time', 4000);
-                                return;
-                            }
-
-                            // Hide QR and start verification flow
-                            hideQRCodeSection();
-                            const fakeTxn = generateTransactionId();
-                            showVerificationScreen(fakeTxn, null);
-                            startVerificationProcess();
-                        });
-                        qrContent.appendChild(paidBtn);
-                    } else {
-                        // update timestamp when reopening
-                        qrContent.setAttribute('data-shown-at', Date.now().toString());
-                    }
-                } catch (e) {}
             }
-        }
-
-        // Hide QR content and cleanup attributes
-        function hideQRCodeSection() {
-            try {
-                const qrContent = document.getElementById('qrContent');
-                const button = document.querySelector('.qr-toggle');
-                if (qrContent) {
-                    qrContent.classList.remove('show');
-                    qrContent.removeAttribute('data-shown-at');
-                }
-                if (button) {
-                    button.innerHTML = '<i class="fas fa-qrcode"></i> Show QR Code';
-                }
-            } catch (e) {}
         }
 
         // Copy UPI ID to clipboard
